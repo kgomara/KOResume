@@ -23,7 +23,7 @@
 @synthesize	jobStartDate;
 @synthesize	jobEndDate;
 @synthesize	jobResponsibilities;
-@synthesize	jobAccomplishments;
+@synthesize	jobAccomplishmentsArray;
 @synthesize	jobView;
 @synthesize	jobCompanyUrlBtn;
 @synthesize	jobDictionary;
@@ -44,16 +44,52 @@
 	self.jobStartDate.text			= [jobDictionary objectForKey:@"StartDate"];
 	self.jobEndDate.text			= [jobDictionary objectForKey:@"EndDate"];
 	self.jobResponsibilities.text	= [jobDictionary objectForKey:@"Responsibilities"];
-	self.jobAccomplishments			= [jobDictionary objectForKey:@"Accomplishments"];
+	self.jobAccomplishmentsArray	= [jobDictionary objectForKey:@"Accomplishments"];
 	
 	// Size jobResponsibilities Label to fit the string
 	[self.jobResponsibilities sizeToFitFixedWidth:kLabelWidth];
 	
 	// Re-size the sub-view to allow for the number of lines in jobResponsibilities
-	CGRect jobRespFrame = self.jobResponsibilities.frame;
+	CGRect jobItemFrame = self.jobResponsibilities.frame;
 	CGRect jobViewFrame = self.jobView.frame;
-	jobViewFrame.size.height += jobRespFrame.size.height - kLabelHeight;
+	jobViewFrame.size.height += jobItemFrame.size.height - kLabelHeight;
+	
+	// Get the jobAccomplishmentsArray
+	self.jobAccomplishmentsArray	= [jobDictionary objectForKey:@"Accomplishments"];
+	
+	// Add the Accomplishments (if any) to the subView and adjust size accordingly
+	if ([self.jobAccomplishmentsArray count] > 0) {
+		// Create a label for the Accomplishment items
+		jobItemFrame.origin.y		= jobViewFrame.size.height;
+		jobItemFrame.origin.x		-= jobViewFrame.origin.x;
+		jobItemFrame.size.height	= kLabelHeight;
+		UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
+		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];
+		[accomplishment setBackgroundColor:[UIColor clearColor]];
+		accomplishment.text = @"Accomplishments:";
+		[self.jobView addSubview:accomplishment];
+		jobItemFrame.origin.y		+= kLabelHeight;
+		jobViewFrame.size.height	+= kLabelHeight * 2;
+		
+		// Loop through the jobAccomplishmentsArray adding accomplishment items
+		NSEnumerator *jobEnum = [jobAccomplishmentsArray objectEnumerator];
+		NSString *item;
+		while (item = [jobEnum nextObject]) {
+			// handle an accomplishment
+			NSLog(@"item = %@", item);
+			UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
+			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
+			[accomplishment setBackgroundColor:[UIColor clearColor]];
+			accomplishment.text = item;
+			[accomplishment sizeToFitFixedWidth:kLabelWidth];
+			[self.jobView addSubview:accomplishment];
+			jobItemFrame.origin.y		+= accomplishment.frame.size.height + kLabelHeight;
+			jobViewFrame.size.height	+= accomplishment.frame.size.height - kLabelHeight;
+		}
+	}
 	self.jobView.frame = jobViewFrame;
+//	NSLog(@"contentSize = %@", [self.jobView contentSize]);
+//	self.jobView.contentSize = jobViewFrame.size;
 }
 
 
@@ -79,7 +115,7 @@
 	self.jobStartDate			= nil;
 	self.jobEndDate				= nil;
 	self.jobResponsibilities	= nil;
-	self.jobAccomplishments		= nil;
+	self.jobAccomplishmentsArray		= nil;
 	self.jobView				= nil;
 	self.jobCompanyUrlBtn		= nil;
 	self.jobDictionary			= nil;

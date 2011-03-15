@@ -17,8 +17,8 @@
 	IBOutlet	UILabel			*jobStartDate;
 	IBOutlet	UILabel			*jobEndDate;
 	IBOutlet	UILabel			*jobResponsibilities;
-				NSArray			*jobAccomplishments;
-	IBOutlet	UIView			*jobView;
+				NSArray			*jobAccomplishmentsArray;
+	IBOutlet	UIScrollView	*jobView;
 	IBOutlet	UIButton		*jobCompanyUrlBtn;
 	
 	NSDictionary	*jobDictionary;
@@ -32,8 +32,8 @@
 @property (nonatomic, retain) UILabel		*jobStartDate;
 @property (nonatomic, retain) UILabel		*jobEndDate;
 @property (nonatomic, retain) UILabel		*jobResponsibilities;
-@property (nonatomic, retain) NSArray		*jobAccomplishments;
-@property (nonatomic, retain) UIView			*jobView;
+@property (nonatomic, retain) NSArray		*jobAccomplishmentsArray;
+@property (nonatomic, retain) UIView		*jobView;
 @property (nonatomic, retain) UIButton		*jobCompanyUrlBtn;
 
 @property (nonatomic, retain) NSDictionary	*jobDictionary;

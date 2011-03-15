@@ -20,8 +20,8 @@
 		<string>Appiction develops mobile applications on iPhone, Android, and Windows Mobile platforms.  I led 20+ projects through the development process utilization in-house, outsource, and off-shore teams.</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Introduced Scrum (an Agile methodology) to improve quality and predictability.</string>
-			<string>Drive on-time delivery of mobile apps implemented in Cocoa/Objective-C (C++), .NET/C#, and Java, as well as their supporting websites in Django, Amazon AWS, and Google App Engine.</string>
+			<string>* Introduced Scrum (an Agile methodology) to improve quality and predictability.</string>
+			<string>* Drive on-time delivery of mobile apps implemented in Cocoa/Objective-C (C++), .NET/C#, and Java, as well as their supporting websites in Django, Amazon AWS, and Google App Engine.</string>
 		</array>
 	</dict>
 	<key>Macy&apos;s West</key>
@@ -42,11 +42,11 @@
 		<string>The Western division of Macy’s operated 230 retail stores in the Western US, Hawaii, and Guam.  I led the Advertising department’s technology team of 8 and was responsible for automating digital workflow for publishing, photo studio, and prepress operations on Mac and PC computers.</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Introduced Scrum and engineering best practices to double productivity and align engineering efforts with business priorities.</string>
-			<string>Implemented a Podcast site on LoudBlog (Open Source CMS) to deliver engaging videos and entice the Millennial Generation to shop at Macy’s.</string>
-			<string>Implemented Wiki and CMS Web sites on the Joomla platform to deliver timely, strategic promotional information to the Merchant and Stores organizations.  They used the information to optimize mall and in-store signage, floor merchandising, and training of sales associates.</string>
-			<string>Established a standardized LAMP (Linux, Apache, MySQL, PHP) Web platform and implemented Virtualization technology to ensure high system availability while reducing costs.  Established and enforced appropriate security policy in collaboration with Division Security Office and integration with corporate Active Directory services.</string>
-			<string>Established metrics for technical support and SLA for system availability.</string>
+			<string>* Introduced Scrum and engineering best practices to double productivity and align engineering efforts with business priorities.</string>
+			<string>* Implemented a Podcast site on LoudBlog (Open Source CMS) to deliver engaging videos and entice the Millennial Generation to shop at Macy’s.</string>
+			<string>* Implemented Wiki and CMS Web sites on the Joomla platform to deliver timely, strategic promotional information to the Merchant and Stores organizations.  They used the information to optimize mall and in-store signage, floor merchandising, and training of sales associates.</string>
+			<string>* Established a standardized LAMP (Linux, Apache, MySQL, PHP) Web platform and implemented Virtualization technology to ensure high system availability while reducing costs.  Established and enforced appropriate security policy in collaboration with Division Security Office and integration with corporate Active Directory services.</string>
+			<string>* Established metrics for technical support and SLA for system availability.</string>
 		</array>
 	</dict>
 	<key>O&apos;Mara Consulting Associates</key>
@@ -67,16 +67,16 @@
 		<string>Provide technology consulting services for clients:</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Harcourt Achieve – led the Educational Technology team to develop subscription based Web products on Zend/PHP, J2EE, and .NET platforms utilizing outsourced and off-shore contractors.  Awards: PowerUp – AEP Golden Lamp finalist; Palm eAssessment SIAA “Codie” nominee.</string>
-			<string>Compass Learning – rebuilt development processes and organization in Austin after company closed San Diego development operations.</string>
-			<string>Cosmos Literacy – defined XML data integration strategy based on SIF (School Interoperability Framework) that qualified Cosmos’ products for large sales opportunities at the district level.</string>
-			<string>HOSTS Learning – performed due diligence technology assessment to establish valuation of a .NET product.  Assessed existing J2EE product and developed long term strategic roadmap.  Supported Sales in responses to school district RFPs.</string>
+			<string>* Harcourt Achieve – led the Educational Technology team to develop subscription based Web products on Zend/PHP, J2EE, and .NET platforms utilizing outsourced and off-shore contractors.  Awards: PowerUp – AEP Golden Lamp finalist; Palm eAssessment SIAA “Codie” nominee.</string>
+			<string>* Compass Learning – rebuilt development processes and organization in Austin after company closed San Diego development operations.</string>
+			<string>* Cosmos Literacy – defined XML data integration strategy based on SIF (School Interoperability Framework) that qualified Cosmos’ products for large sales opportunities at the district level.</string>
+			<string>* HOSTS Learning – performed due diligence technology assessment to establish valuation of a .NET product.  Assessed existing J2EE product and developed long term strategic roadmap.  Supported Sales in responses to school district RFPs.</string>
 		</array>
 	</dict>
 	<key>Loquendo</key>
 	<dict>
 		<key>Company</key>
-		<string>Loquendo (formerly Vocal Point)</string>
+		<string>Loquendo</string>
 		<key>CompanyUrl</key>
 		<string>http://www.loquendo.com/en/</string>
 		<key>Location</key>
@@ -91,10 +91,10 @@
 		<string>Loquendo developed a Voice Browser enabling consumers to use the telephone to access Web sites.  Loquendo hosted Voice Browser as a service to businesses using the SaaS (Software as a Service) business model.  I developed and managed a team of 40 through 5 Directors (3 Engineering, 1 QA, and 1 Customer Service).</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Re-architected product line to support enterprise licensing on Windows NT, Linux, and UNIX, creating new sales opportunities.</string>
-			<string>Developed Java based “VoiceBrowser” utilizing Speech Recognition, Text-to-Speech, and Computer Telephony Integration (CTI).</string>
-			<string>Established iterative SDLC process and managed development of five releases in two years.</string>
-			<string>Effectively presented synergistic product vision during due diligence, resulting in acquisition by Telecom Italia in August 2001.</string>
+			<string>* Re-architected product line to support enterprise licensing on Windows NT, Linux, and UNIX, creating new sales opportunities.</string>
+			<string>* Developed Java based “VoiceBrowser” utilizing Speech Recognition, Text-to-Speech, and Computer Telephony Integration (CTI).</string>
+			<string>* Established iterative SDLC process and managed development of five releases in two years.</string>
+			<string>* Effectively presented synergistic product vision during due diligence, resulting in acquisition by Telecom Italia in August 2001.</string>
 		</array>
 	</dict>
 	<key>Per-Se Technologies</key>
@@ -115,10 +115,10 @@
 		<string>Per-Se Technologies (now McKesson) served the healthcare industry.  I led a business unit that developed ORSOS – a patient scheduling system for hospitals.  ORSOS was installed at hospitals and integrated with other healthcare systems via XML.   I led a team of 45 through 6 Directors (5 Engineering, 1 QA).</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Inherited troubled product and organization – turned both around by establishing solid development process and leading team through difficult challenges to fix the product. Managed flawless Y2K transition of date-oriented scheduling product.</string>
-			<string>Transformed Client/Server legacy product to reliable, scalable n-Tier ASP (Active Server Pages) architecture supporting Oracle or MS SQL Server.  The new version generated $7M incremental revenue on a base of $120M.</string>
-			<string>Implemented iterative development based on Rational Unified Process (RUP).</string>
-			<string>Awards – ORSOS won KLAS “Most Improved Product.”</string>
+			<string>* Inherited troubled product and organization – turned both around by establishing solid development process and leading team through difficult challenges to fix the product. Managed flawless Y2K transition of date-oriented scheduling product.</string>
+			<string>* Transformed Client/Server legacy product to reliable, scalable n-Tier ASP (Active Server Pages) architecture supporting Oracle or MS SQL Server.  The new version generated $7M incremental revenue on a base of $120M.</string>
+			<string>* Implemented iterative development based on Rational Unified Process (RUP).</string>
+			<string>* Awards – ORSOS won KLAS “Most Improved Product.”</string>
 		</array>
 	</dict>
 	<key>Tenth Planet</key>
@@ -139,9 +139,9 @@
 		<string>Tenth Planet (now Sunburst) was a start-up developing Math and Reading curriculum products for K-6 Education.  The products integrated CD-ROM, print, and Web resources to create powerful learning experiences.  I led a team of 20 through 2 Managers (Graphic Arts and QA) and 4 Engineer direct reports.</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Defined and implemented an Internet strategy to reach an emerging K-12 market segment searching for Web products.  The strategy was balanced against reality – most elementary schools had no Internet access at that time.</string>
-			<string>Awards – Tenth Planet Explores Fractions won SIIA “Codie.”</string>
-			<string>Participated in due diligence process resulting in acquisition by Sunburst in May 1998.</string>
+			<string>* Defined and implemented an Internet strategy to reach an emerging K-12 market segment searching for Web products.  The strategy was balanced against reality – most elementary schools had no Internet access at that time.</string>
+			<string>* Awards – Tenth Planet Explores Fractions won SIIA “Codie.”</string>
+			<string>* Participated in due diligence process resulting in acquisition by Sunburst in May 1998.</string>
 		</array>
 	</dict>
 	<key>Apple Computer</key>
@@ -162,8 +162,8 @@
 		<string>Led engineering, QA, production, and operations for Software Dispatch, a business unit that sold 3rd party Mac and Windows applications via a virtual store on an encrypted CD.  I led a team of 12 direct reports and managed a 24/7 telesupport contract to provide fulfillment and technical support services.</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Negotiated and managed $1 million development, licensing, and fulfillment contracts.</string>
-			<string>Built a team of 12 from scratch.</string>
+			<string>* Negotiated and managed $1 million development, licensing, and fulfillment contracts.</string>
+			<string>* Built a team of 12 from scratch.</string>
 		</array>
 	</dict>
 	<key>Jostens Learning Corp.</key>
@@ -184,8 +184,8 @@
 		<string>This start-up (formerly Education Systems Corp, now Compass Learning) developed Integrated Learning System (ILS) products for K-12 Education on Apple and PC networked computers.  I managed several teams of 8-20 direct reports for this fast growing company.</string>
 		<key>Accomplishments</key>
 		<array>
-			<string>Implemented ILS on Apple IIgs, then Macintosh computers.  Sales of products produced for the Apple platform increased from 5% to 60% of JLC sales, while sales went from $9M to $220M.</string>
-			<string>Awards – Compton’s CD-ROM won SIIA “Codie” and Time “Product of the Year.”</string>
+			<string>* Implemented ILS on Apple IIgs, then Macintosh computers.  Sales of products produced for the Apple platform increased from 5% to 60% of JLC sales, while sales went from $9M to $220M.</string>
+			<string>* Awards – Compton’s CD-ROM won SIIA “Codie” and Time “Product of the Year.”</string>
 		</array>
 	</dict>
 </dict>
