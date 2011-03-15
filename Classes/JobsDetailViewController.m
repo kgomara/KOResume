@@ -57,12 +57,12 @@
 	// Get the jobAccomplishmentsArray
 	self.jobAccomplishmentsArray	= [jobDictionary objectForKey:@"Accomplishments"];
 	
-	// Add the Accomplishments (if any) to the subView and adjust size accordingly
+	// Add the Accomplishments (if any) to the View and adjust size accordingly
 	if ([self.jobAccomplishmentsArray count] > 0) {
 		// Create a label for the Accomplishment items
-		jobItemFrame.origin.y		= jobViewFrame.size.height;
+		jobItemFrame.origin.y		 = jobViewFrame.size.height;
 		jobItemFrame.origin.x		-= jobViewFrame.origin.x;
-		jobItemFrame.size.height	= kLabelHeight;
+		jobItemFrame.size.height	 = kLabelHeight;
 		UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];
 		[accomplishment setBackgroundColor:[UIColor clearColor]];
@@ -76,7 +76,7 @@
 		NSString *item;
 		while (item = [jobEnum nextObject]) {
 			// handle an accomplishment
-			NSLog(@"item = %@", item);
+//			NSLog(@"item = %@", item);
 			UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
 			[accomplishment setBackgroundColor:[UIColor clearColor]];
@@ -108,17 +108,17 @@
 
 
 - (void)dealloc {
-	self.jobCompany				= nil;
-	self.jobCompanyUrl			= nil;
-	self.jobLocation			= nil;
-	self.jobTitle				= nil;
-	self.jobStartDate			= nil;
-	self.jobEndDate				= nil;
-	self.jobResponsibilities	= nil;
-	self.jobAccomplishmentsArray		= nil;
-	self.jobView				= nil;
-	self.jobCompanyUrlBtn		= nil;
-	self.jobDictionary			= nil;
+	self.jobCompany					= nil;
+	self.jobCompanyUrl				= nil;
+	self.jobLocation				= nil;
+	self.jobTitle					= nil;
+	self.jobStartDate				= nil;
+	self.jobEndDate					= nil;
+	self.jobResponsibilities		= nil;
+	self.jobAccomplishmentsArray	= nil;
+	self.jobView					= nil;
+	self.jobCompanyUrlBtn			= nil;
+	self.jobDictionary				= nil;
 	
     [super dealloc];
 }
@@ -127,7 +127,7 @@
 
 - (IBAction)companyTapped:(id)sender {
 	
-	NSLog(@"companyTapped:");
+//	NSLog(@"companyTapped:");
 	if (self.jobCompanyUrl == NULL || [self.jobCompanyUrl rangeOfString:@"://"].location == NSNotFound) {
 		return;
 	}

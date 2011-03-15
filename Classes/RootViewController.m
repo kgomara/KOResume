@@ -9,13 +9,17 @@
 #import "RootViewController.h"
 #import "JobsDetailViewController.h"
 #import "SummaryViewController.h"
+#import "EducationViewController.h"
 
 #define kSummaryInfoTbl		0
-#define	kJobsInfoTbl		1
+#define	kMgmtJobsInfoTbl	1
+#define kProgJobsInfoTbl	2
+#define kEducationInfoTbl	3
 
 @implementation RootViewController
 
 @synthesize mgmtJobsArray;
+@synthesize progJobsArray;
 @synthesize mgmtJobsDict;
 
 #pragma mark -
@@ -40,6 +44,9 @@
 	mgmtJobsArray = [[NSArray alloc] initWithObjects:@"Appiction, LLC", @"Macy's West", @"O'Mara Consulting Associates", @"Loquendo",
 					 @"Per-Se Technologies", @"Tenth Planet", @"Apple Computer", @"Jostens Learning Corp.",
 					 nil];
+	progJobsArray = [[NSArray alloc] initWithObjects:@"Intrepid Software Development, Inc.", @"National Semiconductor Corp.", @"NCR Corp.",
+					 @"California First Bank", @"IBM Corp.", 
+					 nil];
 }
 
 
@@ -49,7 +56,7 @@
 
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 4;
 }
 
 
@@ -60,8 +67,14 @@
 		case kSummaryInfoTbl:
 			return 1;
 			break;
-		case kJobsInfoTbl:
+		case kMgmtJobsInfoTbl:
 			return [mgmtJobsArray count];
+			break;
+		case kProgJobsInfoTbl:
+			return [progJobsArray count];
+			break;
+		case kEducationInfoTbl:
+			return 1;
 			break;
 		default:
 			NSLog(@"RootViewController: numberOfRowsInSection - unexpected section = %d", section);
@@ -85,8 +98,16 @@
 			cell.textLabel.text = @"Kevin O'Mara";
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
-		case kJobsInfoTbl:
+		case kMgmtJobsInfoTbl:
 			cell.textLabel.text = [self.mgmtJobsArray objectAtIndex:indexPath.row];
+			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
+			break;
+		case kProgJobsInfoTbl:
+			cell.textLabel.text = [self.progJobsArray objectAtIndex:indexPath.row];
+			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
+			break;
+		case kEducationInfoTbl:
+			cell.textLabel.text = @"Education & Certs.";
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
@@ -113,8 +134,16 @@
 			sectionLabel.text = @"Summary";
 			return sectionLabel;
 		}
-		case kJobsInfoTbl: {
+		case kMgmtJobsInfoTbl: {
 			sectionLabel.text = @"Management History";
+			return sectionLabel;
+		}
+		case kProgJobsInfoTbl: {
+			sectionLabel.text = @"Programming History";
+			return sectionLabel;
+		}
+		case kEducationInfoTbl: {
+			sectionLabel.text = @"Education & Certifications";
 			return sectionLabel;
 		}
 		default:
@@ -141,7 +170,7 @@
 			[summaryViewController release];
 			break;
 		}
-		case kJobsInfoTbl: {
+		case kMgmtJobsInfoTbl: {
 			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
 																										bundle:nil];
 			detailViewController.title = @"Mgmt Hist";
@@ -151,6 +180,28 @@
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:detailViewController animated:YES];
 			[detailViewController release];
+			break;
+		}
+		case kProgJobsInfoTbl: {
+			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
+																										bundle:nil];
+			detailViewController.title = @"Prog Hist";
+			NSString *jobKey = [self.progJobsArray objectAtIndex:indexPath.row];
+			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
+			
+			// Pass the selected object to the new view controller.
+			[self.navigationController pushViewController:detailViewController animated:YES];
+			[detailViewController release];
+			break;
+		}
+		case kEducationInfoTbl: {
+			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
+																										 bundle:nil];
+			educationViewController.title = @"Education";
+			
+			// Pass the selected object to the new view controller.
+			[self.navigationController pushViewController:educationViewController animated:YES];
+			[educationViewController release];
 			break;
 		}
 		default:
@@ -180,6 +231,7 @@
 
 - (void)dealloc {
 	self.mgmtJobsArray = nil;
+	self.progJobsArray = nil;
 	self.mgmtJobsDict  = nil;
 	
     [super dealloc];

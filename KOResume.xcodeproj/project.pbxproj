@@ -17,6 +17,8 @@
 		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		D674489C1329D3AF00527C9E /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489A1329D3AF00527C9E /* background.png */; };
 		D674489D1329D3AF00527C9E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489B1329D3AF00527C9E /* background@2x.png */; };
+		D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */; };
+		D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */; };
 		D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */; };
 		D6CDB9FD132D35ED00A1E4BA /* JobsDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */; };
 		D6CDBA19132D437200A1E4BA /* contentpane_details.png in Resources */ = {isa = PBXBuildFile; fileRef = D6CDBA17132D437200A1E4BA /* contentpane_details.png */; };
@@ -43,6 +45,9 @@
 		8D1107310486CEB800E47090 /* KOResume-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KOResume-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D674489A1329D3AF00527C9E /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		D674489B1329D3AF00527C9E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
+		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
+		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EducationViewController.m; sourceTree = "<group>"; };
+		D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EducationViewController.xib; path = Classes/EducationViewController.xib; sourceTree = "<group>"; };
 		D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobsDetailViewController.h; sourceTree = "<group>"; };
 		D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JobsDetailViewController.m; sourceTree = "<group>"; };
 		D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = JobsDetailViewController.xib; path = Classes/JobsDetailViewController.xib; sourceTree = "<group>"; };
@@ -83,6 +88,8 @@
 				D6CDBC36132DC31200A1E4BA /* KOExtensions.m */,
 				D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */,
 				D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */,
+				D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */,
+				D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -128,6 +135,7 @@
 				8D1107310486CEB800E47090 /* KOResume-Info.plist */,
 				D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */,
 				D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */,
+				D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */,
 				D6FB477B132AFCFE0045D764 /* jobs.plist */,
 			);
 			name = Resources;
@@ -202,6 +210,7 @@
 				D6CDBA19132D437200A1E4BA /* contentpane_details.png in Resources */,
 				D6CDBA1A132D437200A1E4BA /* contentpane_details@2x.png in Resources */,
 				D6CDBCAC132DCC5400A1E4BA /* SummaryViewController.xib in Resources */,
+				D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +227,7 @@
 				D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */,
 				D6CDBC37132DC31200A1E4BA /* KOExtensions.m in Sources */,
 				D6CDBCAB132DCC5400A1E4BA /* SummaryViewController.m in Sources */,
+				D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

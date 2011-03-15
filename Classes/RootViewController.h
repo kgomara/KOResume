@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UITableViewController {
-	NSArray *mgmtJobsArray;
+	NSArray			*mgmtJobsArray;
+	NSArray			*progJobsArray;
 	NSDictionary	*mgmtJobsDict;
 }
 
 @property (nonatomic, retain) NSArray		*mgmtJobsArray;
+@property (nonatomic, retain) NSArray		*progJobsArray;
 @property (nonatomic, retain) NSDictionary	*mgmtJobsDict;
 
 @end
