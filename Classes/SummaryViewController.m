@@ -11,7 +11,6 @@
 
 #define kHomePhoneTag	0
 #define kMobilePhoneTag	1
-#define kLabelWidth		280
 
 @implementation SummaryViewController
 

@@ -9,9 +9,6 @@
 #import "JobsDetailViewController.h"
 #import "KOExtensions.h"
 
-#define kLabelWidth			280
-#define kLabelHeight		21
-
 
 
 @implementation JobsDetailViewController
@@ -71,20 +68,19 @@
 		jobItemFrame.origin.y		+= kLabelHeight;
 		jobViewFrame.size.height	+= kLabelHeight * 2;
 		
-		// Loop through the jobAccomplishmentsArray adding accomplishment items
+		// Loop through the jobAccomplishmentsArray adding accomplishment items to the view
 		NSEnumerator *jobEnum = [jobAccomplishmentsArray objectEnumerator];
 		NSString *item;
 		while (item = [jobEnum nextObject]) {
 			// handle an accomplishment
-//			NSLog(@"item = %@", item);
 			UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
 			[accomplishment setBackgroundColor:[UIColor clearColor]];
 			accomplishment.text = item;
 			[accomplishment sizeToFitFixedWidth:kLabelWidth];
 			[self.jobView addSubview:accomplishment];
-			jobItemFrame.origin.y		+= accomplishment.frame.size.height + kLabelHeight;
-			jobViewFrame.size.height	+= accomplishment.frame.size.height - kLabelHeight;
+			jobItemFrame.origin.y		+= accomplishment.frame.size.height;
+			jobViewFrame.size.height	+= accomplishment.frame.size.height;
 		}
 	}
 	self.jobView.frame = jobViewFrame;
@@ -127,7 +123,6 @@
 
 - (IBAction)companyTapped:(id)sender {
 	
-//	NSLog(@"companyTapped:");
 	if (self.jobCompanyUrl == NULL || [self.jobCompanyUrl rangeOfString:@"://"].location == NSNotFound) {
 		return;
 	}

@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#define kLabelWidth			280
+#define kLabelHeight		21
+
 
 @interface KOExtensions : NSObject {
 

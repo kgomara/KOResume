@@ -574,7 +574,7 @@
 							<string>UILabel</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
-							<string>UIView</string>
+							<string>UIScrollView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -622,7 +622,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">jobView</string>
-								<string key="candidateClassName">UIView</string>
+								<string key="candidateClassName">UIScrollView</string>
 							</object>
 						</object>
 					</object>

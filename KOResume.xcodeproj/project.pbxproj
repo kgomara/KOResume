@@ -15,6 +15,11 @@
 		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
+		D64C011E132FB13D001DAFEC /* ResumeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C011D132FB13D001DAFEC /* ResumeViewController.m */; };
+		D64C0124132FB150001DAFEC /* ResumeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64C0123132FB150001DAFEC /* ResumeViewController.xib */; };
+		D64C0158132FE302001DAFEC /* CoverLtrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C0156132FE302001DAFEC /* CoverLtrViewController.m */; };
+		D64C0159132FE302001DAFEC /* CoverLtrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */; };
+		D64C017913306582001DAFEC /* CoverLtrStandard.txt in Resources */ = {isa = PBXBuildFile; fileRef = D64C017813306582001DAFEC /* CoverLtrStandard.txt */; };
 		D674489C1329D3AF00527C9E /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489A1329D3AF00527C9E /* background.png */; };
 		D674489D1329D3AF00527C9E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489B1329D3AF00527C9E /* background@2x.png */; };
 		D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */; };
@@ -43,6 +48,13 @@
 		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* KOResume-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KOResume-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D64C011C132FB13D001DAFEC /* ResumeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeViewController.h; sourceTree = "<group>"; };
+		D64C011D132FB13D001DAFEC /* ResumeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumeViewController.m; sourceTree = "<group>"; };
+		D64C0123132FB150001DAFEC /* ResumeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResumeViewController.xib; sourceTree = "<group>"; };
+		D64C0155132FE302001DAFEC /* CoverLtrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverLtrViewController.h; sourceTree = "<group>"; };
+		D64C0156132FE302001DAFEC /* CoverLtrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverLtrViewController.m; sourceTree = "<group>"; };
+		D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CoverLtrViewController.xib; path = Classes/CoverLtrViewController.xib; sourceTree = "<group>"; };
+		D64C017813306582001DAFEC /* CoverLtrStandard.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CoverLtrStandard.txt; sourceTree = "<group>"; };
 		D674489A1329D3AF00527C9E /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		D674489B1329D3AF00527C9E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
 		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
@@ -78,6 +90,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D64C011C132FB13D001DAFEC /* ResumeViewController.h */,
+				D64C011D132FB13D001DAFEC /* ResumeViewController.m */,
 				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
 				1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */,
@@ -90,6 +104,8 @@
 				D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */,
 				D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */,
 				D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */,
+				D64C0155132FE302001DAFEC /* CoverLtrViewController.h */,
+				D64C0156132FE302001DAFEC /* CoverLtrViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -126,6 +142,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D64C017813306582001DAFEC /* CoverLtrStandard.txt */,
+				D64C0123132FB150001DAFEC /* ResumeViewController.xib */,
 				D6CDBA17132D437200A1E4BA /* contentpane_details.png */,
 				D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */,
 				D674489A1329D3AF00527C9E /* background.png */,
@@ -134,6 +152,7 @@
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* KOResume-Info.plist */,
 				D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */,
+				D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */,
 				D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */,
 				D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */,
 				D6FB477B132AFCFE0045D764 /* jobs.plist */,
@@ -211,6 +230,9 @@
 				D6CDBA1A132D437200A1E4BA /* contentpane_details@2x.png in Resources */,
 				D6CDBCAC132DCC5400A1E4BA /* SummaryViewController.xib in Resources */,
 				D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */,
+				D64C0124132FB150001DAFEC /* ResumeViewController.xib in Resources */,
+				D64C0159132FE302001DAFEC /* CoverLtrViewController.xib in Resources */,
+				D64C017913306582001DAFEC /* CoverLtrStandard.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +250,8 @@
 				D6CDBC37132DC31200A1E4BA /* KOExtensions.m in Sources */,
 				D6CDBCAB132DCC5400A1E4BA /* SummaryViewController.m in Sources */,
 				D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */,
+				D64C011E132FB13D001DAFEC /* ResumeViewController.m in Sources */,
+				D64C0158132FE302001DAFEC /* CoverLtrViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
