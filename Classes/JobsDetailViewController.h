@@ -10,6 +10,7 @@
 
 
 @interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> {
+
 	IBOutlet	UILabel			*jobCompany;
 				NSString		*jobCompanyUrl;
 	IBOutlet	UILabel			*jobLocation;

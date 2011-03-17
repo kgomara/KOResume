@@ -32,8 +32,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.view.backgroundColor = [UIColor clearColor];
-	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+	self.view.backgroundColor		= [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+//	self.jobView.backgroundColor	= [UIColor colorWithPatternImage:[[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20
+//																																	   topCapHeight:20]];
 
 	// Get the data from the jobDictionary and stuff it into the fields
 	[self.jobCompanyUrlBtn setTitle:[jobDictionary objectForKey:@"Company"] 

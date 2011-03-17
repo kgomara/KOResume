@@ -59,6 +59,7 @@
 
 
 - (void)dealloc {
+
 	self.coverLtrLbl = nil;
 	self.coverLtrView = nil;
 	

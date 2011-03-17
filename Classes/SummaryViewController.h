@@ -10,15 +10,16 @@
 
 
 @interface SummaryViewController : UIViewController {
-	IBOutlet UIButton	*homePhone;
-	IBOutlet UIButton	*mobilePhone;
-	IBOutlet UILabel	*summaryLabel;
+
+	IBOutlet UIButton		*homePhone;
+	IBOutlet UIButton		*mobilePhone;
+	IBOutlet UILabel		*summaryLabel;
 
 }
 
-@property (nonatomic, retain) UIButton	*homePhone;
-@property (nonatomic, retain) UIButton	*mobilePhone;
-@property (nonatomic, retain) UILabel	*summaryLabel;
+@property (nonatomic, retain) UIButton		*homePhone;
+@property (nonatomic, retain) UIButton		*mobilePhone;
+@property (nonatomic, retain) UILabel		*summaryLabel;
 
 - (IBAction)phoneTapped:(id)sender;
 

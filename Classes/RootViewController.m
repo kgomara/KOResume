@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import "CoverLtrViewController.h"
 #import "ResumeViewController.h"
+#import "DesignViewController.h"
 
 @implementation RootViewController
 
@@ -23,9 +24,6 @@
 	
 	self.navigationItem.title = @"Kevin O'Mara";
 	self.view.backgroundColor = [UIColor clearColor];
-//	- (UIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight
-
-//	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
 }
 
 
@@ -120,15 +118,13 @@
 		}
 		case 2: {
 			NSLog(@"Explanatino");
-//			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
-//																										bundle:nil];
-//			detailViewController.title = @"Prog Hist";
-//			NSString *jobKey = [self.progJobsArray objectAtIndex:indexPath.row];
-//			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
-//			
-//			// Pass the selected object to the new view controller.
-//			[self.navigationController pushViewController:detailViewController animated:YES];
-//			[detailViewController release];
+			DesignViewController *designViewController = [[DesignViewController alloc] initWithNibName:@"DesignViewController" 
+																								bundle:nil];
+			designViewController.title = @"Design";
+			
+			// Pass the selected object to the new view controller.
+			[self.navigationController pushViewController:designViewController animated:YES];
+			[designViewController release];
 			break;
 		}
 		default:

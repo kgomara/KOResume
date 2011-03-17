@@ -18,6 +18,7 @@
 
 @implementation ResumeViewController
 
+@synthesize tableView;
 @synthesize mgmtJobsArray;
 @synthesize progJobsArray;
 @synthesize mgmtJobsDict;
@@ -29,8 +30,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.navigationItem.title = @"Resume";
-	self.view.backgroundColor = [UIColor clearColor];
+	self.navigationItem.title = @"Resume";	
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
 	
 	// get the jobs.plist dictionary into mgmtJobsDict
@@ -224,12 +224,15 @@
 }
 
 - (void)viewDidUnload {
+    [super viewDidUnload];
+	self.tableView = nil;
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
 
 
 - (void)dealloc {
+	self.tableView = nil;
 	self.mgmtJobsArray = nil;
 	self.progJobsArray = nil;
 	self.mgmtJobsDict  = nil;

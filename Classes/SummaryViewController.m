@@ -23,12 +23,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	
-	self.summaryLabel.text = @"Award winning, creative, Product Development Leader with expertise in Agile development, web applications, and database systems.  Built strong development teams and processes from scratch for hi-tech start up organizations, and played major roles in execution of their exit strategies.";
 
+	// get the cover letter into the view
+	NSBundle *bundle		= [NSBundle mainBundle];
+	NSString *summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
+	NSString *summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath];
+	self.summaryLabel.text	= summaryTxt;
+	[summaryTxt release];
+	
 	// Size jobResponsibilities Label to fit the string
 	[self.summaryLabel sizeToFitFixedWidth:kLabelWidth];
-
 }
 
 

@@ -1,16 +1,18 @@
 //
-//  EducationViewController.m
+//  DesignViewController.m
 //  KOResume
 //
-//  Created by Kevin O'Mara on 3/15/11.
+//  Created by Kevin O'Mara on 3/16/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "EducationViewController.h"
+#import "DesignViewController.h"
 
 
-@implementation EducationViewController
+@implementation DesignViewController
 
+@synthesize designView;
+@synthesize designScrollView;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -23,12 +25,13 @@
 }
 */
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+
 }
-*/
+
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -47,12 +50,16 @@
 
 - (void)viewDidUnload {
     [super viewDidUnload];
+	self.designView = nil;
+	self.designScrollView = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
 
 
 - (void)dealloc {
+	self.designView = nil;
+	self.designScrollView = nil;
     [super dealloc];
 }
 
