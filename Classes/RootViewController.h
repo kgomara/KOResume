@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UIViewController <UITableViewDelegate> {
-	UITableView* tableView;
+	UITableView*    tableView;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView* tableView;

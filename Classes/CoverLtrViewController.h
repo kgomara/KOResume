@@ -11,12 +11,12 @@
 
 @interface CoverLtrViewController : UIViewController {
 	
-	IBOutlet	UILabel		*coverLtrLbl;
-	IBOutlet	UIView		*coverLtrView;
+	UILabel*    coverLtrLbl;
+	UIView*     coverLtrView;
 
 }
 
-@property (nonatomic, retain) UILabel		*coverLtrLbl;
-@property (nonatomic, retain) UIView		*coverLtrView;
+@property (nonatomic, retain) IBOutlet	UILabel*    coverLtrLbl;
+@property (nonatomic, retain) IBOutlet	UIView*     coverLtrView;
 
 @end

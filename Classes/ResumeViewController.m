@@ -34,18 +34,19 @@
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
 	
 	// get the jobs.plist dictionary into mgmtJobsDict
-	NSBundle *bundle = [NSBundle mainBundle];
-	NSString *plistPath = [bundle pathForResource:@"jobs" ofType:@"plist"];
-	NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+	NSBundle* bundle    = [NSBundle mainBundle];
+	NSString* plistPath = [bundle pathForResource:@"jobs" ofType:@"plist"];
+	NSDictionary* dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
 	self.mgmtJobsDict = dictionary;
 	[dictionary release];
 	
 	// List the jobs in the order they should appear in the table.  Strings must match keys in jobs.plist
-	mgmtJobsArray = [[NSArray alloc] initWithObjects:@"Appiction, LLC", @"Macy's West", @"O'Mara Consulting Associates", @"Loquendo",
+	mgmtJobsArray = [[NSArray alloc] initWithObjects:@"Appiction, LLC", @"Macy's West", 
+                     @"O'Mara Consulting Associates", @"Loquendo",
 					 @"Per-Se Technologies", @"Tenth Planet", @"Apple Computer", @"Jostens Learning Corp.",
 					 nil];
-	progJobsArray = [[NSArray alloc] initWithObjects:@"Intrepid Software Development, Inc.", @"National Semiconductor Corp.", @"NCR Corp.",
-					 @"California First Bank", @"IBM Corp.", 
+	progJobsArray = [[NSArray alloc] initWithObjects:@"Intrepid Software Development, Inc.", 
+                     @"National Semiconductor Corp.", @"NCR Corp.", @"California First Bank", @"IBM Corp.", 
 					 nil];
 }
 
@@ -85,16 +86,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString* CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
 	// Configure the cell.
 	switch (indexPath.section) {
-		case kSummaryInfoTbl:			// There is only 1 row in this section, so ignore it.
+		case kSummaryInfoTbl:			// There is only 1 row in this section, so ignore row.
 			cell.textLabel.text = @"Kevin O'Mara";
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
@@ -106,7 +107,7 @@
 			cell.textLabel.text = [self.progJobsArray objectAtIndex:indexPath.row];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
-		case kEducationInfoTbl:			// There is only 1 row in this section, so ignore it.
+		case kEducationInfoTbl:			// There is only 1 row in this section, so ignore row.
 			cell.textLabel.text = @"Education & Certs.";
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
@@ -160,9 +161,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     switch (indexPath.section) {
-		case kSummaryInfoTbl: {			// There is only 1 row in this section, so ignore it.
-			SummaryViewController *summaryViewController = [[SummaryViewController alloc] initWithNibName:@"SummaryViewController" 
-																								   bundle:nil];
+		case kSummaryInfoTbl: {			// There is only 1 row in this section, so ignore row.
+			SummaryViewController* summaryViewController = [[SummaryViewController alloc] 
+                                                            initWithNibName:@"SummaryViewController" 
+                                                            bundle:nil];
 			summaryViewController.title = @"Summary";
 			
 			// Pass the selected object to the new view controller.
@@ -171,10 +173,11 @@
 			break;
 		}
 		case kMgmtJobsInfoTbl: {
-			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
-																										bundle:nil];
+			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] 
+                                                              initWithNibName:@"JobsDetailViewController" 
+                                                              bundle:nil];
 			detailViewController.title = @"Mgmt Hist";
-			NSString *jobKey = [self.mgmtJobsArray objectAtIndex:indexPath.row];
+			NSString* jobKey = [self.mgmtJobsArray objectAtIndex:indexPath.row];
 			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
 			
 			// Pass the selected object to the new view controller.
@@ -183,10 +186,11 @@
 			break;
 		}
 		case kProgJobsInfoTbl: {
-			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
-																										bundle:nil];
+			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] 
+                                                              initWithNibName:@"JobsDetailViewController" 
+                                                              bundle:nil];
 			detailViewController.title = @"Prog Hist";
-			NSString *jobKey = [self.progJobsArray objectAtIndex:indexPath.row];
+			NSString* jobKey = [self.progJobsArray objectAtIndex:indexPath.row];
 			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
 			
 			// Pass the selected object to the new view controller.
@@ -194,9 +198,10 @@
 			[detailViewController release];
 			break;
 		}
-		case kEducationInfoTbl: {			// There is only 1 row in this section, so ignore it.
-			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
-																										 bundle:nil];
+		case kEducationInfoTbl: {			// There is only 1 row in this section, so ignore row.
+			EducationViewController *educationViewController = [[EducationViewController alloc] 
+                                                                initWithNibName:@"EducationViewController" 
+                                                                bundle:nil];
 			educationViewController.title = @"Education";
 			
 			// Pass the selected object to the new view controller.

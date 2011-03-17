@@ -11,35 +11,35 @@
 
 @interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> {
 
-	IBOutlet	UILabel			*jobCompany;
-				NSString		*jobCompanyUrl;
-	IBOutlet	UILabel			*jobLocation;
-	IBOutlet	UILabel			*jobTitle;
-	IBOutlet	UILabel			*jobStartDate;
-	IBOutlet	UILabel			*jobEndDate;
-	IBOutlet	UILabel			*jobResponsibilities;
-				NSArray			*jobAccomplishmentsArray;
-	IBOutlet	UIView			*jobView;
-	IBOutlet	UIScrollView	*jobScrollView;
-	IBOutlet	UIButton		*jobCompanyUrlBtn;
+	UILabel*        jobCompany;
+    NSString*       jobCompanyUrl;
+	UILabel*        jobLocation;
+	UILabel*        jobTitle;
+	UILabel*        jobStartDate;
+	UILabel*        jobEndDate;
+	UILabel*        jobResponsibilities;
+    NSArray*        jobAccomplishmentsArray;
+	UIImageView*    jobView;
+	UIScrollView*   jobScrollView;
+	UIButton*       jobCompanyUrlBtn;
 	
-	NSDictionary	*jobDictionary;
+	NSDictionary*   jobDictionary;
 
 }
 
-@property (nonatomic, retain) UILabel		*jobCompany;
-@property (nonatomic, retain) NSString		*jobCompanyUrl;
-@property (nonatomic, retain) UILabel		*jobLocation;
-@property (nonatomic, retain) UILabel		*jobTitle;
-@property (nonatomic, retain) UILabel		*jobStartDate;
-@property (nonatomic, retain) UILabel		*jobEndDate;
-@property (nonatomic, retain) UILabel		*jobResponsibilities;
-@property (nonatomic, retain) NSArray		*jobAccomplishmentsArray;
-@property (nonatomic, retain) UIView		*jobView;
-@property (nonatomic, retain) UIScrollView	*jobScrollView;
-@property (nonatomic, retain) UIButton		*jobCompanyUrlBtn;
+@property (nonatomic, retain) IBOutlet  UILabel*        jobCompany;
+@property (nonatomic, retain)           NSString*		jobCompanyUrl;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobLocation;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobTitle;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobStartDate;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobEndDate;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobResponsibilities;
+@property (nonatomic, retain)           NSArray*        jobAccomplishmentsArray;
+@property (nonatomic, retain) IBOutlet	UIImageView*    jobView;
+@property (nonatomic, retain) IBOutlet	UIScrollView*   jobScrollView;
+@property (nonatomic, retain) IBOutlet	UIButton*       jobCompanyUrlBtn;
 
-@property (nonatomic, retain) NSDictionary	*jobDictionary;
+@property (nonatomic, retain)           NSDictionary*   jobDictionary;
 
 - (IBAction)companyTapped:(id)sender;
 

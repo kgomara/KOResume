@@ -18,16 +18,16 @@
 @synthesize mobilePhone;
 @synthesize summaryLabel;
 
-	NSString	*phoneNumber;
+	NSString*   phoneNumber;
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
 	// get the cover letter into the view
-	NSBundle *bundle		= [NSBundle mainBundle];
-	NSString *summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
-	NSString *summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath];
+	NSBundle* bundle		= [NSBundle mainBundle];
+	NSString* summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
+	NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath];
 	self.summaryLabel.text	= summaryTxt;
 	[summaryTxt release];
 	
@@ -62,13 +62,14 @@
 
 - (IBAction)phoneTapped:(id)sender {
 	
-	UIButton *phoneButton = (UIButton *)sender;
-	phoneNumber = phoneButton.currentTitle;
-    UIAlertView*        alert = [[[UIAlertView alloc] initWithTitle:@"Phone" 
-                                                            message:[NSString stringWithFormat:@"Call %@?", phoneNumber]
-                                                           delegate:self 
-                                                  cancelButtonTitle:@"Cancel" 
-                                                  otherButtonTitles:@"Call", nil] autorelease];
+	UIButton* phoneButton   = (UIButton *)sender;
+	phoneNumber             = phoneButton.currentTitle;
+    
+    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Phone" 
+                                                     message:[NSString stringWithFormat:@"Call %@?", phoneNumber]
+                                                    delegate:self 
+                                           cancelButtonTitle:@"Cancel" 
+                                           otherButtonTitles:@"Call", nil] autorelease];
     [alert show];
 }
 
@@ -76,14 +77,14 @@
     if(buttonIndex != alertView.cancelButtonIndex)
     {
         NSLog(@"Calling %@", phoneNumber);
-        NSMutableString *strippedString = [NSMutableString stringWithCapacity:10];
-        for (int i=0; i<[phoneNumber length]; i++) {
+        NSMutableString* strippedString = [NSMutableString stringWithCapacity:10];
+        for (int i = 0; i < [phoneNumber length]; i++) {
             if (isdigit([phoneNumber characterAtIndex:i])) {
-                [strippedString appendFormat:@"%c",[phoneNumber characterAtIndex:i]];
+                [strippedString appendFormat:@"%c", [phoneNumber characterAtIndex:i]];
             }
         }
         
-        NSURL *phoneURL = [NSURL URLWithString: [NSString stringWithFormat: @"tel:%@", strippedString]];
+        NSURL* phoneURL = [NSURL URLWithString: [NSString stringWithFormat: @"tel:%@", strippedString]];
         [[UIApplication sharedApplication] openURL:phoneURL];
     }
 	phoneNumber = nil;

@@ -18,9 +18,9 @@
     [super viewDidLoad];
 	
 	// get the cover letter into the view
-	NSBundle *bundle		= [NSBundle mainBundle];
-	NSString *coverLtrPath	= [bundle pathForResource:@"CoverLtrStandard" ofType:@"txt"];
-	NSString *coverLtr		= [[NSString alloc] initWithContentsOfFile:coverLtrPath];
+	NSBundle* bundle		= [NSBundle mainBundle];
+	NSString* coverLtrPath	= [bundle pathForResource:@"CoverLtrStandard" ofType:@"txt"];
+	NSString* coverLtr		= [[NSString alloc] initWithContentsOfFile:coverLtrPath];
 	self.coverLtrLbl.text	= coverLtr;
 	[coverLtr release];
 	

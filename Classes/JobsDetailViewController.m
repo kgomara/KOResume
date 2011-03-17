@@ -33,8 +33,9 @@
     [super viewDidLoad];
 	
 	self.view.backgroundColor		= [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
-//	self.jobView.backgroundColor	= [UIColor colorWithPatternImage:[[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20
-//																																	   topCapHeight:20]];
+	self.jobView.image              = [[UIImage imageNamed:@"contentpane_details.png"] 
+                                       stretchableImageWithLeftCapWidth:20 
+                                                           topCapHeight:20];
 
 	// Get the data from the jobDictionary and stuff it into the fields
 	[self.jobCompanyUrlBtn setTitle:[jobDictionary objectForKey:@"Company"] 
@@ -52,8 +53,8 @@
 	[self.jobResponsibilities sizeToFitFixedWidth:kLabelWidth];
 	
 	// Re-size the sub-view to allow for the number of lines in jobResponsibilities
-	CGRect jobItemFrame = self.jobResponsibilities.frame;
-	CGRect jobViewFrame = self.jobView.frame;
+	CGRect jobItemFrame       = self.jobResponsibilities.frame;
+	CGRect jobViewFrame       = self.jobView.frame;
 	jobViewFrame.size.height += jobItemFrame.size.height - kLabelHeight;
 	
 	// Get the jobAccomplishmentsArray
@@ -65,7 +66,7 @@
 		jobItemFrame.origin.y		 = jobViewFrame.size.height;
 		jobItemFrame.origin.x		-= jobViewFrame.origin.x;
 		jobItemFrame.size.height	 = kLabelHeight;
-		UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
+		UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];
 		[accomplishment setBackgroundColor:[UIColor clearColor]];
 		accomplishment.text = @"Accomplishments:";
@@ -74,11 +75,11 @@
 		jobViewFrame.size.height	+= kLabelHeight * 2;
 		
 		// Loop through the jobAccomplishmentsArray adding accomplishment items to the view
-		NSEnumerator *jobEnum = [jobAccomplishmentsArray objectEnumerator];
-		NSString *item;
-		while (item = [jobEnum nextObject]) {
+		NSEnumerator* jobEnum = [jobAccomplishmentsArray objectEnumerator];
+		NSString* item;
+		while ((item = [jobEnum nextObject])) {
 			// handle an accomplishment
-			UILabel *accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
+			UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
 			[accomplishment setBackgroundColor:[UIColor clearColor]];
 			accomplishment.text = item;

@@ -11,6 +11,10 @@
 #import "ResumeViewController.h"
 #import "DesignViewController.h"
 
+#define kSummaryTableCell   0
+#define kResumeTableCell    1
+#define kDesignTableCell    2
+
 @implementation RootViewController
 
 @synthesize tableView;
@@ -45,22 +49,23 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString* CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                       reuseIdentifier:CellIdentifier] autorelease];
     }
     
 	// Configure the cell.
 	switch (indexPath.row) {				// There is only 1 section, so ignore it.
-		case 0:
+		case kSummaryTableCell:
 			cell.textLabel.text = @"Cover Letter";
 			break;
-		case 1:
+		case kResumeTableCell:
 			cell.textLabel.text = @"Resume";
 			break;
-		case 2:
+		case kDesignTableCell:
 			cell.textLabel.text = @"Design Explanation";
 			break;
 		default:
@@ -78,7 +83,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	
-	UILabel *sectionLabel = [[[UILabel alloc] init] autorelease];
+	UILabel* sectionLabel = [[[UILabel alloc] init] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
@@ -95,10 +100,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     switch (indexPath.row) {				// There is only 1 section, so ignore it.
-		case 0: {
-			NSLog(@"Cover letter");
-			CoverLtrViewController *coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName:@"CoverLtrViewController" 
-																									  bundle:nil];
+		case kSummaryTableCell: {
+			CoverLtrViewController* coverLtrViewController = [[CoverLtrViewController alloc] 
+                                                              initWithNibName:@"CoverLtrViewController" 
+                                                              bundle:nil];
 			coverLtrViewController.title = @"Cover Letter";
 			
 			// Pass the selected object to the new view controller.
@@ -106,9 +111,10 @@
 			[coverLtrViewController release];
 			break;
 		}
-		case 1: {
-			ResumeViewController *resumeViewController = [[ResumeViewController alloc] initWithNibName:@"ResumeViewController" 
-																										bundle:nil];
+		case kResumeTableCell: {
+			ResumeViewController* resumeViewController = [[ResumeViewController alloc] 
+                                                          initWithNibName:@"ResumeViewController" 
+                                                          bundle:nil];
 			resumeViewController.title = @"Resume";
 			
 			// Pass the selected object to the new view controller.
@@ -116,10 +122,11 @@
 			[resumeViewController release];
 			break;
 		}
-		case 2: {
+		case kDesignTableCell: {
 			NSLog(@"Explanatino");
-			DesignViewController *designViewController = [[DesignViewController alloc] initWithNibName:@"DesignViewController" 
-																								bundle:nil];
+			DesignViewController* designViewController = [[DesignViewController alloc] 
+                                                          initWithNibName:@"DesignViewController" 
+                                                          bundle:nil];
 			designViewController.title = @"Design";
 			
 			// Pass the selected object to the new view controller.

@@ -9,15 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @interface ResumeViewController : UIViewController <UITableViewDelegate> {
-	IBOutlet		UITableView		*tableView;
-					NSArray			*mgmtJobsArray;
-					NSArray			*progJobsArray;
-					NSDictionary	*mgmtJobsDict;
+			UITableView*    tableView;
+            NSArray*        mgmtJobsArray;
+            NSArray*        progJobsArray;
+            NSDictionary*   mgmtJobsDict;
 }
 
-@property (nonatomic, retain) UITableView* tableView;
-@property (nonatomic, retain) NSArray		*mgmtJobsArray;
-@property (nonatomic, retain) NSArray		*progJobsArray;
-@property (nonatomic, retain) NSDictionary	*mgmtJobsDict;
+@property (nonatomic, retain) IBOutlet      UITableView*    tableView;
+@property (nonatomic, retain)               NSArray*        mgmtJobsArray;
+@property (nonatomic, retain)               NSArray*        progJobsArray;
+@property (nonatomic, retain)               NSDictionary*   mgmtJobsDict;
 
 @end
