@@ -37,28 +37,31 @@
 				<string key="IBProxiedObjectIdentifier">IBFirstResponder</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
+			<object class="IBUIImageView" id="307724361">
+				<nil key="NSNextResponder"/>
+				<int key="NSvFlags">274</int>
+				<string key="NSFrameSize">{320, 460}</string>
+				<bool key="IBUIUserInteractionEnabled">NO</bool>
+				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+				<object class="NSCustomResource" key="IBUIImage">
+					<string key="NSClassName">NSImage</string>
+					<string key="NSResourceName">background.png</string>
+				</object>
+			</object>
 			<object class="IBUIScrollView" id="244890512">
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIImageView" id="307724361">
-						<reference key="NSNextResponder" ref="244890512"/>
-						<int key="NSvFlags">274</int>
-						<string key="NSFrameSize">{320, 460}</string>
-						<reference key="NSSuperview" ref="244890512"/>
-						<bool key="IBUIUserInteractionEnabled">NO</bool>
-						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<object class="NSCustomResource" key="IBUIImage">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">background.png</string>
-						</object>
-					</object>
 					<object class="IBUIImageView" id="411756035">
 						<reference key="NSNextResponder" ref="244890512"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{9, 16}, {302, 165}}</string>
 						<reference key="NSSuperview" ref="244890512"/>
+						<object class="NSColor" key="IBUIBackgroundColor" id="349875080">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MCAwAA</bytes>
+						</object>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
@@ -237,7 +240,7 @@
 						<reference key="IBUIHighlightedTitleColor" ref="892509572"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
 							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzE0IDAuMzA5ODAzOTIxNiAwLjUyMTU2ODYyNzUAA</bytes>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<object class="NSColor" key="IBUINormalTitleShadowColor">
 							<int key="NSColorSpace">3</int>
@@ -247,6 +250,7 @@
 				</object>
 				<string key="NSFrameSize">{320, 460}</string>
 				<reference key="NSSuperview"/>
+				<reference key="IBUIBackgroundColor" ref="349875080"/>
 				<bool key="IBUIClipsSubviews">YES</bool>
 				<bool key="IBUIMultipleTouchEnabled">YES</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -297,14 +301,6 @@
 					<int key="connectionID">20</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">jobView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="411756035"/>
-					</object>
-					<int key="connectionID">22</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">companyTapped:</string>
 						<reference key="source" ref="201524098"/>
@@ -337,6 +333,22 @@
 					</object>
 					<int key="connectionID">31</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">jobView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="411756035"/>
+					</object>
+					<int key="connectionID">33</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">jobScrollView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="244890512"/>
+					</object>
+					<int key="connectionID">34</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -363,7 +375,6 @@
 						<reference key="object" ref="244890512"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="307724361"/>
 							<reference ref="411756035"/>
 							<reference ref="421644713"/>
 							<reference ref="476261779"/>
@@ -376,11 +387,6 @@
 							<reference ref="201524098"/>
 						</object>
 						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">4</int>
-						<reference key="object" ref="307724361"/>
-						<reference key="parent" ref="244890512"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">5</int>
@@ -431,6 +437,11 @@
 						<int key="objectID">23</int>
 						<reference key="object" ref="201524098"/>
 						<reference key="parent" ref="244890512"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">4</int>
+						<reference key="object" ref="307724361"/>
+						<reference key="parent" ref="0"/>
 					</object>
 				</object>
 			</object>
@@ -494,7 +505,7 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">AUGgAABBiAAAA</bytes>
 					</object>
-					<string>{{336, 589}, {320, 460}}</string>
+					<string>{{336, 348}, {320, 460}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -533,7 +544,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">31</int>
+			<int key="maxID">34</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -561,6 +572,7 @@
 							<string>jobEndDate</string>
 							<string>jobLocation</string>
 							<string>jobResponsibilities</string>
+							<string>jobScrollView</string>
 							<string>jobStartDate</string>
 							<string>jobTitle</string>
 							<string>jobView</string>
@@ -572,9 +584,10 @@
 							<string>UILabel</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
-							<string>UILabel</string>
-							<string>UILabel</string>
 							<string>UIScrollView</string>
+							<string>UILabel</string>
+							<string>UILabel</string>
+							<string>UIView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -586,6 +599,7 @@
 							<string>jobEndDate</string>
 							<string>jobLocation</string>
 							<string>jobResponsibilities</string>
+							<string>jobScrollView</string>
 							<string>jobStartDate</string>
 							<string>jobTitle</string>
 							<string>jobView</string>
@@ -613,6 +627,10 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">jobScrollView</string>
+								<string key="candidateClassName">UIScrollView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">jobStartDate</string>
 								<string key="candidateClassName">UILabel</string>
 							</object>
@@ -622,7 +640,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">jobView</string>
-								<string key="candidateClassName">UIScrollView</string>
+								<string key="candidateClassName">UIView</string>
 							</object>
 						</object>
 					</object>

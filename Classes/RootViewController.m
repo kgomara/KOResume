@@ -12,6 +12,7 @@
 
 @implementation RootViewController
 
+@synthesize tableView;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -22,7 +23,9 @@
 	
 	self.navigationItem.title = @"Kevin O'Mara";
 	self.view.backgroundColor = [UIColor clearColor];
-	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+//	- (UIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight
+
+//	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
 }
 
 
@@ -150,11 +153,12 @@
 - (void)viewDidUnload {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
+	self.tableView = nil;
 }
 
 
 - (void)dealloc {
-	
+	self.tableView = nil;
     [super dealloc];
 }
 

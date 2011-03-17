@@ -22,6 +22,7 @@
 @synthesize	jobResponsibilities;
 @synthesize	jobAccomplishmentsArray;
 @synthesize	jobView;
+@synthesize jobScrollView;
 @synthesize	jobCompanyUrlBtn;
 @synthesize	jobDictionary;
 
@@ -31,6 +32,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	self.view.backgroundColor = [UIColor clearColor];
+	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+
 	// Get the data from the jobDictionary and stuff it into the fields
 	[self.jobCompanyUrlBtn setTitle:[jobDictionary objectForKey:@"Company"] 
 						   forState:UIControlStateNormal];
@@ -83,9 +87,14 @@
 			jobViewFrame.size.height	+= accomplishment.frame.size.height;
 		}
 	}
+	
+	//set the zooming properties of the scroll view
+	self.jobScrollView.minimumZoomScale = 1.0;
+	self.jobScrollView.maximumZoomScale = 2.0;
+	
+	//
 	self.jobView.frame = jobViewFrame;
-//	NSLog(@"contentSize = %@", [self.jobView contentSize]);
-//	self.jobView.contentSize = jobViewFrame.size;
+	self.jobScrollView.contentSize = jobViewFrame.size;
 }
 
 
@@ -113,6 +122,7 @@
 	self.jobResponsibilities		= nil;
 	self.jobAccomplishmentsArray	= nil;
 	self.jobView					= nil;
+	self.jobScrollView				= nil;
 	self.jobCompanyUrlBtn			= nil;
 	self.jobDictionary				= nil;
 	
@@ -131,6 +141,14 @@
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.jobCompanyUrl]];
 	
 }
+
+#pragma mark UIScrollView delegate methods
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+	return self.jobView;
+}
+
+
 
 
 @end

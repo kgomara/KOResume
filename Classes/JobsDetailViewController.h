@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface JobsDetailViewController : UIViewController {
+@interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> {
 	IBOutlet	UILabel			*jobCompany;
 				NSString		*jobCompanyUrl;
 	IBOutlet	UILabel			*jobLocation;
@@ -18,7 +18,8 @@
 	IBOutlet	UILabel			*jobEndDate;
 	IBOutlet	UILabel			*jobResponsibilities;
 				NSArray			*jobAccomplishmentsArray;
-	IBOutlet	UIScrollView	*jobView;
+	IBOutlet	UIView			*jobView;
+	IBOutlet	UIScrollView	*jobScrollView;
 	IBOutlet	UIButton		*jobCompanyUrlBtn;
 	
 	NSDictionary	*jobDictionary;
@@ -34,6 +35,7 @@
 @property (nonatomic, retain) UILabel		*jobResponsibilities;
 @property (nonatomic, retain) NSArray		*jobAccomplishmentsArray;
 @property (nonatomic, retain) UIView		*jobView;
+@property (nonatomic, retain) UIScrollView	*jobScrollView;
 @property (nonatomic, retain) UIButton		*jobCompanyUrlBtn;
 
 @property (nonatomic, retain) NSDictionary	*jobDictionary;

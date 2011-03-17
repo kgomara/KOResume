@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RootViewController : UITableViewController {
-
+@interface RootViewController : UIViewController <UITableViewDelegate> {
+	UITableView* tableView;
 }
 
+@property (nonatomic, retain) IBOutlet UITableView* tableView;
 
 @end
