@@ -69,8 +69,10 @@
 		UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];
 		[accomplishment setBackgroundColor:[UIColor clearColor]];
+        
+        // Set the text, add the label to the view, and adjust the frames
 		accomplishment.text = @"Accomplishments:";
-		[self.jobView addSubview:accomplishment];
+        [self.jobView addSubview:accomplishment];
 		jobItemFrame.origin.y		+= kLabelHeight;
 		jobViewFrame.size.height	+= kLabelHeight * 2;
 		

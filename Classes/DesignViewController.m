@@ -7,12 +7,14 @@
 //
 
 #import "DesignViewController.h"
+#import "KOExtensions.h"
 
 
 @implementation DesignViewController
 
 @synthesize designView;
 @synthesize designScrollView;
+@synthesize designExplanationLbl;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -29,6 +31,24 @@
     [super viewDidLoad];
 	
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+	self.designView.image     = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20 
+                                                                                                     topCapHeight:20];
+
+    // get the cover letter into the view
+	NSBundle* bundle		= [NSBundle mainBundle];
+	NSString* resourcePath	= [bundle pathForResource:@"DesignExplanation" ofType:@"txt"];
+	NSString* labelTxt      = [[NSString alloc] initWithContentsOfFile:resourcePath];
+    NSLog(@"text = %@", labelTxt);
+	self.designExplanationLbl.text	= labelTxt;
+	[labelTxt release];
+	
+	// Size jobResponsibilities Label to fit the string
+	[self.designExplanationLbl sizeToFitFixedWidth:kLabelWidth];
+    
+    // Adjust the height of the containing view
+    CGRect designViewFrame = self.designView.frame;
+    designViewFrame.size.height += self.designExplanationLbl.frame.size.height;
+    self.designView.frame = designViewFrame;
 
 }
 
@@ -52,6 +72,7 @@
     [super viewDidUnload];
 	self.designView = nil;
 	self.designScrollView = nil;
+    self.designExplanationLbl = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
@@ -60,6 +81,8 @@
 - (void)dealloc {
 	self.designView = nil;
 	self.designScrollView = nil;
+    self.designExplanationLbl = nil;
+    
     [super dealloc];
 }
 

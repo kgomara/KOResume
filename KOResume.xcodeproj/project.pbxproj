@@ -25,6 +25,7 @@
 		D64C017913306582001DAFEC /* CoverLtrStandard.txt in Resources */ = {isa = PBXBuildFile; fileRef = D64C017813306582001DAFEC /* CoverLtrStandard.txt */; };
 		D674489C1329D3AF00527C9E /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489A1329D3AF00527C9E /* background.png */; };
 		D674489D1329D3AF00527C9E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489B1329D3AF00527C9E /* background@2x.png */; };
+		D6A1D68313330DF700E5F909 /* DesignExplanation.txt in Resources */ = {isa = PBXBuildFile; fileRef = D6A1D68213330DF700E5F909 /* DesignExplanation.txt */; };
 		D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */; };
 		D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */; };
 		D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */; };
@@ -64,6 +65,7 @@
 		D64C017813306582001DAFEC /* CoverLtrStandard.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CoverLtrStandard.txt; sourceTree = "<group>"; };
 		D674489A1329D3AF00527C9E /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		D674489B1329D3AF00527C9E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
+		D6A1D68213330DF700E5F909 /* DesignExplanation.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DesignExplanation.txt; sourceTree = "<group>"; };
 		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
 		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EducationViewController.m; sourceTree = "<group>"; };
 		D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EducationViewController.xib; path = Classes/EducationViewController.xib; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D6A1D68213330DF700E5F909 /* DesignExplanation.txt */,
 				048CF0D21331C465005B06CC /* Summary.txt */,
 				D64C017813306582001DAFEC /* CoverLtrStandard.txt */,
 				D64C0123132FB150001DAFEC /* ResumeViewController.xib */,
@@ -246,6 +249,7 @@
 				D64C017913306582001DAFEC /* CoverLtrStandard.txt in Resources */,
 				048CF0311331BAE8005B06CC /* DesignViewController.xib in Resources */,
 				048CF0D31331C465005B06CC /* Summary.txt in Resources */,
+				D6A1D68313330DF700E5F909 /* DesignExplanation.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,11 +11,13 @@
 
 @interface DesignViewController : UIViewController <UIScrollViewDelegate> {
 
-	UIView*         designView;
+	UIImageView*    designView;
 	UIScrollView*   designScrollView;
+    UILabel*        designExplanationLbl;
 }
 
-@property (nonatomic, retain) IBOutlet	UIView*         designView;
+@property (nonatomic, retain) IBOutlet	UIImageView*    designView;
 @property (nonatomic, retain) IBOutlet	UIScrollView*   designScrollView;
+@property (nonatomic, retain) IBOutlet  UILabel*        designExplanationLbl;
 
 @end
