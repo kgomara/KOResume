@@ -28,6 +28,13 @@
 		D6A1D68313330DF700E5F909 /* DesignExplanation.txt in Resources */ = {isa = PBXBuildFile; fileRef = D6A1D68213330DF700E5F909 /* DesignExplanation.txt */; };
 		D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */; };
 		D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */; };
+		D6C6F24513397F2300D05323 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F23E13397F2300D05323 /* Icon-72.png */; };
+		D6C6F24613397F2300D05323 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F23F13397F2300D05323 /* Icon-Small-50.png */; };
+		D6C6F24713397F2300D05323 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24013397F2300D05323 /* Icon-Small.png */; };
+		D6C6F24813397F2300D05323 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24113397F2300D05323 /* Icon-Small@2x.png */; };
+		D6C6F24913397F2300D05323 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24213397F2300D05323 /* Icon.png */; };
+		D6C6F24A13397F2300D05323 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24313397F2300D05323 /* Icon@2x.png */; };
+		D6C6F24B13397F2300D05323 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24413397F2300D05323 /* iTunesArtwork.png */; };
 		D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */; };
 		D6CDB9FD132D35ED00A1E4BA /* JobsDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */; };
 		D6CDBA19132D437200A1E4BA /* contentpane_details.png in Resources */ = {isa = PBXBuildFile; fileRef = D6CDBA17132D437200A1E4BA /* contentpane_details.png */; };
@@ -69,6 +76,13 @@
 		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
 		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EducationViewController.m; sourceTree = "<group>"; };
 		D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EducationViewController.xib; path = Classes/EducationViewController.xib; sourceTree = "<group>"; };
+		D6C6F23E13397F2300D05323 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		D6C6F23F13397F2300D05323 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		D6C6F24013397F2300D05323 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		D6C6F24113397F2300D05323 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		D6C6F24213397F2300D05323 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		D6C6F24313397F2300D05323 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		D6C6F24413397F2300D05323 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobsDetailViewController.h; sourceTree = "<group>"; };
 		D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JobsDetailViewController.m; sourceTree = "<group>"; };
 		D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = JobsDetailViewController.xib; path = Classes/JobsDetailViewController.xib; sourceTree = "<group>"; };
@@ -153,6 +167,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D6C6F23E13397F2300D05323 /* Icon-72.png */,
+				D6C6F23F13397F2300D05323 /* Icon-Small-50.png */,
+				D6C6F24013397F2300D05323 /* Icon-Small.png */,
+				D6C6F24113397F2300D05323 /* Icon-Small@2x.png */,
+				D6C6F24213397F2300D05323 /* Icon.png */,
+				D6C6F24313397F2300D05323 /* Icon@2x.png */,
+				D6C6F24413397F2300D05323 /* iTunesArtwork.png */,
 				D6A1D68213330DF700E5F909 /* DesignExplanation.txt */,
 				048CF0D21331C465005B06CC /* Summary.txt */,
 				D64C017813306582001DAFEC /* CoverLtrStandard.txt */,
@@ -250,6 +271,13 @@
 				048CF0311331BAE8005B06CC /* DesignViewController.xib in Resources */,
 				048CF0D31331C465005B06CC /* Summary.txt in Resources */,
 				D6A1D68313330DF700E5F909 /* DesignExplanation.txt in Resources */,
+				D6C6F24513397F2300D05323 /* Icon-72.png in Resources */,
+				D6C6F24613397F2300D05323 /* Icon-Small-50.png in Resources */,
+				D6C6F24713397F2300D05323 /* Icon-Small.png in Resources */,
+				D6C6F24813397F2300D05323 /* Icon-Small@2x.png in Resources */,
+				D6C6F24913397F2300D05323 /* Icon.png in Resources */,
+				D6C6F24A13397F2300D05323 /* Icon@2x.png in Resources */,
+				D6C6F24B13397F2300D05323 /* iTunesArtwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +340,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -327,6 +356,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
