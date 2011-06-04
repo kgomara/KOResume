@@ -113,6 +113,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D68F37DB139AA32C00B7DDD2 /* DataModel */,
 				D64C011C132FB13D001DAFEC /* ResumeViewController.h */,
 				D64C011D132FB13D001DAFEC /* ResumeViewController.m */,
 				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
@@ -203,6 +204,13 @@
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D68F37DB139AA32C00B7DDD2 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = DataModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,6 +322,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = KOResume_Prefix.pch;
 				INFOPLIST_FILE = "KOResume-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PRODUCT_NAME = KOResume;
 			};
 			name = Debug;
@@ -326,6 +335,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = KOResume_Prefix.pch;
 				INFOPLIST_FILE = "KOResume-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
 				PRODUCT_NAME = KOResume;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -352,7 +362,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Kevin O'Mara";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -360,6 +370,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "9679A6DE-02EF-4531-877E-CD012CDB05A1";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
