@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Appiction, LLC</key>
+	<dict>
+		<key>Company</key>
+		<string>Appiction, LLC</string>
+		<key>CompanyUrl</key>
+		<string>http://www.appiction.com</string>
+		<key>Location</key>
+		<string>Austin, TX</string>
+		<key>Title</key>
+		<string>Chief Development Officer</string>
+		<key>StartDate</key>
+		<string>Jun 2010</string>
+		<key>EndDate</key>
+		<string>Present</string>
+		<key>Responsibilities</key>
+		<string>Appiction develops mobile applications on iPhone, Android, and Windows Mobile platforms.  I led 20+ projects through the development process utilization in-house, outsource, and off-shore teams.</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Introduced Scrum (an Agile methodology) to improve quality and predictability.</string>
+			<string>* Drive on-time delivery of mobile apps implemented in Cocoa/Objective-C (C++), .NET/C#, and Java, as well as their supporting websites in Django, Amazon AWS, and Google App Engine.</string>
+		</array>
+	</dict>
+	<key>Macy&apos;s West</key>
+	<dict>
+		<key>Company</key>
+		<string>Macy&apos;s West</string>
+		<key>CompanyUrl</key>
+		<string>http://www.macys.com</string>
+		<key>Location</key>
+		<string>San Francisco, CA</string>
+		<key>Title</key>
+		<string>Director, Advertising Technology</string>
+		<key>StartDate</key>
+		<string>Nov 2006</string>
+		<key>EndDate</key>
+		<string>Sep 2009</string>
+		<key>Responsibilities</key>
+		<string>The Western division of Macy’s operated 230 retail stores in the Western US, Hawaii, and Guam.  I led the Advertising department’s technology team of 8 and was responsible for automating digital workflow for publishing, photo studio, and prepress operations on Mac and PC computers.</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Introduced Scrum and engineering best practices to double productivity and align engineering efforts with business priorities.</string>
+			<string>* Implemented a Podcast site on LoudBlog (Open Source CMS) to deliver engaging videos and entice the Millennial Generation to shop at Macy’s.</string>
+			<string>* Implemented Wiki and CMS Web sites on the Joomla platform to deliver timely, strategic promotional information to the Merchant and Stores organizations.  They used the information to optimize mall and in-store signage, floor merchandising, and training of sales associates.</string>
+			<string>* Established a standardized LAMP (Linux, Apache, MySQL, PHP) Web platform and implemented Virtualization technology to ensure high system availability while reducing costs.  Established and enforced appropriate security policy in collaboration with Division Security Office and integration with corporate Active Directory services.</string>
+			<string>* Established metrics for technical support and SLA for system availability.</string>
+		</array>
+	</dict>
+	<key>O&apos;Mara Consulting Associates</key>
+	<dict>
+		<key>Company</key>
+		<string>O&apos;Mara Consulting Associates</string>
+		<key>CompanyUrl</key>
+		<string>http://www.kevingomara.com</string>
+		<key>Location</key>
+		<string>Austin, TX</string>
+		<key>Title</key>
+		<string>Principal</string>
+		<key>StartDate</key>
+		<string>Mar 2002</string>
+		<key>EndDate</key>
+		<string>Oct 2006</string>
+		<key>Responsibilities</key>
+		<string>Provide technology consulting services for clients:</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Harcourt Achieve – led the Educational Technology team to develop subscription based Web products on Zend/PHP, J2EE, and .NET platforms utilizing outsourced and off-shore contractors.  Awards: PowerUp – AEP Golden Lamp finalist; Palm eAssessment SIAA “Codie” nominee.</string>
+			<string>* Compass Learning – rebuilt development processes and organization in Austin after company closed San Diego development operations.</string>
+			<string>* Cosmos Literacy – defined XML data integration strategy based on SIF (School Interoperability Framework) that qualified Cosmos’ products for large sales opportunities at the district level.</string>
+			<string>* HOSTS Learning – performed due diligence technology assessment to establish valuation of a .NET product.  Assessed existing J2EE product and developed long term strategic roadmap.  Supported Sales in responses to school district RFPs.</string>
+		</array>
+	</dict>
+	<key>Loquendo</key>
+	<dict>
+		<key>Company</key>
+		<string>Loquendo</string>
+		<key>CompanyUrl</key>
+		<string>http://www.loquendo.com/en/</string>
+		<key>Location</key>
+		<string>San Francisco, CA</string>
+		<key>Title</key>
+		<string>VP Engineering</string>
+		<key>StartDate</key>
+		<string>Mar 2000</string>
+		<key>EndDate</key>
+		<string>Feb 2002</string>
+		<key>Responsibilities</key>
+		<string>Loquendo developed a Voice Browser enabling consumers to use the telephone to access Web sites.  Loquendo hosted Voice Browser as a service to businesses using the SaaS (Software as a Service) business model.  I developed and managed a team of 40 through 5 Directors (3 Engineering, 1 QA, and 1 Customer Service).</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Re-architected product line to support enterprise licensing on Windows NT, Linux, and UNIX, creating new sales opportunities.</string>
+			<string>* Developed Java based “VoiceBrowser” utilizing Speech Recognition, Text-to-Speech, and Computer Telephony Integration (CTI).</string>
+			<string>* Established iterative SDLC process and managed development of five releases in two years.</string>
+			<string>* Effectively presented synergistic product vision during due diligence, resulting in acquisition by Telecom Italia in August 2001.</string>
+		</array>
+	</dict>
+	<key>Per-Se Technologies</key>
+	<dict>
+		<key>Company</key>
+		<string>Per-Se Technologies</string>
+		<key>CompanyUrl</key>
+		<string>http://www.mckesson.com/en_us/McKesson.com/</string>
+		<key>Location</key>
+		<string>San Jose, CA</string>
+		<key>Title</key>
+		<string>VP Product Development</string>
+		<key>StartDate</key>
+		<string>Jul 1998</string>
+		<key>EndDate</key>
+		<string>Feb 2000</string>
+		<key>Responsibilities</key>
+		<string>Per-Se Technologies (now McKesson) served the healthcare industry.  I led a business unit that developed ORSOS – a patient scheduling system for hospitals.  ORSOS was installed at hospitals and integrated with other healthcare systems via XML.   I led a team of 45 through 6 Directors (5 Engineering, 1 QA).</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Inherited troubled product and organization – turned both around by establishing solid development process and leading team through difficult challenges to fix the product. Managed flawless Y2K transition of date-oriented scheduling product.</string>
+			<string>* Transformed Client/Server legacy product to reliable, scalable n-Tier ASP (Active Server Pages) architecture supporting Oracle or MS SQL Server.  The new version generated $7M incremental revenue on a base of $120M.</string>
+			<string>* Implemented iterative development based on Rational Unified Process (RUP).</string>
+			<string>* Awards – ORSOS won KLAS “Most Improved Product.”</string>
+		</array>
+	</dict>
+	<key>Tenth Planet</key>
+	<dict>
+		<key>Company</key>
+		<string>Tenth Planet</string>
+		<key>CompanyUrl</key>
+		<string>http://commerce.sunburst.com/result.aspx?txtadv=tenth%20planet</string>
+		<key>Location</key>
+		<string>Half Moon Bay, CA</string>
+		<key>Title</key>
+		<string>VP Product Development</string>
+		<key>StartDate</key>
+		<string>Oct 1994</string>
+		<key>EndDate</key>
+		<string>May 1998</string>
+		<key>Responsibilities</key>
+		<string>Tenth Planet (now Sunburst) was a start-up developing Math and Reading curriculum products for K-6 Education.  The products integrated CD-ROM, print, and Web resources to create powerful learning experiences.  I led a team of 20 through 2 Managers (Graphic Arts and QA) and 4 Engineer direct reports.</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Defined and implemented an Internet strategy to reach an emerging K-12 market segment searching for Web products.  The strategy was balanced against reality – most elementary schools had no Internet access at that time.</string>
+			<string>* Awards – Tenth Planet Explores Fractions won SIIA “Codie.”</string>
+			<string>* Participated in due diligence process resulting in acquisition by Sunburst in May 1998.</string>
+		</array>
+	</dict>
+	<key>Apple Computer</key>
+	<dict>
+		<key>Company</key>
+		<string>Apple Computer</string>
+		<key>CompanyUrl</key>
+		<string>http://www.apple.com</string>
+		<key>Location</key>
+		<string>Cupertino, CA</string>
+		<key>Title</key>
+		<string>Engineering Manager</string>
+		<key>StartDate</key>
+		<string>May 1993</string>
+		<key>EndDate</key>
+		<string>Sep 1994</string>
+		<key>Responsibilities</key>
+		<string>Led engineering, QA, production, and operations for Software Dispatch, a business unit that sold 3rd party Mac and Windows applications via a virtual store on an encrypted CD.  I led a team of 12 direct reports and managed a 24/7 telesupport contract to provide fulfillment and technical support services.</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Negotiated and managed $1 million development, licensing, and fulfillment contracts.</string>
+			<string>* Built a team of 12 from scratch.</string>
+		</array>
+	</dict>
+	<key>Jostens Learning Corp.</key>
+	<dict>
+		<key>Company</key>
+		<string>Jostens Learning Corp.</string>
+		<key>CompanyUrl</key>
+		<string>http://compasslearning.com/</string>
+		<key>Location</key>
+		<string>San Diego, CA</string>
+		<key>Title</key>
+		<string>Director of Development</string>
+		<key>StartDate</key>
+		<string>Jan 1988</string>
+		<key>EndDate</key>
+		<string>Apr 1988</string>
+		<key>Responsibilities</key>
+		<string>This start-up (formerly Education Systems Corp, now Compass Learning) developed Integrated Learning System (ILS) products for K-12 Education on Apple and PC networked computers.  I managed several teams of 8-20 direct reports for this fast growing company.</string>
+		<key>Accomplishments</key>
+		<array>
+			<string>* Implemented ILS on Apple IIgs, then Macintosh computers.  Sales of products produced for the Apple platform increased from 5% to 60% of JLC sales, while sales went from $9M to $220M.</string>
+			<string>* Awards – Compton’s CD-ROM won SIIA “Codie” and Time “Product of the Year.”</string>
+		</array>
+	</dict>
+	<key>Intrepid Software Development, Inc.</key>
+	<dict>
+		<key>Company</key>
+		<string>Intrepid Software Development, Inc.</string>
+		<key>CompanyUrl</key>
+		<string></string>
+		<key>Location</key>
+		<string>San Diego, CA</string>
+		<key>Title</key>
+		<string>Contract Programmer</string>
+		<key>StartDate</key>
+		<string>Nov 1976</string>
+		<key>EndDate</key>
+		<string>Dec 1987</string>
+		<key>Responsibilities</key>
+		<string>Provide programming services to clients on a contract basis.</string>
+		<key>Accomplishments</key>
+		<array/>
+	</dict>
+	<key>National Semiconductor Corp.</key>
+	<dict>
+		<key>Company</key>
+		<string>National Semiconductor Corp.</string>
+		<key>CompanyUrl</key>
+		<string>http://www.national.com/analog</string>
+		<key>Location</key>
+		<string>San Diego, CA</string>
+		<key>Title</key>
+		<string>Sr. Diagnostic Analyst</string>
+		<key>StartDate</key>
+		<string>Apr 1979</string>
+		<key>EndDate</key>
+		<string>Jul 1980</string>
+		<key>Responsibilities</key>
+		<string>Develop firmware diagnostics for an IBM 3090 mainframe computer.</string>
+		<key>Accomplishments</key>
+		<array/>
+	</dict>
+	<key>NCR Corp.</key>
+	<dict>
+		<key>Company</key>
+		<string>NCR Corp.</string>
+		<key>CompanyUrl</key>
+		<string>http://www.ncr.com/</string>
+		<key>Location</key>
+		<string>Torrey Pines, CA</string>
+		<key>Title</key>
+		<string>Sr. Programmer Analyst</string>
+		<key>StartDate</key>
+		<string>Feb 1977</string>
+		<key>EndDate</key>
+		<string>Mar 1979</string>
+		<key>Responsibilities</key>
+		<string>Develop software to manage System Recovery and Restart for the BANCR project, a joint venture with Bank of America.</string>
+		<key>Accomplishments</key>
+		<array/>
+	</dict>
+	<key>California First Bank</key>
+	<dict>
+		<key>Company</key>
+		<string>California First Bank</string>
+		<key>CompanyUrl</key>
+		<string>http://www.calfirst.com/</string>
+		<key>Location</key>
+		<string>San Diego, CA</string>
+		<key>Title</key>
+		<string>Programmer</string>
+		<key>StartDate</key>
+		<string>May 1975</string>
+		<key>EndDate</key>
+		<string>Jan 1977</string>
+		<key>Responsibilities</key>
+		<string>Develop financial software using COBOL and IBM 360 Assembly Language.</string>
+		<key>Accomplishments</key>
+		<array/>
+	</dict>
+	<key>IBM Corp.</key>
+	<dict>
+		<key>Company</key>
+		<string>IBM Corp.</string>
+		<key>CompanyUrl</key>
+		<string>http://www.ibm.com/us/en/sandbox/ver2/</string>
+		<key>Location</key>
+		<string>New Orleans, LA</string>
+		<key>Title</key>
+		<string>Systems Engineer</string>
+		<key>StartDate</key>
+		<string>Jun 1972</string>
+		<key>EndDate</key>
+		<string>Apr 1975</string>
+		<key>Responsibilities</key>
+		<string>Support major IBM implementations in the Distribution industry.</string>
+		<key>Accomplishments</key>
+		<array/>
+	</dict>
+</dict>
+</plist>

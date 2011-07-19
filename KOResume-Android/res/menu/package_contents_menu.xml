@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item 
+  	android:id="@+id/packageAbout"
+  	android:title="@string/about" 
+  	android:icon="@drawable/ic_menu_info_details" />
+  <item 
+  	android:id="@+id/editCoverLtr"             
+  	android:title="@string/editCoverLetter"
+  	android:icon="@drawable/ic_menu_edit" />
+  <item
+  	android:id="@+id/saveCoverLtr"             
+  	android:title="@string/saveCoverLetter"
+  	android:icon="@drawable/ic_menu_save" />
+</menu>

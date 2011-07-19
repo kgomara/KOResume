@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="package_header">Packages:</string>
+    <string name="app_name">KO Resume</string>
+    <string name="about">About KOResume</string>
+    <string name="addPackage">Add Package</string>
+    <string name="promptPackageHint">Enter a title</string>
+    <string name="promptPackageText">Name of package?</string>
+    <string name="promptTitle">Prompt</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="alertTitle">Alert</string>
+    <string name="packageContents">Cover Letter:</string>
+    <string name="packageViewResume">View Resume</string>
+    <string name="editCoverLetter">Edit Cover Letter</string>
+    <string name="saveCoverLetter">Save Cover Letter</string>
+    <string name="resumeContents">Resume:</string>
+    <string name="resumeViewJobs">View Jobs</string>
+    <string name="resumeViewEducation">View Education &amp; Certifications</string>
+    <string name="editSummaryInfo">Edit Summary Information</string>
+    <string name="saveSummaryInfo">Save Summary Information</string>
+    <string name="resumeAbout">About KOResume</string>
+    
+</resources>

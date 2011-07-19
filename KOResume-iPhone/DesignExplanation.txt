@@ -1,0 +1,3 @@
+I'd claim MVC pattern as the Cocoa framework nearly demands it - but in this case I choose simplicity and have no real data model.  All the "data" in the app is either embedded directly in the View as UILabel text or loaded in viewDidLoad methods.
+
+There is extensive use of delegates in UITableView data sources and delegates.  In addition, there is a simple delegate used for UIScrollView.
