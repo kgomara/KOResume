@@ -23,24 +23,34 @@ public final class R {
     }
     public static final class id {
         public static final int InnerRelativeLayout=0x7f070004;
-        public static final int about=0x7f07000c;
-        public static final int addPackage=0x7f07000d;
-        public static final int editCoverLtr=0x7f07000f;
+        public static final int about=0x7f070016;
+        public static final int addPackage=0x7f070017;
+        public static final int editCoverLtr=0x7f070019;
         public static final int editPackageName=0x7f070007;
-        public static final int editSummaryInfo=0x7f070012;
+        public static final int editSummaryInfo=0x7f07001c;
         public static final int listView=0x7f070001;
-        public static final int packageAbout=0x7f07000e;
+        public static final int packageAbout=0x7f070018;
         public static final int packageCoverLtr=0x7f070003;
         public static final int packageResumeBtn=0x7f070005;
         public static final int packageTextView=0x7f070002;
         public static final int promptPackageName=0x7f070006;
-        public static final int resumeAbout=0x7f070011;
-        public static final int resumeEducationBtn=0x7f07000b;
-        public static final int resumeJobsBtn=0x7f07000a;
-        public static final int resumeSummaryText=0x7f070009;
-        public static final int resumeTextView=0x7f070008;
-        public static final int saveCoverLtr=0x7f070010;
-        public static final int saveSummaryInfo=0x7f070013;
+        public static final int resumeAbout=0x7f07001b;
+        public static final int resumeCity=0x7f07000e;
+        public static final int resumeEducationBtn=0x7f070015;
+        public static final int resumeHomePhone=0x7f070011;
+        public static final int resumeJobsBtn=0x7f070014;
+        public static final int resumeMetaData=0x7f07000a;
+        public static final int resumeMobilePhone=0x7f070012;
+        public static final int resumeName=0x7f07000b;
+        public static final int resumePostalCode=0x7f070010;
+        public static final int resumeScrollView=0x7f070008;
+        public static final int resumeState=0x7f07000f;
+        public static final int resumeStreet1=0x7f07000c;
+        public static final int resumeStreet2=0x7f07000d;
+        public static final int resumeSummaryText=0x7f070013;
+        public static final int resumeTextView=0x7f070009;
+        public static final int saveCoverLtr=0x7f07001a;
+        public static final int saveSummaryInfo=0x7f07001d;
         public static final int textView=0x7f070000;
     }
     public static final class layout {
@@ -67,6 +77,8 @@ public final class R {
         public static final int cancel=0x7f050008;
         public static final int editCoverLetter=0x7f05000c;
         public static final int editSummaryInfo=0x7f050011;
+        public static final int homePhone=0x7f050014;
+        public static final int mobilePhone=0x7f050015;
         public static final int ok=0x7f050007;
         public static final int packageContents=0x7f05000a;
         public static final int packageViewResume=0x7f05000b;

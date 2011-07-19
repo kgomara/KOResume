@@ -17,8 +17,10 @@
     <string name="resumeContents">Resume:</string>
     <string name="resumeViewJobs">View Jobs</string>
     <string name="resumeViewEducation">View Education &amp; Certifications</string>
-    <string name="editSummaryInfo">Edit Summary Information</string>
-    <string name="saveSummaryInfo">Save Summary Information</string>
+    <string name="editSummaryInfo">Edit Summary</string>
+    <string name="saveSummaryInfo">Save Summary</string>
     <string name="resumeAbout">About KOResume</string>
+    <string name="homePhone">Home</string>
+    <string name="mobilePhone">Mobile</string>
     
 </resources>

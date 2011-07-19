@@ -300,13 +300,22 @@ public class KOResumeProvider extends ContentProvider {
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		int count = 0;
 		switch (sUriMatcher.match(uri)) {
-		case IN_SINGLE_PACKAGE_URI_INDICATOR:
+		case IN_SINGLE_PACKAGE_URI_INDICATOR: {
 			String rowId = uri.getPathSegments().get(1);
 			Log.d(TAG, "rowId = " + rowId);
 			count = db.update(PackageTableMetaData.TABLE_NAME, values, 
 					PackageTableMetaData._ID + "=" + rowId + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), 
 					selectionArgs);
 			break;
+		}
+		case IN_SINGLE_RESUME_URI_INDICATOR: {
+			String rowId = uri.getPathSegments().get(1);
+			Log.d(TAG, "rowId = " + rowId);
+			count = db.update(ResumeTableMetaData.TABLE_NAME, values, 
+					ResumeTableMetaData._ID + "=" + rowId + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), 
+					selectionArgs);
+			break;
+		}
 		default:
 			throw new IllegalArgumentException("update() Unknown Uri " + uri);			
 		}
