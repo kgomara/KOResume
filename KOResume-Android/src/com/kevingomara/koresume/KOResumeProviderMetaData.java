@@ -5,93 +5,126 @@ import android.provider.BaseColumns;
 
 public class KOResumeProviderMetaData {
 	
-	public static final String 	AUTHORITY 			= "com.kevingomara.provider.resumeprovider";
+	public static final String 	AUTHORITY 					= "com.kevingomara.provider.resumeprovider";
 	
-	public static final String 	DATABASE_NAME 		= "koresume.db";
-	public static final int 	DATABASE_VERSION 	= 1;
-	public static final String 	PACKAGE_TABLE_NAME 	= "packages";
-	public static final String	RESUME_TABLE_NAME	= "resumes";
+	public static final String 	DATABASE_NAME 				= "koresume.db";
+	public static final int 	DATABASE_VERSION 			= 1;
+	public static final String 	PACKAGE_TABLE_NAME 			= "packages";
+	public static final String	RESUME_TABLE_NAME			= "resumes";
+	public static final String	JOBS_TABLE_NAME				= "jobs";
+	public static final String	ACCOMPLISHMENTS_TABLE_NAME	= "accomplishments";
+	public static final String	EDUCATION_TABLE_NAME		= "education";
 	// All tables should use this constant for their CREATED_DATE column name
-	public static final String	CREATED_DATE		= "createdDate";
 	
 	private KOResumeProviderMetaData() {
 		// Private to prevent instantiation
 	}
 	
-	public static final class PackageTableMetaData implements BaseColumns {
+	public static final class PackageTableMetaData implements KOResumeBaseColumns {
 		private PackageTableMetaData() {
-			
+			// Private to prevent instantiation			
 		}
 		
 		public static final String	TABLE_NAME			= PACKAGE_TABLE_NAME;
 		
 		// Uri and MIME type definitions
 		public static final Uri 	CONTENT_URI 		= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-		public static final String 	CONTENT_TYPE 		= "vnd.android.cursor.dir/vnd.kevingomara.koresume";
-		public static final String 	CONTENT_ITEM_TYPE 	= "vnd.android.cursor.item/vnd.kevingomara.koresume";
 		
 		// Columns start here
-		// String type
-		public static final String PACKAGE_NAME 		= "name";
-		
-		// String type
-		public static final String COVER_LTR			= "coverLtr";
-		
-		// Integer from System.currentTimeMillis()
-		public static final String CREATED_DATE 		= KOResumeProviderMetaData.CREATED_DATE;
-		
-		// Integer type
-		public static final String RESUME_ID			= "resumeId";
+		public static final String	NAME 				= "name";			// String type	
+		public static final String	COVER_LTR			= "coverLtr";		// String type
+		public static final String	RESUME_ID			= "resumeId";		// Integer type
 
-		public static final String DEFAULT_SORT_ORDER	= CREATED_DATE + " DESC";
+		public static final String	DEFAULT_SORT_ORDER	= CREATED_DATE + " DESC";
 }
 	
-	public static final class ResumeTableMetaData implements BaseColumns {
+	public static final class ResumeTableMetaData implements KOResumeBaseColumns {
 		private ResumeTableMetaData() {
-			
+			// Private to prevent instantiation			
 		}
 		
 		public static final String	TABLE_NAME			= RESUME_TABLE_NAME;
 		
 		// Uri and MIME type definitions
 		public static final Uri 	CONTENT_URI 		= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-		public static final String 	CONTENT_TYPE 		= "vnd.android.cursor.dir/vnd.kevingomara.koresume";
-		public static final String 	CONTENT_ITEM_TYPE 	= "vnd.android.cursor.item/vnd.kevingomara.koresume";
 				
 		// Columns start here
-		// String type
-		public static final String RESUME_NAME 			= "name";
+		public static final String	NAME 				= "name";			// String type
+		public static final String	SUMMARY				= "summary";		// String type
+		public static final String	PACKAGE_ID			= "packageId";		// Integer type, Foreign key
+		public static final String	STREET1				= "street1";		// String type
+		public static final String	STREET2				= "street2";		// String type
+		public static final String	CITY				= "city";			// String type
+		public static final String	STATE				= "state";			// String type
+		public static final String	POSTAL_CODE			= "postal";			// String type
+		public static final String	HOME_PHONE			= "homePhone";		// String type
+		public static final String	MOBILE_PHONE		= "mobilePhone";	// String type
 		
-		// String type
-		public static final String SUMMARY_TEXT			= "summary";
+		public static final String	DEFAULT_SORT_ORDER	= CREATED_DATE + " DESC";
+	}
+	
+	public static final class JobsTableMetaData implements KOResumeBaseColumns {
+		private JobsTableMetaData() {
+			// Private to prevent instantiation			
+		}
 		
-		// Integer from System.currentTimeMillis()
-		public static final String CREATED_DATE 		= KOResumeProviderMetaData.CREATED_DATE;
+		public static final String	TABLE_NAME			= JOBS_TABLE_NAME;
 		
-		// Integer type
-		public static final String PACKAGE_ID			= "packageId";				// Foreign key
+		// Uri and MIME type definitions
+		public static final Uri 	CONTENT_URI 		= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+				
+		// Columns start here
+		public static final String	NAME 				= "name";		// String type
+		public static final String	SUMMARY				= "summary";	// String type
+		public static final String	RESUME_ID			= "resumeId";	// Integer type, Foreign key
+		public static final String	URI 				= "uri";		// String type
+		public static final String	TITLE				= "title";		// String type
+		public static final String	START_DATE			= "startDate";	// Integer from System.currentTimeMillis()
+		public static final String	END_DATE			= "endDate";	// Integer from System.currentTimeMillis()
+		public static final String	CITY				= "city";		// String type
+		public static final String	STATE				= "state";		// String type
 		
-		// String type
-		public static final String STREET1				= "street1";
+		public static final String	DEFAULT_SORT_ORDER	= START_DATE + " DESC";
+	}
+	
+	public static final class AccomplishmentsTableMetaData implements KOResumeBaseColumns {
+		private AccomplishmentsTableMetaData() {
+			// Private to prevent instantiation			
+		}
 		
-		// String type
-		public static final String STREET2				= "street2";
+		public static final String	TABLE_NAME			= ACCOMPLISHMENTS_TABLE_NAME;
 		
-		// String type
-		public static final String CITY					= "city";
+		// Uri and MIME type definitions
+		public static final Uri 	CONTENT_URI 		= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+				
+		// Columns start here
+		public static final String	NAME 				= "name";		// String type
+		public static final String	SUMMARY 			= "summary";	// String type
+		public static final String	JOBS_ID				= "jobsId";		// Integer type, Foreign key
+		public static final String	SEQUENCE_NUMBER		= "sequence";	// Integer type
 		
-		// String type
-		public static final String STATE				= "state";
+		public static final String	DEFAULT_SORT_ORDER	= SEQUENCE_NUMBER + " ASC";
+	}
+	
+	public static final class EducationTableMetaData implements KOResumeBaseColumns {
+		private EducationTableMetaData() {
+			// Private to prevent instantiation			
+		}
 		
-		// String type
-		public static final String POSTAL_CODE			= "postal";
+		public static final String	TABLE_NAME			= EDUCATION_TABLE_NAME;
 		
-		// String type
-		public static final String HOME_PHONE			= "homePhone";
+		// Uri and MIME type definitions
+		public static final Uri 	CONTENT_URI 		= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+				
+		// Columns start here
+		public static final String	NAME		 		= "name";		// String type
+		public static final String	RESUME_ID			= "resumeId";	// Integer type, Foreign key
+		public static final String	TITLE				= "title";		// String type
+		public static final String	CITY				= "city";		// String type
+		public static final String	STATE				= "state";		// String type
+		public static final String	SEQUENCE_NUMBER		= "sequence";	// Integer type
+		public static final String	EARNED_DATE			= "endDate";	// Integer from System.currentTimeMillis()
 		
-		// String type
-		public static final String MOBILE_PHONE			= "mobilePhone";
-		
-		public static final String DEFAULT_SORT_ORDER	= CREATED_DATE + " DESC";
+		public static final String	DEFAULT_SORT_ORDER	= SEQUENCE_NUMBER + " ASC";
 	}
 }

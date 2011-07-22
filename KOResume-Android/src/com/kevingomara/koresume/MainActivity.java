@@ -74,7 +74,7 @@ public class MainActivity extends Activity /* implements OnItemClickListener */ 
     						null,
     						null);
     	if (cursor.getCount() > 0) {
-    		String[] 	cols 	= new String[] {PackageTableMetaData.PACKAGE_NAME};
+    		String[] 	cols 	= new String[] {PackageTableMetaData.NAME};
     		int[] 		views	= new int[] {android.R.id.text1};
     		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
     										R.layout.list_black_text,
@@ -132,7 +132,7 @@ public class MainActivity extends Activity /* implements OnItemClickListener */ 
 	
 	private void insertPackage(String name) {
 		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.PackageTableMetaData.PACKAGE_NAME, name);
+		cv.put(KOResumeProviderMetaData.PackageTableMetaData.NAME, name);
 		cv.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, (Integer) 0);
 	
 		ContentResolver cr = this.getContentResolver();

@@ -77,8 +77,9 @@ public final class R {
         public static final int cancel=0x7f050008;
         public static final int editCoverLetter=0x7f05000c;
         public static final int editSummaryInfo=0x7f050011;
-        public static final int homePhone=0x7f050014;
-        public static final int mobilePhone=0x7f050015;
+        public static final int homePhone=0x7f050013;
+        public static final int mobilePhone=0x7f050014;
+        public static final int nameIsRequired=0x7f050015;
         public static final int ok=0x7f050007;
         public static final int packageContents=0x7f05000a;
         public static final int packageViewResume=0x7f05000b;
@@ -86,8 +87,9 @@ public final class R {
         public static final int promptPackageHint=0x7f050004;
         public static final int promptPackageText=0x7f050005;
         public static final int promptTitle=0x7f050006;
-        public static final int resumeAbout=0x7f050013;
         public static final int resumeContents=0x7f05000e;
+        public static final int resumeDefaultName=0x7f050017;
+        public static final int resumeNotSaved=0x7f050016;
         public static final int resumeViewEducation=0x7f050010;
         public static final int resumeViewJobs=0x7f05000f;
         public static final int saveCoverLetter=0x7f05000d;

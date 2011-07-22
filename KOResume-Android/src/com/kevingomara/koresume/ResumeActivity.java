@@ -1,13 +1,16 @@
 package com.kevingomara.koresume;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.kevingomara.koresume.KOResumeProviderMetaData.PackageTableMetaData;
 import com.kevingomara.koresume.KOResumeProviderMetaData.ResumeTableMetaData;
 
 public class ResumeActivity extends Activity {
@@ -23,6 +27,8 @@ public class ResumeActivity extends Activity {
 	
 	private long 		mPackageId 		= 0l;
 	private long 		mResumeId		= 0l;
+	
+	// references to the resume fields in the layout
 	private EditText 	mResumeName		= null;
 	private EditText 	mSummaryText 	= null;
 	private EditText 	mStreet1		= null;
@@ -33,7 +39,6 @@ public class ResumeActivity extends Activity {
 	private EditText 	mHomePhone		= null;
 	private EditText 	mMobilePhone	= null;
 	
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +46,7 @@ public class ResumeActivity extends Activity {
         
         Log.v(TAG, "onCreate() called");
         
-        // Get a reference to the Cover letter TextView
+        // Get references to the resume fields
         mResumeName		= (EditText) findViewById(R.id.resumeName);
         mSummaryText	= (EditText) findViewById(R.id.resumeSummaryText);
         mStreet1		= (EditText) findViewById(R.id.resumeStreet1);
@@ -62,16 +67,32 @@ public class ResumeActivity extends Activity {
         Log.v(TAG, "packageId = " + mPackageId);
         
         // Get the appropriate resume from the database
+    	Cursor cursor = null;
+    	cursor = getResume();
+    	if (cursor.getCount() > 0) {
+    		// should have the resume
+    		populateResumeFields(cursor);
+    	} else {
+    		insertResume(this.getString(R.string.resumeDefaultName));
+    		cursor = getResume();
+        	if (cursor.getCount() > 0) {
+        		// should have the resume
+        		populateResumeFields(cursor);
+        	} else {
+        		Log.e(TAG, "Error, could not create Resume");
+        	}
+    	}
+		cursor.close();
+    }
+    
+    private Cursor getResume() {
     	Cursor cursor = managedQuery(ResumeTableMetaData.CONTENT_URI,
 				null,										// we want all the columns
 				ResumeTableMetaData.PACKAGE_ID + " = " + mPackageId,
 				null,
 				null);
-    	if (cursor.getCount() > 0) {
-    		// should have the resume
-    		populateResumeFields(cursor);
-    	}
-		cursor.close();
+    	
+    	return cursor;
     }
     
     @Override
@@ -134,8 +155,8 @@ public class ResumeActivity extends Activity {
 		mResumeId = cursor.getLong(cursor.getColumnIndex(ResumeTableMetaData._ID));
 		Log.v(TAG, "cursor.getCount() = " + cursor.getCount());
 		// TODO add the other fields
-		mResumeName.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.RESUME_NAME)));
-		mSummaryText.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.SUMMARY_TEXT)));
+		mResumeName.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.NAME)));
+		mSummaryText.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.SUMMARY)));
 		mStreet1.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.STREET1)));
 		mStreet2.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.STREET2)));
 		mCity.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.CITY)));
@@ -152,8 +173,8 @@ public class ResumeActivity extends Activity {
     	}
     	
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(ResumeTableMetaData.RESUME_NAME,		mResumeName.getText().toString());
-		contentValues.put(ResumeTableMetaData.SUMMARY_TEXT,		mSummaryText.getText().toString());
+		contentValues.put(ResumeTableMetaData.NAME,				mResumeName.getText().toString());
+		contentValues.put(ResumeTableMetaData.SUMMARY,			mSummaryText.getText().toString());
 		contentValues.put(ResumeTableMetaData.STREET1, 			mStreet1.getText().toString());
 		contentValues.put(ResumeTableMetaData.STREET2, 			mStreet2.getText().toString());
 		contentValues.put(ResumeTableMetaData.CITY, 			mCity.getText().toString());
@@ -168,8 +189,57 @@ public class ResumeActivity extends Activity {
 
     }
     
+	private void insertResume(String name) {
+		ContentValues cv = new ContentValues();
+		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.NAME, name);
+		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.PACKAGE_ID, mPackageId);
+	
+		ContentResolver cr = this.getContentResolver();
+		Uri uri = KOResumeProviderMetaData.ResumeTableMetaData.CONTENT_URI;
+		Log.d(TAG, "insertPackage uri: " + uri);
+		Uri insertedUri = cr.insert(uri, cv);
+		Log.d(TAG, "inserted uri: " + insertedUri);
+		
+		// Update the Package with the newly created resume _ID
+		long resumeId = (long) Integer.parseInt(insertedUri.getPathSegments().get(1));
+		Uri insertedPackageUri = ContentUris.withAppendedId( PackageTableMetaData.CONTENT_URI, mPackageId);
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, resumeId);
+
+		ContentResolver cr2 = this.getContentResolver();
+		Log.d(TAG, "updatePackage uri: " + insertedPackageUri);
+		cr2.update(insertedPackageUri, contentValues, null, null);
+
+	}
+
+    
     private boolean resumeFieldsAreValid() {
+    	// check that all required fields contain data and are otherwise valid
+    	if (TextUtils.isEmpty(mResumeName.getText().toString())) {
+    		showAlert(R.string.nameIsRequired, R.string.resumeNotSaved);
+    		return false;
+    	}
     	
     	return true;
+    }
+    
+    private void showAlert(int titleString, int messageString) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle(titleString);
+    	builder.setMessage(messageString);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                 // Nothing to do?
+            }
+        });
+/*        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                 dialog.cancel();
+            }
+        }); */
+        AlertDialog alert = builder.create();
+    	alert.show();
     }
 }

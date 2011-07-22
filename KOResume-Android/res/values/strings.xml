@@ -19,8 +19,9 @@
     <string name="resumeViewEducation">View Education &amp; Certifications</string>
     <string name="editSummaryInfo">Edit Summary</string>
     <string name="saveSummaryInfo">Save Summary</string>
-    <string name="resumeAbout">About KOResume</string>
     <string name="homePhone">Home</string>
     <string name="mobilePhone">Mobile</string>
-    
+    <string name="nameIsRequired">Name is required</string>
+    <string name="resumeNotSaved">Please correct and try Saving again.</string>
+    <string name="resumeDefaultName">Please name your resume</string>
 </resources>

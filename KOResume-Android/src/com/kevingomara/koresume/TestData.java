@@ -42,7 +42,7 @@ public class TestData {
 		}
 		
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.PACKAGE_NAME, "Kevin O\'Mara");
+		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.NAME, "Kevin O\'Mara");
 		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.COVER_LTR, coverLtr);
 	
 		ContentResolver contentResolver = mContext.getContentResolver();
@@ -62,8 +62,8 @@ public class TestData {
 			ex.printStackTrace();			
 		}
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.RESUME_NAME, 	"Kevin O\'Mara");
-		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.SUMMARY_TEXT,	summaryText);
+		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.NAME, 	"Kevin O\'Mara");
+		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.SUMMARY,	summaryText);
 		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.PACKAGE_ID,		mPackageId);
 		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.STREET1, 		"1406 Marsh Harbour Dr");
 		contentValues.put(KOResumeProviderMetaData.ResumeTableMetaData.CITY, 			"Austin");
