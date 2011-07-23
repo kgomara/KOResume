@@ -154,7 +154,7 @@ public class ResumeActivity extends Activity {
 		cursor.moveToFirst();
 		mResumeId = cursor.getLong(cursor.getColumnIndex(ResumeTableMetaData._ID));
 		Log.v(TAG, "cursor.getCount() = " + cursor.getCount());
-		// TODO add the other fields
+
 		mResumeName.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.NAME)));
 		mSummaryText.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.SUMMARY)));
 		mStreet1.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.STREET1)));

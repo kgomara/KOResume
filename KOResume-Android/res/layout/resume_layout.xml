@@ -27,17 +27,37 @@
 			android:layout_width="wrap_content"
 			android:layout_weight="1.0"
 			android:layout_height="wrap_content" >
+			<TextView
+				android:id="@+id/resumeNameLbl"
+				android:text="@string/resumeNameLbl"
+				android:textColor="#000000"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" />				
 			<EditText
 				android:id="@+id/resumeName"
+				android:layout_below="@id/resumeNameLbl"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
 				android:paddingRight="5dip"
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				/>
+			<TextView
+				android:id="@+id/resumeStreetLbl"
+				android:text="@string/resumeStreetLbl"
+				android:textColor="#000000"
+				android:layout_below="@id/resumeName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" />				
 			<EditText
 				android:id="@+id/resumeStreet1"
-				android:layout_below="@id/resumeName"
+				android:layout_below="@id/resumeStreetLbl"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
@@ -53,9 +73,19 @@
 				android:paddingRight="5dip"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				/>
+			<TextView
+				android:id="@+id/resumeCityLbl"
+				android:text="@string/resumeCityLbl"
+				android:textColor="#000000"
+				android:layout_below="@id/resumeStreet2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" />				
 			<EditText
 				android:id="@+id/resumeCity"
-				android:layout_below="@id/resumeStreet2"
+				android:layout_below="@id/resumeCityLbl"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
@@ -64,7 +94,7 @@
 				/>
 			<EditText
 				android:id="@+id/resumeState"
-				android:layout_below="@id/resumeStreet2"
+				android:layout_below="@id/resumeCityLbl"
 				android:layout_toRightOf="@id/resumeCity"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -76,7 +106,7 @@
 				/>
 			<EditText
 				android:id="@+id/resumePostalCode"
-				android:layout_below="@id/resumeStreet2"
+				android:layout_below="@id/resumeCityLbl"
 				android:layout_toRightOf="@id/resumeState"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -126,9 +156,19 @@
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				android:textColor="#000000"
 				/>			
+			<TextView
+				android:id="@+id/resumeResponsibilitiesLbl"
+				android:text="@string/resumeResponsibilitiesLbl"
+				android:textColor="#000000"
+				android:layout_below="@id/resumeMobilePhone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" />				
 			<EditText
 				android:id="@+id/resumeSummaryText"
-				android:layout_below="@id/resumeMobilePhone"
+				android:layout_below="@id/resumeResponsibilitiesLbl"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="10dip"

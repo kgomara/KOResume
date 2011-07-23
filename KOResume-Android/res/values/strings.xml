@@ -24,4 +24,10 @@
     <string name="nameIsRequired">Name is required</string>
     <string name="resumeNotSaved">Please correct and try Saving again.</string>
     <string name="resumeDefaultName">Please name your resume</string>
+    <string name="resumeNameLbl">Resume Name:</string>
+    <string name="resumeStreetLbl">Street:</string>
+    <string name="resumeCityLbl">City, St, Zip:</string>
+    <string name="resumeHomePhoneLbl">Home Phone:</string>
+    <string name="resumeMobilePhoneLbl">Mobile Phone:</string>
+    <string name="resumeResponsibilitiesLbl">Responsibilities:</string>
 </resources>

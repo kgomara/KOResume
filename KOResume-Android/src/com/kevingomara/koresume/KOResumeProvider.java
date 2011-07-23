@@ -187,50 +187,54 @@ public class KOResumeProvider extends ContentProvider {
 					+ ResumeTableMetaData.NAME	 		+ " TEXT,"
 					+ ResumeTableMetaData.SUMMARY		+ " TEXT,"
 					+ ResumeTableMetaData.PACKAGE_ID 	+ " INTEGER,"
-					// TODO - figure out why FOREIGN_KEYS isn't working
-//					+ "FOREIGN KEY(" + ResumeTableMetaData.PACKAGE_ID + ") REFERENCES " + PackageTableMetaData.TABLE_NAME + "(" + PackageTableMetaData._ID + "),"
 					+ ResumeTableMetaData.STREET1		+ " TEXT,"
 					+ ResumeTableMetaData.STREET2		+ " TEXT,"
 					+ ResumeTableMetaData.CITY		 	+ " TEXT,"
 					+ ResumeTableMetaData.STATE 		+ " TEXT,"
 					+ ResumeTableMetaData.POSTAL_CODE	+ " TEXT,"
 					+ ResumeTableMetaData.HOME_PHONE	+ " TEXT,"
-					+ ResumeTableMetaData.MOBILE_PHONE 	+ " TEXT" + ");");
+					+ ResumeTableMetaData.MOBILE_PHONE 	+ " TEXT," 
+					+ "FOREIGN KEY (" + ResumeTableMetaData.PACKAGE_ID + ") "
+					+ "REFERENCES " + PackageTableMetaData.TABLE_NAME 
+					+ " (" + PackageTableMetaData._ID + "));");
 			db.execSQL("CREATE TABLE " + JobsTableMetaData.TABLE_NAME + " ("
 					+ JobsTableMetaData._ID 			+ " INTEGER PRIMARY KEY,"
 					+ JobsTableMetaData.CREATED_DATE 	+ " INTEGER,"
 					+ JobsTableMetaData.NAME	 		+ " TEXT,"
 					+ JobsTableMetaData.SUMMARY			+ " TEXT,"
 					+ JobsTableMetaData.RESUME_ID 		+ " INTEGER,"
-					// TODO - figure out why FOREIGN_KEYS isn't working
-//					+ "FOREIGN KEY(" + JobsTableMetaData.RESUME_ID + ") REFERENCES " + ResumeTableMetaData.TABLE_NAME + "(" + ResumeTableMetaData._ID + "),"
 					+ JobsTableMetaData.URI				+ " TEXT,"
 					+ JobsTableMetaData.START_DATE		+ " INTEGER,"
 					+ JobsTableMetaData.END_DATE		+ " INTEGER,"
 					+ JobsTableMetaData.TITLE			+ " TEXT,"
 					+ JobsTableMetaData.CITY		 	+ " TEXT,"
-					+ JobsTableMetaData.STATE 			+ " TEXT" + ");");
+					+ JobsTableMetaData.STATE 			+ " TEXT,"
+					+ "FOREIGN KEY (" + JobsTableMetaData.RESUME_ID + ") "
+					+ "REFERENCES " + ResumeTableMetaData.TABLE_NAME 
+					+ " (" + ResumeTableMetaData._ID + "));");
 			db.execSQL("CREATE TABLE " + AccomplishmentsTableMetaData.TABLE_NAME + " ("
 					+ AccomplishmentsTableMetaData._ID 				+ " INTEGER PRIMARY KEY,"
 					+ AccomplishmentsTableMetaData.CREATED_DATE 	+ " INTEGER,"
 					+ AccomplishmentsTableMetaData.NAME	 			+ " TEXT,"
 					+ AccomplishmentsTableMetaData.SUMMARY			+ " TEXT,"
 					+ AccomplishmentsTableMetaData.JOBS_ID 			+ " INTEGER,"
-					// TODO - figure out why FOREIGN_KEYS isn't working
-//					+ "FOREIGN KEY(" + AccomplishmentsTableMetaData.JOBS_ID + ") REFERENCES " + JobsTableMetaData.TABLE_NAME + "(" + JobsTableMetaData._ID + "),"
-					+ AccomplishmentsTableMetaData.SEQUENCE_NUMBER	+ " INTEGER" + ");");
+					+ AccomplishmentsTableMetaData.SEQUENCE_NUMBER	+ " INTEGER,"
+					+ "FOREIGN KEY (" + AccomplishmentsTableMetaData.JOBS_ID + ") "
+					+ "REFERENCES " + JobsTableMetaData.TABLE_NAME 
+					+ " (" + JobsTableMetaData._ID + "));");
 			db.execSQL("CREATE TABLE " + EducationTableMetaData.TABLE_NAME + " ("
 					+ EducationTableMetaData._ID 				+ " INTEGER PRIMARY KEY,"
 					+ EducationTableMetaData.CREATED_DATE 		+ " INTEGER,"
 					+ EducationTableMetaData.NAME	 			+ " TEXT,"
 					+ EducationTableMetaData.RESUME_ID 			+ " INTEGER,"
 					+ EducationTableMetaData.TITLE				+ " TEXT,"
-					// TODO - figure out why FOREIGN_KEYS isn't working
-//					+ "FOREIGN KEY(" + EducationTableMetaData.RESUME_ID + ") REFERENCES " + ResumeTableMetaData.TABLE_NAME + "(" + ResumeTableMetaData._ID + "),"
 					+ EducationTableMetaData.CITY		 		+ " TEXT,"
 					+ EducationTableMetaData.STATE 				+ " TEXT,"
 					+ EducationTableMetaData.SEQUENCE_NUMBER	+ " INTEGER,"
-					+ EducationTableMetaData.EARNED_DATE		+ " INTEGER" + ");");
+					+ EducationTableMetaData.EARNED_DATE		+ " INTEGER,"
+					+ "FOREIGN KEY (" + EducationTableMetaData.RESUME_ID + ") "
+					+ "REFERENCES " + ResumeTableMetaData.TABLE_NAME 
+					+ " (" + ResumeTableMetaData._ID + "));");
 			Log.d(TAG, "onCreate() inner, db created");
 		}
 		
@@ -372,12 +376,7 @@ public class KOResumeProvider extends ContentProvider {
 			if (values.containsKey(ResumeTableMetaData.NAME) == false) {
 				throw new SQLException("insert() Failed to insert resume, Name is required" + uri);
 			}
-			if (values.containsKey(ResumeTableMetaData.PACKAGE_ID) == false) {
-				// TODO may be able to eliminate this check if Foreign keys work
-				throw new SQLException("insert() Failed to insert resume, PackageId is required" + uri);
-			} else {
-				// TODO - need to confirm PACKAGE_ID exists?
-			}
+
 			// Insert the package
 			long rowId = db.insert(ResumeTableMetaData.TABLE_NAME, ResumeTableMetaData.NAME, values);
 			
@@ -395,12 +394,7 @@ public class KOResumeProvider extends ContentProvider {
 			if (values.containsKey(JobsTableMetaData.NAME) == false) {
 				throw new SQLException("insert() Failed to insert job, Name is required" + uri);
 			}
-			if (values.containsKey(JobsTableMetaData.RESUME_ID) == false) {
-				// TODO may be able to eliminate this check if Foreign keys work
-				throw new SQLException("insert() Failed to insert job, ResumeId is required" + uri);
-			} else {
-				// TODO - need to confirm RESUME_ID exists?
-			}
+
 			// Insert the package
 			long rowId = db.insert(JobsTableMetaData.TABLE_NAME, JobsTableMetaData.NAME, values);
 			
@@ -417,12 +411,7 @@ public class KOResumeProvider extends ContentProvider {
 			if (values.containsKey(AccomplishmentsTableMetaData.NAME) == false) {
 				throw new SQLException("insert() Failed to insert accomplishment, Name is required" + uri);
 			}
-			if (values.containsKey(AccomplishmentsTableMetaData.JOBS_ID) == false) {
-				// TODO may be able to eliminate this check if Foreign keys work
-				throw new SQLException("insert() Failed to insert accomplishment, JobId is required" + uri);
-			} else {
-				// TODO - need to confirm PACKAGE_ID exists?
-			}
+
 			// Insert the package
 			long rowId = db.insert(AccomplishmentsTableMetaData.TABLE_NAME, AccomplishmentsTableMetaData.NAME, values);
 			
@@ -439,12 +428,7 @@ public class KOResumeProvider extends ContentProvider {
 			if (values.containsKey(EducationTableMetaData.NAME) == false) {
 				throw new SQLException("insert() Failed to insert education, Name is required" + uri);
 			}
-			if (values.containsKey(EducationTableMetaData.RESUME_ID) == false) {
-				// TODO may be able to eliminate this check if Foreign keys work
-				throw new SQLException("insert() Failed to insert education, ResumeId is required" + uri);
-			} else {
-				// TODO - need to confirm PACKAGE_ID exists?
-			}
+
 			// Insert the package
 			long rowId = db.insert(EducationTableMetaData.TABLE_NAME, EducationTableMetaData.NAME, values);
 			
