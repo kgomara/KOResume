@@ -19,6 +19,7 @@ public class GenericManagedAlertDialog extends ManagedActivityDialog {
 		mContext		= inActivity;
 	}
 	
+	@Override
 	public Dialog create() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 		builder.setTitle(R.string.alertTitle);
@@ -26,9 +27,15 @@ public class GenericManagedAlertDialog extends ManagedActivityDialog {
 		builder.setPositiveButton(R.string.ok, this);
 		AlertDialog alertDialog = builder.create();
 		
-		return (Dialog) alertDialog;
+		return alertDialog;
 	}
 	
+	@Override
+	public void onClickHook(int buttonId) {
+		// This method must be overriden
+	}
+	
+	@Override
 	public void prepare(Dialog dialog) {
 		AlertDialog alertDialog = (AlertDialog)dialog;
 		alertDialog.setMessage(mAlertMessage);
@@ -36,9 +43,5 @@ public class GenericManagedAlertDialog extends ManagedActivityDialog {
 	
 	public void setAlertMessage(String inAlertMessage) {
 		mAlertMessage = inAlertMessage;
-	}
-	
-	public void onClickHook(int buttonId) {
-		// This method must be overriden
 	}
 }

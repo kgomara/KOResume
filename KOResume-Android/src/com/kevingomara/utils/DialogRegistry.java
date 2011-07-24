@@ -7,10 +7,6 @@ import android.util.SparseArray;
 public class DialogRegistry {
 	SparseArray<IDialogProtocol> idsToDialogs = new SparseArray<IDialogProtocol>();
 	
-	public void registerDialog(IDialogProtocol dialog) {
-		idsToDialogs.put(dialog.getDialogId(), dialog);
-	}
-	
 	public Dialog create(int id) {
 		IDialogProtocol dialogProtocol = idsToDialogs.get(id);
 		
@@ -29,5 +25,9 @@ public class DialogRegistry {
 		}
 		
 		dialogProtocol.prepare(dialog);
+	}
+	
+	public void registerDialog(IDialogProtocol dialog) {
+		idsToDialogs.put(dialog.getDialogId(), dialog);
 	}
 }

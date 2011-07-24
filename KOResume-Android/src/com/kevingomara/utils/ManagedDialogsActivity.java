@@ -10,14 +10,16 @@ public class ManagedDialogsActivity extends Activity implements IDialogFinishedC
 	// Registry for managed dialogs
 	private DialogRegistry dialogRegistry = new DialogRegistry();
 	
+	@Override
+	public void dialogFinished(ManagedActivityDialog dialog, int buttonId) {
+		// This method must be overriden
+	}
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		this.registerDialogs();
-	}
-	
-	protected void registerDialogs() {
-		// This method must be overriden
 	}
 	
 	public void registerDialog(IDialogProtocol dialog) {
@@ -34,7 +36,7 @@ public class ManagedDialogsActivity extends Activity implements IDialogFinishedC
 		this.dialogRegistry.prepare(dialog, id);
 	}
 	
-	public void dialogFinished(ManagedActivityDialog dialog, int buttonId) {
+	protected void registerDialogs() {
 		// This method must be overriden
 	}
 }

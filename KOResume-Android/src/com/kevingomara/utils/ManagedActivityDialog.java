@@ -13,16 +13,19 @@ public abstract class ManagedActivityDialog implements IDialogProtocol, android.
 		mDialogId = dialogId;
 	}
 	
+	@Override
 	public int getDialogId() {
 		return mDialogId;
 	}
 	
-	public void show() {
-		mActivity.showDialog(mDialogId);
-	}
-	
+	@Override
 	public void onClick(DialogInterface v, int buttonId) {
 		onClickHook(buttonId);
 		this.mActivity.dialogFinished(this, buttonId);
+	}
+	
+	@Override
+	public void show() {
+		mActivity.showDialog(mDialogId);
 	}
 }

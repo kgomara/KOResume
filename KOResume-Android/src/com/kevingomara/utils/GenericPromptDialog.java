@@ -25,6 +25,7 @@ public class GenericPromptDialog extends ManagedActivityDialog {
 		mContext		= activity;
 	}
 	
+	@Override
 	public Dialog create() {
 		LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 		// TODO refactor to pass in resource id for layout
@@ -39,14 +40,16 @@ public class GenericPromptDialog extends ManagedActivityDialog {
 		return alertDialog;
 	}
 	
-	public void prepare(Dialog dialog) {
-		// This method must be overriden
-	}
-	
+	@Override
 	public void onClickHook(int buttonId) {
 		if (buttonId == DialogInterface.BUTTON1) {
 			EditText editText = (EditText) mPromptView.findViewById(R.id.editPackageName);
 			mPromptValue = editText.getText().toString();
 		}
+	}
+	
+	@Override
+	public void prepare(Dialog dialog) {
+		// This method must be overriden
 	}
 }

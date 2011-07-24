@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -85,22 +86,32 @@ public class ResumeActivity extends Activity {
 		cursor.close();
     }
     
-    private Cursor getResume() {
-    	Cursor cursor = managedQuery(ResumeTableMetaData.CONTENT_URI,
-				null,										// we want all the columns
-				ResumeTableMetaData.PACKAGE_ID + " = " + mPackageId,
-				null,
-				null);
-    	
-    	return cursor;
-    }
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
         
         return true;
+    }
+    
+    public void onEducationBtn(View view) {
+    	// Launch the resumeActivity Intent
+    	Intent intent = new Intent(this, EducationActivity.class);
+    	Bundle extras = new Bundle();
+    	intent.putExtras(extras);
+    	intent.putExtra("id", mResumeId);					// pass the row _Id of the selected package
+    	this.startActivity(intent);
+    	
+    }
+    
+    public void onJobsBtn(View view) {
+    	// Launch the resumeActivity Intent
+    	Intent intent = new Intent(this, JobsActivity.class);
+    	Bundle extras = new Bundle();
+    	intent.putExtras(extras);
+    	intent.putExtra("id", mResumeId);					// pass the row _Id of the selected package
+    	this.startActivity(intent);
+    	
     }
     
     @Override
@@ -127,32 +138,46 @@ public class ResumeActivity extends Activity {
     	return true;
     }
     
-    public void onJobsBtn(View view) {
-    	// Launch the resumeActivity Intent
-    	Intent intent = new Intent(this, JobsActivity.class);
-    	Bundle extras = new Bundle();
-    	intent.putExtras(extras);
-    	intent.putExtra("id", mResumeId);					// pass the row _Id of the selected package
-    	this.startActivity(intent);
+    private Cursor getResume() {
+    	Cursor cursor = managedQuery(ResumeTableMetaData.CONTENT_URI,
+				null,										// we want all the columns
+				ResumeTableMetaData.PACKAGE_ID + " = " + mPackageId,
+				null,
+				null);
     	
-    }
-    
-    public void onEducationBtn(View view) {
-    	// Launch the resumeActivity Intent
-    	Intent intent = new Intent(this, EducationActivity.class);
-    	Bundle extras = new Bundle();
-    	intent.putExtras(extras);
-    	intent.putExtra("id", mResumeId);					// pass the row _Id of the selected package
-    	this.startActivity(intent);
-    	
+    	return cursor;
     }
 
+    private void insertResume(String name) {
+		ContentValues cv = new ContentValues();
+		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.NAME, name);
+		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.PACKAGE_ID, mPackageId);
+	
+		ContentResolver cr = this.getContentResolver();
+		Uri uri = KOResumeProviderMetaData.ResumeTableMetaData.CONTENT_URI;
+		Log.d(TAG, "insertPackage uri: " + uri);
+		Uri insertedUri = cr.insert(uri, cv);
+		Log.d(TAG, "inserted uri: " + insertedUri);
+		
+		// Update the Package with the newly created resume _ID
+		long resumeId = Integer.parseInt(insertedUri.getPathSegments().get(1));
+		Uri insertedPackageUri = ContentUris.withAppendedId( PackageTableMetaData.CONTENT_URI, mPackageId);
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, resumeId);
+
+		ContentResolver cr2 = this.getContentResolver();
+		Log.d(TAG, "updatePackage uri: " + insertedPackageUri);
+		cr2.update(insertedPackageUri, contentValues, null, null);
+
+	}
+    
     /*
      * helper methods
      */
     private void populateResumeFields(Cursor cursor) {
 		cursor.moveToFirst();
-		mResumeId = cursor.getLong(cursor.getColumnIndex(ResumeTableMetaData._ID));
+		mResumeId = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 		Log.v(TAG, "cursor.getCount() = " + cursor.getCount());
 
 		mResumeName.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.NAME)));
@@ -165,6 +190,17 @@ public class ResumeActivity extends Activity {
 		mHomePhone.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.HOME_PHONE)));
 		mMobilePhone.setText(cursor.getString(cursor.getColumnIndex(ResumeTableMetaData.MOBILE_PHONE)));
     }
+    
+	private boolean resumeFieldsAreValid() {
+    	// check that all required fields contain data and are otherwise valid
+    	if (TextUtils.isEmpty(mResumeName.getText().toString())) {
+    		showAlert(R.string.nameIsRequired, R.string.resumeNotSaved);
+    		return false;
+    	}
+    	
+    	return true;
+    }
+
     
     private void saveResume() {
     	
@@ -189,48 +225,14 @@ public class ResumeActivity extends Activity {
 
     }
     
-	private void insertResume(String name) {
-		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.ResumeTableMetaData.PACKAGE_ID, mPackageId);
-	
-		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.ResumeTableMetaData.CONTENT_URI;
-		Log.d(TAG, "insertPackage uri: " + uri);
-		Uri insertedUri = cr.insert(uri, cv);
-		Log.d(TAG, "inserted uri: " + insertedUri);
-		
-		// Update the Package with the newly created resume _ID
-		long resumeId = (long) Integer.parseInt(insertedUri.getPathSegments().get(1));
-		Uri insertedPackageUri = ContentUris.withAppendedId( PackageTableMetaData.CONTENT_URI, mPackageId);
-
-		ContentValues contentValues = new ContentValues();
-		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, resumeId);
-
-		ContentResolver cr2 = this.getContentResolver();
-		Log.d(TAG, "updatePackage uri: " + insertedPackageUri);
-		cr2.update(insertedPackageUri, contentValues, null, null);
-
-	}
-
-    
-    private boolean resumeFieldsAreValid() {
-    	// check that all required fields contain data and are otherwise valid
-    	if (TextUtils.isEmpty(mResumeName.getText().toString())) {
-    		showAlert(R.string.nameIsRequired, R.string.resumeNotSaved);
-    		return false;
-    	}
-    	
-    	return true;
-    }
-    
     private void showAlert(int titleString, int messageString) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setTitle(titleString);
     	builder.setMessage(messageString);
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+            @Override
+			public void onClick(DialogInterface dialog, int id) {
                  // Nothing to do?
             }
         });

@@ -67,7 +67,50 @@ public class MainActivity extends Activity /* implements OnItemClickListener */ 
     	return true;
     }
     
-    private void populatePackages() {
+    private void addPackage() {
+				
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle(R.string.promptTitle);
+		alert.setMessage(R.string.promptPackageText);
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String packageName = input.getText().toString();
+				Log.v(TAG, "packageName = " + packageName);
+				insertPackage(packageName);
+			  	}
+			});
+
+		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+			    // Canceled.
+				}
+			});
+
+		alert.show();		
+	}
+    
+    	
+	private void insertPackage(String name) {
+		ContentValues cv = new ContentValues();
+		cv.put(KOResumeProviderMetaData.PackageTableMetaData.NAME, name);
+		cv.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, 0);
+	
+		ContentResolver cr = this.getContentResolver();
+		Uri uri = KOResumeProviderMetaData.PackageTableMetaData.CONTENT_URI;
+		Log.d(TAG, "insertPackage uri: " + uri);
+		Uri insertedUri = cr.insert(uri, cv);
+		Log.d(TAG, "inserted uri: " + insertedUri);
+	}
+	
+	private void populatePackages() {
     	Cursor cursor = managedQuery(KOResumeProviderMetaData.PackageTableMetaData.CONTENT_URI,
     						null,
     						null,
@@ -100,45 +143,4 @@ public class MainActivity extends Activity /* implements OnItemClickListener */ 
 			populatePackages();
     	}
     }
-    
-    	
-	private void addPackage() {
-				
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-		alert.setTitle(R.string.promptTitle);
-		alert.setMessage(R.string.promptPackageText);
-
-		// Set an EditText view to get user input 
-		final EditText input = new EditText(this);
-		alert.setView(input);
-
-		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String packageName = input.getText().toString();
-				Log.v(TAG, "packageName = " + packageName);
-				insertPackage(packageName);
-			  	}
-			});
-
-		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-			    // Canceled.
-				}
-			});
-
-		alert.show();		
-	}
-	
-	private void insertPackage(String name) {
-		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.PackageTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, (Integer) 0);
-	
-		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.PackageTableMetaData.CONTENT_URI;
-		Log.d(TAG, "insertPackage uri: " + uri);
-		Uri insertedUri = cr.insert(uri, cv);
-		Log.d(TAG, "inserted uri: " + insertedUri);
-	}
 }

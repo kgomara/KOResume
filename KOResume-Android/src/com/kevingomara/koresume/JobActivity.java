@@ -6,23 +6,20 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.kevingomara.koresume.KOResumeProviderMetaData.AccomplishmentsTableMetaData;
 import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 
 public class JobActivity extends Activity {
@@ -41,6 +38,15 @@ public class JobActivity extends Activity {
 	private TextView 	mEndDate	= null;
 	private EditText	mSummary	= null;
 	
+    public void onAccomplishmentsBtn(View view) {
+    	// Launch the resumeActivity Intent
+    	Intent intent = new Intent(this, AccomplishmentsActivity.class);
+    	Bundle extras = new Bundle();
+    	intent.putExtras(extras);
+    	intent.putExtra("id", mJobId);					// pass the row _Id of the selected job
+    	this.startActivity(intent);	
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,22 +89,16 @@ public class JobActivity extends Activity {
 //		populateAccomplishments(mJobId);
     }
     
-    private Cursor getJob() {
-    	Cursor cursor = managedQuery(JobsTableMetaData.CONTENT_URI,
-				null,										// we want all the columns
-				JobsTableMetaData._ID + " = " + mJobId,
-				null,
-				null);
-    	
-    	return cursor;
-    }
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
         
         return true;
+    }
+    
+    public void onEndDateBtn(View view) {
+    	// Set the End Date
     }
     
     @Override
@@ -129,12 +129,14 @@ public class JobActivity extends Activity {
     	// Set the Start Date    	
     }
     
-    public void onEndDateBtn(View view) {
-    	// Set the End Date
-    }
-    
-    public void onAccomplishmentsBtn(View view) {
+    private Cursor getJob() {
+    	Cursor cursor = managedQuery(JobsTableMetaData.CONTENT_URI,
+				null,										// we want all the columns
+				BaseColumns._ID + " = " + mJobId,
+				null,
+				null);
     	
+    	return cursor;
     }
 
     /*
@@ -151,6 +153,16 @@ public class JobActivity extends Activity {
 		mStartDate.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.START_DATE)));
 		mEndDate.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.END_DATE)));
 		mSummary.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.SUMMARY)));
+    }
+    
+    private boolean resumeFieldsAreValid() {
+    	// check that all required fields contain data and are otherwise valid
+    	if (TextUtils.isEmpty(mJobName.getText().toString())) {
+    		showAlert(R.string.nameIsRequired, R.string.resumeNotSaved);
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     private void saveResume() {
@@ -173,53 +185,6 @@ public class JobActivity extends Activity {
 		contentResolver.update(uri, contentValues, null, null);
 
     }
-/*    
-    private void populateAccomplishments(long jobId) {
-    	Cursor cursor = managedQuery(KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI,
-    						null,
-    						KOResumeProviderMetaData.AccomplishmentsTableMetaData.JOBS_ID + " = " + jobId,
-    						null,
-    						null);
-    	if (cursor.getCount() > 0) {
-    		String[] 	cols 	= new String[] {AccomplishmentsTableMetaData.NAME, AccomplishmentsTableMetaData.SUMMARY};
-    		int[] 		views	= new int[] {R.id.twoLineText1, R.id.twoLineText2};
-    		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-    										R.layout.layout_two_line_list_cell,
-    										cursor, 
-    										cols,
-    										views);
-    		mListView.setAdapter(adapter);
-    		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-    			@Override
-    		    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-    		    	// Launch the packageActivity Intent
-    		    }
-    		});
-    	} 
-    }
-
-	private void insertAccomplishment(String name) {
-		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.JOBS_ID, mJobId);
-	
-		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI;
-		Log.d(TAG, "insertAccomplishment uri: " + uri);
-		Uri insertedUri = cr.insert(uri, cv);
-		Log.d(TAG, "inserted uri: " + insertedUri);
-}
-*/
-    
-    private boolean resumeFieldsAreValid() {
-    	// check that all required fields contain data and are otherwise valid
-    	if (TextUtils.isEmpty(mJobName.getText().toString())) {
-    		showAlert(R.string.nameIsRequired, R.string.resumeNotSaved);
-    		return false;
-    	}
-    	
-    	return true;
-    }
     
     private void showAlert(int titleString, int messageString) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -227,7 +192,8 @@ public class JobActivity extends Activity {
     	builder.setMessage(messageString);
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+            @Override
+			public void onClick(DialogInterface dialog, int id) {
                  // Nothing to do?
             }
         });

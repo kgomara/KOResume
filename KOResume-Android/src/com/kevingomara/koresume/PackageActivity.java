@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +46,7 @@ public class PackageActivity extends Activity {
         // Get the appropriate package from the database
     	Cursor cursor = managedQuery(KOResumeProviderMetaData.PackageTableMetaData.CONTENT_URI,
 				new String[] {PackageTableMetaData.COVER_LTR},
-				PackageTableMetaData._ID + " = " + mPackageId,
+				BaseColumns._ID + " = " + mPackageId,
 				null,
 				null);
     	if (cursor.getCount() > 0) {

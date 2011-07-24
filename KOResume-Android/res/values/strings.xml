@@ -37,4 +37,6 @@
     <string name="jobResponsibilities">Responsibilities:</string>
     <string name="cityStateLbl">City, St</string>
     <string name="jobAccomplishments">View Accomplishments</string>
+    <string name="accomplishmentsHeader">Accomplishments:</string>
+    <string name="educationHeader">Education and Certifications</string>
 </resources>

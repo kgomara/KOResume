@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,134 +25,6 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.ResumeTableMetaData;
 
 public class KOResumeProvider extends ContentProvider {
 
-	private static final String TAG = "KOResumeProvider";
-	private static Context mContext = null;
-	
-	// Setup projection Maps
-	private static HashMap<String, String> sPackageProjectionMap;
-	static {
-		sPackageProjectionMap = new HashMap<String, String>();
-		sPackageProjectionMap.put(PackageTableMetaData._ID,				PackageTableMetaData._ID);
-		
-		// add fields
-		sPackageProjectionMap.put(PackageTableMetaData.NAME, 			PackageTableMetaData.NAME);
-		sPackageProjectionMap.put(PackageTableMetaData.COVER_LTR,  		PackageTableMetaData.COVER_LTR);
-		sPackageProjectionMap.put(PackageTableMetaData.CREATED_DATE, 	PackageTableMetaData.CREATED_DATE);
-		sPackageProjectionMap.put(PackageTableMetaData.RESUME_ID,		PackageTableMetaData.RESUME_ID);
-	}
-		
-	private static HashMap<String, String> sResumeProjectionMap;
-	static {
-		sResumeProjectionMap = new HashMap<String, String>();
-		sResumeProjectionMap.put(ResumeTableMetaData._ID,			ResumeTableMetaData._ID);
-		
-		// add fields
-		sResumeProjectionMap.put(ResumeTableMetaData.NAME,			ResumeTableMetaData.NAME);
-		sResumeProjectionMap.put(ResumeTableMetaData.SUMMARY, 		ResumeTableMetaData.SUMMARY);
-		sResumeProjectionMap.put(ResumeTableMetaData.CREATED_DATE,	ResumeTableMetaData.CREATED_DATE);
-		sResumeProjectionMap.put(ResumeTableMetaData.PACKAGE_ID,	ResumeTableMetaData.PACKAGE_ID);
-		sResumeProjectionMap.put(ResumeTableMetaData.STREET1,		ResumeTableMetaData.STREET1);
-		sResumeProjectionMap.put(ResumeTableMetaData.STREET2,		ResumeTableMetaData.STREET2);
-		sResumeProjectionMap.put(ResumeTableMetaData.CITY,			ResumeTableMetaData.CITY);
-		sResumeProjectionMap.put(ResumeTableMetaData.STATE,			ResumeTableMetaData.STATE);
-		sResumeProjectionMap.put(ResumeTableMetaData.POSTAL_CODE,	ResumeTableMetaData.POSTAL_CODE);
-		sResumeProjectionMap.put(ResumeTableMetaData.HOME_PHONE,	ResumeTableMetaData.HOME_PHONE);
-		sResumeProjectionMap.put(ResumeTableMetaData.MOBILE_PHONE,	ResumeTableMetaData.MOBILE_PHONE);
-	}
-		
-	private static HashMap<String, String> sJobsProjectionMap;
-	static {
-		sJobsProjectionMap = new HashMap<String, String>();
-		sJobsProjectionMap.put(JobsTableMetaData._ID,			JobsTableMetaData._ID);
-		
-		// add fields
-		sJobsProjectionMap.put(JobsTableMetaData.NAME,			JobsTableMetaData.NAME);
-		sJobsProjectionMap.put(JobsTableMetaData.SUMMARY, 		JobsTableMetaData.SUMMARY);
-		sJobsProjectionMap.put(JobsTableMetaData.CREATED_DATE,	JobsTableMetaData.CREATED_DATE);
-		sJobsProjectionMap.put(JobsTableMetaData.RESUME_ID,		JobsTableMetaData.RESUME_ID);
-		sJobsProjectionMap.put(JobsTableMetaData.URI,			JobsTableMetaData.URI);
-		sJobsProjectionMap.put(JobsTableMetaData.TITLE,			JobsTableMetaData.TITLE);
-		sJobsProjectionMap.put(JobsTableMetaData.CITY,			JobsTableMetaData.CITY);
-		sJobsProjectionMap.put(JobsTableMetaData.STATE,			JobsTableMetaData.STATE);
-		sJobsProjectionMap.put(JobsTableMetaData.START_DATE,	JobsTableMetaData.START_DATE);
-		sJobsProjectionMap.put(JobsTableMetaData.END_DATE,		JobsTableMetaData.END_DATE);
-	}
-		
-	private static HashMap<String, String> sAccomplishmentsProjectionMap;
-	static {
-		sAccomplishmentsProjectionMap = new HashMap<String, String>();
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData._ID,				AccomplishmentsTableMetaData._ID);
-		
-		// add fields
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.NAME,			AccomplishmentsTableMetaData.NAME);
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.SUMMARY, 		AccomplishmentsTableMetaData.SUMMARY);
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.CREATED_DATE,	AccomplishmentsTableMetaData.CREATED_DATE);
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.SEQUENCE_NUMBER,	AccomplishmentsTableMetaData.SEQUENCE_NUMBER);
-		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.JOBS_ID,			AccomplishmentsTableMetaData.JOBS_ID);
-	}
-		
-	private static HashMap<String, String> sEducationProjectionMap;
-	static {
-		sEducationProjectionMap = new HashMap<String, String>();
-		sEducationProjectionMap.put(EducationTableMetaData._ID,				EducationTableMetaData._ID);
-		
-		// add fields
-		sEducationProjectionMap.put(EducationTableMetaData.NAME,			EducationTableMetaData.NAME);
-		sEducationProjectionMap.put(EducationTableMetaData.CREATED_DATE,	EducationTableMetaData.CREATED_DATE);
-		sEducationProjectionMap.put(EducationTableMetaData.RESUME_ID,		EducationTableMetaData.RESUME_ID);
-		sEducationProjectionMap.put(EducationTableMetaData.TITLE,			EducationTableMetaData.TITLE);
-		sEducationProjectionMap.put(EducationTableMetaData.SEQUENCE_NUMBER,	EducationTableMetaData.SEQUENCE_NUMBER);
-		sEducationProjectionMap.put(EducationTableMetaData.CITY,			EducationTableMetaData.CITY);
-		sEducationProjectionMap.put(EducationTableMetaData.STATE,			EducationTableMetaData.STATE);
-		sEducationProjectionMap.put(EducationTableMetaData.EARNED_DATE,		EducationTableMetaData.EARNED_DATE);
-	}
-		
-	//Provide a mechanism to identify all the incoming Uri patterns
-	private static final UriMatcher sUriMatcher;
-	private static final int IN_SINGLE_PACKAGE_URI_INDICATOR 				=  1;
-	private static final int IN_PACKAGE_COLLECTION_URI_INDICATOR 			=  2;
-	private static final int IN_SINGLE_RESUME_URI_INDICATOR 				=  3;
-	private static final int IN_RESUME_COLLECTION_URI_INDICATOR 			=  4;
-	private static final int IN_SINGLE_JOBS_URI_INDICATOR 					=  5;
-	private static final int IN_JOBS_COLLECTION_URI_INDICATOR 				=  6;
-	private static final int IN_SINGLE_ACCOMPLISHMENTS_URI_INDICATOR 		=  7;
-	private static final int IN_ACCOMPLISHMENTS_COLLECTION_URI_INDICATOR	=  8;
-	private static final int IN_SINGLE_EDUCATION_URI_INDICATOR 				=  9;
-	private static final int IN_EDUCATION_COLLECTION_URI_INDICATOR 			= 10;
-	static {
-		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.PACKAGE_TABLE_NAME, 		
-							IN_PACKAGE_COLLECTION_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.PACKAGE_TABLE_NAME + "/#", 	
-							IN_SINGLE_PACKAGE_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.RESUME_TABLE_NAME, 			
-							IN_RESUME_COLLECTION_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.RESUME_TABLE_NAME  + "/#", 	
-							IN_SINGLE_RESUME_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.JOBS_TABLE_NAME, 			
-							IN_JOBS_COLLECTION_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.JOBS_TABLE_NAME  + "/#", 	
-							IN_SINGLE_JOBS_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.ACCOMPLISHMENTS_TABLE_NAME, 			
-							IN_ACCOMPLISHMENTS_COLLECTION_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.ACCOMPLISHMENTS_TABLE_NAME  + "/#", 	
-							IN_SINGLE_ACCOMPLISHMENTS_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.EDUCATION_TABLE_NAME, 			
-							IN_EDUCATION_COLLECTION_URI_INDICATOR);
-		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
-							KOResumeProviderMetaData.EDUCATION_TABLE_NAME  + "/#", 	
-							IN_SINGLE_EDUCATION_URI_INDICATOR);
-	}
-	
 	/**
 	 * Create the Database
 	 */
@@ -160,17 +33,6 @@ public class KOResumeProvider extends ContentProvider {
 			super(context, KOResumeProviderMetaData.DATABASE_NAME, null, KOResumeProviderMetaData.DATABASE_VERSION);
 			mContext = context;
 		}
-		
-		@Override
-		  public void onOpen(SQLiteDatabase db)
-		  {
-		    super.onOpen(db);
-		    if (!db.isReadOnly())
-		    {
-		      // Enable foreign key constraints
-		      db.execSQL("PRAGMA foreign_keys=ON;");
-		    }
-		  }
 		
 		@Override
 		public void onCreate(SQLiteDatabase db) {
@@ -239,6 +101,17 @@ public class KOResumeProvider extends ContentProvider {
 		}
 		
 		@Override
+		  public void onOpen(SQLiteDatabase db)
+		  {
+		    super.onOpen(db);
+		    if (!db.isReadOnly())
+		    {
+		      // Enable foreign key constraints
+		      db.execSQL("PRAGMA foreign_keys=ON;");
+		    }
+		  }
+		
+		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			/* 
 			 * Placeholder for version 1 of db. 
@@ -248,6 +121,134 @@ public class KOResumeProvider extends ContentProvider {
 			db.execSQL("DROP TABLE IF EXISTS " + PackageTableMetaData.TABLE_NAME);
 			onCreate(db);
 		}
+	}
+	private static final String TAG = "KOResumeProvider";
+	
+	private static Context mContext = null;
+	// Setup projection Maps
+	private static HashMap<String, String> sPackageProjectionMap;
+		
+	static {
+		sPackageProjectionMap = new HashMap<String, String>();
+		sPackageProjectionMap.put(BaseColumns._ID,				BaseColumns._ID);
+		
+		// add fields
+		sPackageProjectionMap.put(PackageTableMetaData.NAME, 			PackageTableMetaData.NAME);
+		sPackageProjectionMap.put(PackageTableMetaData.COVER_LTR,  		PackageTableMetaData.COVER_LTR);
+		sPackageProjectionMap.put(KOResumeBaseColumns.CREATED_DATE, 	KOResumeBaseColumns.CREATED_DATE);
+		sPackageProjectionMap.put(PackageTableMetaData.RESUME_ID,		PackageTableMetaData.RESUME_ID);
+	}
+	private static HashMap<String, String> sResumeProjectionMap;
+		
+	static {
+		sResumeProjectionMap = new HashMap<String, String>();
+		sResumeProjectionMap.put(BaseColumns._ID,			BaseColumns._ID);
+		
+		// add fields
+		sResumeProjectionMap.put(ResumeTableMetaData.NAME,			ResumeTableMetaData.NAME);
+		sResumeProjectionMap.put(ResumeTableMetaData.SUMMARY, 		ResumeTableMetaData.SUMMARY);
+		sResumeProjectionMap.put(KOResumeBaseColumns.CREATED_DATE,	KOResumeBaseColumns.CREATED_DATE);
+		sResumeProjectionMap.put(ResumeTableMetaData.PACKAGE_ID,	ResumeTableMetaData.PACKAGE_ID);
+		sResumeProjectionMap.put(ResumeTableMetaData.STREET1,		ResumeTableMetaData.STREET1);
+		sResumeProjectionMap.put(ResumeTableMetaData.STREET2,		ResumeTableMetaData.STREET2);
+		sResumeProjectionMap.put(ResumeTableMetaData.CITY,			ResumeTableMetaData.CITY);
+		sResumeProjectionMap.put(ResumeTableMetaData.STATE,			ResumeTableMetaData.STATE);
+		sResumeProjectionMap.put(ResumeTableMetaData.POSTAL_CODE,	ResumeTableMetaData.POSTAL_CODE);
+		sResumeProjectionMap.put(ResumeTableMetaData.HOME_PHONE,	ResumeTableMetaData.HOME_PHONE);
+		sResumeProjectionMap.put(ResumeTableMetaData.MOBILE_PHONE,	ResumeTableMetaData.MOBILE_PHONE);
+	}
+	private static HashMap<String, String> sJobsProjectionMap;
+		
+	static {
+		sJobsProjectionMap = new HashMap<String, String>();
+		sJobsProjectionMap.put(BaseColumns._ID,			BaseColumns._ID);
+		
+		// add fields
+		sJobsProjectionMap.put(JobsTableMetaData.NAME,			JobsTableMetaData.NAME);
+		sJobsProjectionMap.put(JobsTableMetaData.SUMMARY, 		JobsTableMetaData.SUMMARY);
+		sJobsProjectionMap.put(KOResumeBaseColumns.CREATED_DATE,	KOResumeBaseColumns.CREATED_DATE);
+		sJobsProjectionMap.put(JobsTableMetaData.RESUME_ID,		JobsTableMetaData.RESUME_ID);
+		sJobsProjectionMap.put(JobsTableMetaData.URI,			JobsTableMetaData.URI);
+		sJobsProjectionMap.put(JobsTableMetaData.TITLE,			JobsTableMetaData.TITLE);
+		sJobsProjectionMap.put(JobsTableMetaData.CITY,			JobsTableMetaData.CITY);
+		sJobsProjectionMap.put(JobsTableMetaData.STATE,			JobsTableMetaData.STATE);
+		sJobsProjectionMap.put(JobsTableMetaData.START_DATE,	JobsTableMetaData.START_DATE);
+		sJobsProjectionMap.put(JobsTableMetaData.END_DATE,		JobsTableMetaData.END_DATE);
+	}
+	private static HashMap<String, String> sAccomplishmentsProjectionMap;
+		
+	static {
+		sAccomplishmentsProjectionMap = new HashMap<String, String>();
+		sAccomplishmentsProjectionMap.put(BaseColumns._ID,				BaseColumns._ID);
+		
+		// add fields
+		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.NAME,			AccomplishmentsTableMetaData.NAME);
+		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.SUMMARY, 		AccomplishmentsTableMetaData.SUMMARY);
+		sAccomplishmentsProjectionMap.put(KOResumeBaseColumns.CREATED_DATE,	KOResumeBaseColumns.CREATED_DATE);
+		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.SEQUENCE_NUMBER,	AccomplishmentsTableMetaData.SEQUENCE_NUMBER);
+		sAccomplishmentsProjectionMap.put(AccomplishmentsTableMetaData.JOBS_ID,			AccomplishmentsTableMetaData.JOBS_ID);
+	}
+	private static HashMap<String, String> sEducationProjectionMap;
+		
+	static {
+		sEducationProjectionMap = new HashMap<String, String>();
+		sEducationProjectionMap.put(EducationTableMetaData._ID,				BaseColumns._ID);
+		
+		// add fields
+		sEducationProjectionMap.put(EducationTableMetaData.NAME,			EducationTableMetaData.NAME);
+		sEducationProjectionMap.put(EducationTableMetaData.CREATED_DATE,	EducationTableMetaData.CREATED_DATE);
+		sEducationProjectionMap.put(EducationTableMetaData.RESUME_ID,		EducationTableMetaData.RESUME_ID);
+		sEducationProjectionMap.put(EducationTableMetaData.TITLE,			EducationTableMetaData.TITLE);
+		sEducationProjectionMap.put(EducationTableMetaData.SEQUENCE_NUMBER,	EducationTableMetaData.SEQUENCE_NUMBER);
+		sEducationProjectionMap.put(EducationTableMetaData.CITY,			EducationTableMetaData.CITY);
+		sEducationProjectionMap.put(EducationTableMetaData.STATE,			EducationTableMetaData.STATE);
+		sEducationProjectionMap.put(EducationTableMetaData.EARNED_DATE,		EducationTableMetaData.EARNED_DATE);
+	}
+	//Provide a mechanism to identify all the incoming Uri patterns
+	private static final UriMatcher sUriMatcher;
+	private static final int IN_SINGLE_PACKAGE_URI_INDICATOR 				=  1;
+	private static final int IN_PACKAGE_COLLECTION_URI_INDICATOR 			=  2;
+	private static final int IN_SINGLE_RESUME_URI_INDICATOR 				=  3;
+	private static final int IN_RESUME_COLLECTION_URI_INDICATOR 			=  4;
+	private static final int IN_SINGLE_JOBS_URI_INDICATOR 					=  5;
+	private static final int IN_JOBS_COLLECTION_URI_INDICATOR 				=  6;
+	private static final int IN_SINGLE_ACCOMPLISHMENTS_URI_INDICATOR 		=  7;
+	private static final int IN_ACCOMPLISHMENTS_COLLECTION_URI_INDICATOR	=  8;
+	private static final int IN_SINGLE_EDUCATION_URI_INDICATOR 				=  9;
+	private static final int IN_EDUCATION_COLLECTION_URI_INDICATOR 			= 10;
+	
+	static {
+		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.PACKAGE_TABLE_NAME, 		
+							IN_PACKAGE_COLLECTION_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.PACKAGE_TABLE_NAME + "/#", 	
+							IN_SINGLE_PACKAGE_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.RESUME_TABLE_NAME, 			
+							IN_RESUME_COLLECTION_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.RESUME_TABLE_NAME  + "/#", 	
+							IN_SINGLE_RESUME_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.JOBS_TABLE_NAME, 			
+							IN_JOBS_COLLECTION_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.JOBS_TABLE_NAME  + "/#", 	
+							IN_SINGLE_JOBS_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.ACCOMPLISHMENTS_TABLE_NAME, 			
+							IN_ACCOMPLISHMENTS_COLLECTION_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.ACCOMPLISHMENTS_TABLE_NAME  + "/#", 	
+							IN_SINGLE_ACCOMPLISHMENTS_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.EDUCATION_TABLE_NAME, 			
+							IN_EDUCATION_COLLECTION_URI_INDICATOR);
+		sUriMatcher.addURI(	KOResumeProviderMetaData.AUTHORITY, 
+							KOResumeProviderMetaData.EDUCATION_TABLE_NAME  + "/#", 	
+							IN_SINGLE_EDUCATION_URI_INDICATOR);
 	}
 	
 	private DatabaseHelper mOpenHelper;
@@ -446,15 +447,6 @@ public class KOResumeProvider extends ContentProvider {
 		}
 	}
 	
-	private void updatePackageWithResumeId(long resumeId, Uri uri) {
-		Uri insertedPackageUri = ContentUris.withAppendedId( PackageTableMetaData.CONTENT_URI, resumeId);
-
-		ContentValues contentValues = new ContentValues();
-		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, resumeId);
-
-		update(insertedPackageUri, contentValues, null, null);
-	}
-
 	@Override
 	public boolean onCreate() {
 		Log.d(TAG, "main onCreate called");
@@ -624,5 +616,14 @@ public class KOResumeProvider extends ContentProvider {
 		getContext().getContentResolver().notifyChange(uri, null);
 		
 		return count;
+	}
+
+	private void updatePackageWithResumeId(long resumeId, Uri uri) {
+		Uri insertedPackageUri = ContentUris.withAppendedId( PackageTableMetaData.CONTENT_URI, resumeId);
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(KOResumeProviderMetaData.PackageTableMetaData.RESUME_ID, resumeId);
+
+		update(insertedPackageUri, contentValues, null, null);
 	}
 }

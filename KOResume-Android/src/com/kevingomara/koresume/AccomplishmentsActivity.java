@@ -17,13 +17,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.kevingomara.koresume.KOResumeProviderMetaData.EducationTableMetaData;
+import com.kevingomara.koresume.KOResumeProviderMetaData.AccomplishmentsTableMetaData;
 
-public class EducationActivity extends Activity {
+public class AccomplishmentsActivity extends Activity {
 
-	private static final String TAG = "EducationActivity";
+	private static final String TAG = "AccomplishmentsActivity";
 	
-	private long 		mResumeId	= 0l;
+	private long 		mJobId		= 0l;
 	
 	// references to the resume fields in the layout
 	private ListView	mListView	= null;
@@ -31,7 +31,7 @@ public class EducationActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.education_layout);
+        setContentView(R.layout.accomplishments_layout);
         
         Log.v(TAG, "onCreate() called");
         
@@ -41,14 +41,14 @@ public class EducationActivity extends Activity {
         
         // Get the jobId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
-        mResumeId = extras.getLong("id");
-        Log.v(TAG, "jobId = " + mResumeId);
+        mJobId = extras.getLong("id");
+        Log.v(TAG, "jobId = " + mJobId);
         
         // Get the ListView
-        mListView	= (ListView) findViewById(R.id.educationListView);
+        mListView	= (ListView) findViewById(R.id.accomplishmentsListView);
         
         // Populate the list of accomplishments
-        populateEducation(mResumeId);
+        populateAccomplishments(mJobId);
     }
     
     @Override
@@ -74,7 +74,7 @@ public class EducationActivity extends Activity {
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);
-//    		saveEducation();
+//    		saveAccomplishments();
     		break;
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
@@ -86,14 +86,14 @@ public class EducationActivity extends Activity {
     /*
      * helper methods
      */    
-    private void populateEducation(long jobId) {
-    	Cursor cursor = managedQuery(KOResumeProviderMetaData.EducationTableMetaData.CONTENT_URI,
+    private void populateAccomplishments(long jobId) {
+    	Cursor cursor = managedQuery(KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI,
     						null,
-    						KOResumeProviderMetaData.EducationTableMetaData.RESUME_ID + " = " + jobId,
+    						KOResumeProviderMetaData.AccomplishmentsTableMetaData.JOBS_ID + " = " + jobId,
     						null,
     						null);
     	if (cursor.getCount() > 0) {
-    		String[] 	cols 	= new String[] {EducationTableMetaData.NAME, EducationTableMetaData.TITLE};
+    		String[] 	cols 	= new String[] {AccomplishmentsTableMetaData.NAME, AccomplishmentsTableMetaData.SUMMARY};
     		int[] 		views	= new int[] {R.id.twoLineText1, R.id.twoLineText2};
     		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
     										R.layout.layout_two_line_list_cell,
@@ -112,11 +112,11 @@ public class EducationActivity extends Activity {
 
 	private void insertAccomplishment(String name) {
 		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.EducationTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.EducationTableMetaData.RESUME_ID, mResumeId);
+		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.NAME, name);
+		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.JOBS_ID, mJobId);
 	
 		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.EducationTableMetaData.CONTENT_URI;
+		Uri uri = KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI;
 		Log.d(TAG, "insertAccomplishment uri: " + uri);
 		Uri insertedUri = cr.insert(uri, cv);
 		Log.d(TAG, "inserted uri: " + insertedUri);
@@ -142,4 +142,5 @@ public class EducationActivity extends Activity {
         AlertDialog alert = builder.create();
     	alert.show();
     }
+
 }

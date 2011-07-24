@@ -41,6 +41,13 @@
         		<data android:mimeType="vnd.android.cursor.item/vnd.kevingomara.koresume" />
         	</intent-filter>
         </activity>
+        <activity android:name=".AccomplishmentsActivity"
+        	android:label="@string/app_name" >
+        	<intent-filter>
+        		<action android:name="android.intent.action.GET_CONTENT" />
+        		<data android:mimeType="vnd.android.cursor.item/vnd.kevingomara.koresume" />
+        	</intent-filter>
+        </activity>
         <activity android:name=".EducationActivity"
         	android:label="@string/app_name" >
         	<intent-filter>
