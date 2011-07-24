@@ -62,7 +62,7 @@ public class PackageActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.package_contents_menu, menu);
+        inflater.inflate(R.menu.default_menu, menu);
         
         return true;
     }
@@ -70,15 +70,15 @@ public class PackageActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.packageAbout:
+    	case R.id.viewAbout:
     		// TODO show the about intent
     		break;
-    	case R.id.editCoverLtr:
+    	case R.id.editInfo:
     		// TODO make the EditText editable/not editable
 //    		mCoverLtr.setFocusable(true); 
 //    		mCoverLtr.setClickable(true);
     		break;
-    	case R.id.saveCoverLtr:
+    	case R.id.saveInfo:
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);

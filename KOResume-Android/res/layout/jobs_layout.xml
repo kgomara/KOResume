@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background" 
+    >
+    <TextView
+    	android:id="@+id/jobsTextView"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/jobsHeader"
+		android:paddingLeft="5dp"
+		android:gravity="left"
+		/>    	
+	<ListView
+		android:id="@+id/jobsListView"
+		android:background="@drawable/group_style"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="20dip" 
+		/>
+</LinearLayout>

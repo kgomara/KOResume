@@ -12,13 +12,11 @@
     <string name="alertTitle">Alert</string>
     <string name="packageContents">Cover Letter:</string>
     <string name="packageViewResume">View Resume</string>
-    <string name="editCoverLetter">Edit Cover Letter</string>
-    <string name="saveCoverLetter">Save Cover Letter</string>
+    <string name="editInfo">Edit Information</string>
+    <string name="saveInfo">Save Information</string>
     <string name="resumeContents">Resume:</string>
     <string name="resumeViewJobs">View Jobs</string>
     <string name="resumeViewEducation">View Education &amp; Certifications</string>
-    <string name="editSummaryInfo">Edit Summary</string>
-    <string name="saveSummaryInfo">Save Summary</string>
     <string name="homePhone">Home</string>
     <string name="mobilePhone">Mobile</string>
     <string name="nameIsRequired">Name is required</string>
@@ -26,8 +24,17 @@
     <string name="resumeDefaultName">Please name your resume</string>
     <string name="resumeNameLbl">Resume Name:</string>
     <string name="resumeStreetLbl">Street:</string>
-    <string name="resumeCityLbl">City, St, Zip:</string>
+    <string name="cityLbl">City, St, Zip:</string>
     <string name="resumeHomePhoneLbl">Home Phone:</string>
     <string name="resumeMobilePhoneLbl">Mobile Phone:</string>
     <string name="resumeResponsibilitiesLbl">Responsibilities:</string>
+    <string name="jobsHeader">Jobs:</string>
+    <string name="jobContents">Job:</string>
+    <string name="jobNameLbl">Company:</string>
+    <string name="jobTitleLbl">Title:</string>
+    <string name="startDate">Start Date</string>
+    <string name="endDate">End Date</string>
+    <string name="jobResponsibilities">Responsibilities:</string>
+    <string name="cityStateLbl">City, St</string>
+    <string name="jobAccomplishments">View Accomplishments</string>
 </resources>
