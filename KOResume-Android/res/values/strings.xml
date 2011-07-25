@@ -39,4 +39,12 @@
     <string name="jobAccomplishments">View Accomplishments</string>
     <string name="accomplishmentsHeader">Accomplishments:</string>
     <string name="educationHeader">Education and Certifications</string>
+    <string name="aboutText">Copyright 2011, Kevin G O\'Mara</string>
+    <string name="deletePackage">Delete Package</string>
+    <string name="addJob">Add Job</string>
+    <string name="deleteJob">Delete Job</string>
+    <string name="editAccomplishment">Edit Accomplishment</string>
+    <string name="deleteAccomplishment">Delete Accomplishment</string>
+    <string name="accNameLbl">Name:</string>
+    <string name="accSummary">Accomplishment:</string>
 </resources>

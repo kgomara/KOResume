@@ -25,9 +25,9 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 public class JobActivity extends Activity {
 
 	private static final String TAG = "jobActivity";
+	private static final int DELETE_JOB = 999;
 	
 	private long 		mJobId		= 0l;
-	private long		mResumeId	= 0l;
 	
 	// references to the resume fields in the layout
 	private EditText 	mJobName	= null;
@@ -39,7 +39,7 @@ public class JobActivity extends Activity {
 	private EditText	mSummary	= null;
 	
     public void onAccomplishmentsBtn(View view) {
-    	// Launch the resumeActivity Intent
+    	// Launch the AccomplishmentsActivity Intent
     	Intent intent = new Intent(this, AccomplishmentsActivity.class);
     	Bundle extras = new Bundle();
     	intent.putExtras(extras);
@@ -54,9 +54,7 @@ public class JobActivity extends Activity {
         
         Log.v(TAG, "onCreate() called");
         
-        // Get references to the resume fields
-
-
+        // Get references to the job fields
         mJobName	= (EditText) findViewById(R.id.jobName);
         mSummary 	= (EditText) findViewById(R.id.jobSummary);
         mJobTitle	= (EditText) findViewById(R.id.jobTitle);
@@ -82,17 +80,17 @@ public class JobActivity extends Activity {
     		// should have the job
     		populateJobFields(cursor);
     	} else {
-        	Log.e(TAG, "Error, could not create Resume");
+        	Log.e(TAG, "Error, no job found for Id = " + mJobId);
     	}
 		cursor.close();
-		
-//		populateAccomplishments(mJobId);
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
+        MenuItem menuItem = menu.add(Menu.NONE, DELETE_JOB, Menu.NONE, R.string.deleteJob);
+        menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
     }
@@ -104,20 +102,29 @@ public class JobActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout:
-    		// TODO show the about intent
+    	case R.id.viewAbout: {
+        	// Launch the resumeActivity Intent
+        	Intent intent = new Intent(this, AboutActivity.class);
+        	this.startActivity(intent);
     		break;
-    	case R.id.editInfo:
+    	}
+    	case R.id.editInfo: {
     		// TODO make the EditText editable/not editable
 //    		mCoverLtr.setFocusable(true); 
 //    		mCoverLtr.setClickable(true);
     		break;
-    	case R.id.saveInfo:
+    	}
+    	case R.id.saveInfo: {
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);
     		saveResume();
     		break;
+    	}
+    	case DELETE_JOB: {
+    		deleteJob();
+    		break;
+    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
@@ -127,6 +134,10 @@ public class JobActivity extends Activity {
     
     public void onStartDateBtn(View view) {
     	// Set the Start Date    	
+    }
+    
+    private void deleteJob() {
+    	// TODO implement
     }
     
     private Cursor getJob() {

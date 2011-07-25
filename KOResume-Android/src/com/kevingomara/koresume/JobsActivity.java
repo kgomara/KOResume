@@ -19,6 +19,7 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 public class JobsActivity extends Activity {
 
 	private static final String TAG = "JobsActivity";
+	private static final int ADD_JOB	= 998;
 	
 	private Context		mContext	= this;
 	private long		mResumeId	= 0;
@@ -47,6 +48,8 @@ public class JobsActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
+        MenuItem menuItem = menu.add(Menu.NONE, ADD_JOB, Menu.NONE, R.string.addJob);
+        menuItem.setIcon(R.drawable.ic_menu_add);
         
         return true;
     }
@@ -54,20 +57,29 @@ public class JobsActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout:
-    		// TODO show the about intent
+    	case R.id.viewAbout: {
+        	// Launch the resumeActivity Intent
+        	Intent intent = new Intent(this, AboutActivity.class);
+        	this.startActivity(intent);
     		break;
-    	case R.id.editInfo:
+    	}
+    	case R.id.editInfo: {
     		// TODO make the EditText editable/not editable
 //    		mCoverLtr.setFocusable(true); 
 //    		mCoverLtr.setClickable(true);
     		break;
-    	case R.id.saveInfo:
+    	}
+    	case R.id.saveInfo: {
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);
     		saveJobs();
     		break;
+    	}
+    	case ADD_JOB: {
+    		insertJob();
+    		break;
+    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
@@ -102,6 +114,10 @@ public class JobsActivity extends Activity {
     		    }
     		});
     	}
+    }
+    
+    private void insertJob() {
+    	// TODO implement
     }
     
     private void saveJobs() {

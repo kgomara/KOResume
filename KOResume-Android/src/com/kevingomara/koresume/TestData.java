@@ -137,7 +137,7 @@ public class TestData {
 		insertOneEducation(resumeId, 1, "University of Missouri", 		"Columbia",		"MO", "BA, Business", 				Date.parse("6/1/1972"));
 		insertOneEducation(resumeId, 2, "San Diego State University", 	"San Diego",	"CA", "MBA, Information Systems",	Date.parse("6/1/1978"));
 		insertOneEducation(resumeId, 3, "Certified Scrum Master (CSM)", "San Francisco","CA", null, Date.parse("1/1/2009"));
-		insertOneEducation(resumeId, 4, "Sun Certified Programmer for the Java Platform, SE 6 (SCJP)", 
+		insertOneEducation(resumeId, 4, "Sun Certified Java Programmer (SCJP)", 
 																		"San francisco","CA", null, Date.parse("4/1/2009"));
 	}
 	

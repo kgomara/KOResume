@@ -20,9 +20,10 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.PackageTableMetaData;
 
 public class PackageActivity extends Activity {
 
-	public static final String TAG	= "PackageActivity";
-	private EditText mCoverLtr		= null;
-	private static long mPackageId	= -1l;
+	private static final String		TAG				= "PackageActivity";
+	private static final int		DELETE_PACKAGE	= 999;
+	private 			 EditText 	mCoverLtr		= null;
+	private static 		 long  		mPackageId		= -1l;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,11 @@ public class PackageActivity extends Activity {
         mPackageId = extras.getLong("id");
         Log.v(TAG, "packageId = " + mPackageId);
         
+        getPackage();
+        
+    }
+    
+    private void getPackage() {
         // Get the appropriate package from the database
     	Cursor cursor = managedQuery(KOResumeProviderMetaData.PackageTableMetaData.CONTENT_URI,
 				new String[] {PackageTableMetaData.COVER_LTR},
@@ -56,14 +62,16 @@ public class PackageActivity extends Activity {
     		int colIdx = cursor.getColumnIndex(PackageTableMetaData.COVER_LTR);
     		String coverLtrText = cursor.getString(colIdx);
     		mCoverLtr.setText(coverLtrText);
-    		cursor.close();
     	}
+		cursor.close();
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
+        MenuItem menuItem = menu.add(Menu.NONE, DELETE_PACKAGE, Menu.NONE, R.string.deletePackage);
+        menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
     }
@@ -71,21 +79,30 @@ public class PackageActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout:
-    		// TODO show the about intent
+    	case R.id.viewAbout: {
+        	// Launch the resumeActivity Intent
+        	Intent intent = new Intent(this, AboutActivity.class);
+        	this.startActivity(intent);
     		break;
-    	case R.id.editInfo:
+    	}
+    	case R.id.editInfo: {
     		// TODO make the EditText editable/not editable
 //    		mCoverLtr.setFocusable(true); 
 //    		mCoverLtr.setClickable(true);
     		break;
-    	case R.id.saveInfo:
+    	}
+    	case R.id.saveInfo: {
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);
     		String updatedCoverLtr = mCoverLtr.getText().toString();
     		updateCoverLtr(updatedCoverLtr);
     		break;
+    	}
+    	case DELETE_PACKAGE: {
+    		deletePackage();
+    		break;
+    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
@@ -99,8 +116,11 @@ public class PackageActivity extends Activity {
     	Bundle extras = new Bundle();
     	intent.putExtras(extras);
     	intent.putExtra("id", mPackageId);					// pass the row _Id of the selected package
-    	this.startActivity(intent);
-    	
+    	this.startActivity(intent);   	
+    }
+    
+    private void deletePackage() {
+    	// TODO implement
     }
     
 	private void updateCoverLtr(String coverLtr) {

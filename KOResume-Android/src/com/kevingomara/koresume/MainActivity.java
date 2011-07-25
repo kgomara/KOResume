@@ -54,12 +54,16 @@ public class MainActivity extends Activity /* implements OnItemClickListener */ 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.about:
-    		// TODO show the about intent
+    	case R.id.about: {
+        	// Launch the resumeActivity Intent
+        	Intent intent = new Intent(this, AboutActivity.class);
+        	this.startActivity(intent);
     		break;
-    	case R.id.addPackage:
+    	}
+    	case R.id.addPackage: {
     		addPackage();
     		break;
+    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}

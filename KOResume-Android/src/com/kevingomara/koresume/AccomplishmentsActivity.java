@@ -5,10 +5,13 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,11 +24,14 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.AccomplishmentsTableMet
 
 public class AccomplishmentsActivity extends Activity {
 
-	private static final String TAG = "AccomplishmentsActivity";
+	private static final String TAG 		= "AccomplishmentsActivity";
+	private static final int	EDIT_ITEM	= 998;
+	private static final int	DELETE_ITEM	= 999;
 	
 	private long 		mJobId		= 0l;
+	private long		mAccId		= 0l;
 	
-	// references to the resume fields in the layout
+	// references to the Accomplishments fields in the layout
 	private ListView	mListView	= null;
 	
     @Override
@@ -44,11 +50,43 @@ public class AccomplishmentsActivity extends Activity {
         mJobId = extras.getLong("id");
         Log.v(TAG, "jobId = " + mJobId);
         
-        // Get the ListView
+        // Get the ListView and register it for a context menu
         mListView	= (ListView) findViewById(R.id.accomplishmentsListView);
+        registerForContextMenu(mListView);
         
         // Populate the list of accomplishments
         populateAccomplishments(mJobId);
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        mAccId = info.id;
+    	menu.add(Menu.NONE, EDIT_ITEM, 	 Menu.NONE, R.string.editAccomplishment);
+    	menu.add(Menu.NONE, DELETE_ITEM, Menu.NONE, R.string.deleteAccomplishment);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+    	
+    	int itemId = menuItem.getItemId();
+    	switch (itemId) {
+	    	case EDIT_ITEM: {
+	        	// Launch the AccomplishmentsActivity Intent
+	        	Intent intent = new Intent(this, EditAccomplishmentActivity.class);
+	        	Bundle extras = new Bundle();
+	        	intent.putExtras(extras);
+	        	intent.putExtra("id", mAccId);					// pass the row _Id of the selected job
+	        	this.startActivity(intent);	
+	    		break;
+	    	}
+	    	case DELETE_ITEM: {
+	    		deleteAccomplishment(mAccId);
+	    		break;
+	    	}
+    	}
+    	
+    	return true;
     }
     
     @Override
@@ -62,20 +100,25 @@ public class AccomplishmentsActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout:
-    		// TODO show the about intent
+    	case R.id.viewAbout: {
+        	// Launch the resumeActivity Intent
+        	Intent intent = new Intent(this, AboutActivity.class);
+        	this.startActivity(intent);
     		break;
-    	case R.id.editInfo:
+    	}
+    	case R.id.editInfo: {
     		// TODO make the EditText editable/not editable
 //    		mCoverLtr.setFocusable(true); 
 //    		mCoverLtr.setClickable(true);
     		break;
-    	case R.id.saveInfo:
+    	}
+    	case R.id.saveInfo: {
     		// TODO make the EditText editable/not editable    		
 //    		mCoverLtr.setFocusable(false); 
 //    		mCoverLtr.setClickable(false);
 //    		saveAccomplishments();
     		break;
+    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
@@ -108,6 +151,10 @@ public class AccomplishmentsActivity extends Activity {
     		    }
     		});
     	}
+    }
+    
+    private void deleteAccomplishment(long itemId) {
+    	// TODO implement
     }
 
 	private void insertAccomplishment(String name) {

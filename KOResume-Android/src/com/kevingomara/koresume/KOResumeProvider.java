@@ -31,7 +31,6 @@ public class KOResumeProvider extends ContentProvider {
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
 			super(context, KOResumeProviderMetaData.DATABASE_NAME, null, KOResumeProviderMetaData.DATABASE_VERSION);
-			mContext = context;
 		}
 		
 		@Override
@@ -124,7 +123,6 @@ public class KOResumeProvider extends ContentProvider {
 	}
 	private static final String TAG = "KOResumeProvider";
 	
-	private static Context mContext = null;
 	// Setup projection Maps
 	private static HashMap<String, String> sPackageProjectionMap;
 		

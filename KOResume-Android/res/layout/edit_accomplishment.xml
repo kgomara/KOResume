@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:fillViewport="true"	>
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/background" 
+	    >
+		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:id="@+id/accMetaData"
+			android:background="@drawable/group_style"
+			android:layout_marginTop="10dip"
+			android:layout_marginLeft="20dip"
+			android:layout_marginRight="20dip" 
+			android:layout_width="wrap_content"
+			android:layout_weight="1.0"
+			android:layout_height="wrap_content" >
+			<TextView
+				android:id="@+id/accNameLbl"
+				android:text="@string/accNameLbl"
+				android:textColor="#000000"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" 
+				/>				
+			<EditText
+				android:id="@+id/accName"
+				android:layout_below="@id/accNameLbl"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="44dip"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				/>
+			<TextView
+				android:id="@+id/accSummaryLbl"
+				android:text="@string/accSummary"
+				android:textColor="#000000"
+				android:layout_below="@id/accName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall" 
+				/>				
+			<EditText
+				android:id="@+id/accSummary"
+				android:layout_below="@id/accSummaryLbl"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minWidth="44dip"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				/>
+		</RelativeLayout>
+	</LinearLayout>
+</ScrollView>
