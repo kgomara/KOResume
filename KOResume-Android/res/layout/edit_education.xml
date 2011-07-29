@@ -10,7 +10,7 @@
 	    android:background="@drawable/background" 
 	    >
 		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			android:id="@+id/accMetaData"
+			android:id="@+id/eduMetaData"
 			android:background="@drawable/group_style"
 			android:layout_marginTop="10dip"
 			android:layout_marginLeft="20dip"
@@ -18,8 +18,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" >
 			<TextView
-				android:id="@+id/accNameLbl"
-				android:text="@string/accNameLbl"
+				android:id="@+id/eduNameLbl"
+				android:text="@string/eduNameLbl"
 				android:textColor="#000000"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -28,8 +28,8 @@
 				android:textAppearance="?android:attr/textAppearanceSmall" 
 				/>				
 			<EditText
-				android:id="@+id/accName"
-				android:layout_below="@id/accNameLbl"
+				android:id="@+id/eduName"
+				android:layout_below="@id/eduNameLbl"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:minWidth="44dip"
@@ -38,10 +38,10 @@
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				/>
 			<TextView
-				android:id="@+id/accSummaryLbl"
-				android:text="@string/accSummary"
+				android:id="@+id/eduTitleLbl"
+				android:text="@string/eduTitle"
 				android:textColor="#000000"
-				android:layout_below="@id/accName"
+				android:layout_below="@id/eduName"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
@@ -49,8 +49,8 @@
 				android:textAppearance="?android:attr/textAppearanceSmall" 
 				/>				
 			<EditText
-				android:id="@+id/accSummary"
-				android:layout_below="@id/accSummaryLbl"
+				android:id="@+id/eduTitle"
+				android:layout_below="@id/eduTitleLbl"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:minWidth="44dip"
@@ -58,9 +58,28 @@
 				android:paddingRight="5dip"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				/>
+			<TextView
+				android:id="@+id/eduEarnedDateLbl"
+				android:textColor="#000000"
+				android:layout_below="@id/eduTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minWidth="44dip"
+				android:paddingLeft="5dip"
+				android:paddingRight="5dip"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				/>							
 			<Button
-				android:id="@+id/cancelAccomplishmentBtn"
-				android:layout_below="@id/accSummary"
+				android:id="@+id/eduEarnedDateBtn"
+				android:layout_below="@id/eduTitle"
+				android:layout_toRightOf="@id/eduEarnedDateLbl"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/eduEarnedDate"
+				/>
+			<Button
+				android:id="@+id/cancelEducationBtn"
+				android:layout_below="@id/eduEarnedDateBtn"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="20dip"
@@ -70,8 +89,8 @@
 				android:onClick="onCancelBtn"
 				/>
 			<Button
-				android:id="@+id/saveAccomplishmentBtn"
-				android:layout_below="@id/cancelAccomplishmentBtn"
+				android:id="@+id/saveEducationBtn"
+				android:layout_below="@id/cancelEducationBtn"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="20dip"

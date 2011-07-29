@@ -32,7 +32,7 @@ public class JobsActivity extends Activity {
         
         Log.v(TAG, "onCreate() called");
 
-        // Get the packageId passed from the extras
+        // Get the resumeId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
         mResumeId = extras.getLong("id");
         Log.v(TAG, "resumeId = " + mResumeId);
@@ -58,7 +58,7 @@ public class JobsActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
     	case R.id.viewAbout: {
-        	// Launch the resumeActivity Intent
+        	// Launch the aboutActivity Intent
         	Intent intent = new Intent(this, AboutActivity.class);
         	this.startActivity(intent);
     		break;
@@ -105,11 +105,11 @@ public class JobsActivity extends Activity {
     		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     			@Override
     		    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-    		    	// Launch the packageActivity Intent
+    		    	// Launch the jobActivity Intent
     		    	Intent intent = new Intent(mContext, JobActivity.class);
     		    	Bundle extras = new Bundle();
     		    	intent.putExtras(extras);
-    		    	intent.putExtra("id", id);					// pass the row _Id of the selected package
+    		    	intent.putExtra("id", id);					// pass the row _Id of the selected job
     		    	mContext.startActivity(intent);
     		    }
     		});

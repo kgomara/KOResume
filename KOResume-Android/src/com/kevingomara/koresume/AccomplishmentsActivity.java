@@ -3,7 +3,6 @@ package com.kevingomara.koresume;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -72,7 +71,7 @@ public class AccomplishmentsActivity extends Activity {
     	int itemId = menuItem.getItemId();
     	switch (itemId) {
 	    	case EDIT_ITEM: {
-	        	// Launch the AccomplishmentsActivity Intent
+	        	// Launch the EditAccomplishmentsActivity Intent
 	        	Intent intent = new Intent(this, EditAccomplishmentActivity.class);
 	        	Bundle extras = new Bundle();
 	        	intent.putExtras(extras);
@@ -92,7 +91,7 @@ public class AccomplishmentsActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.default_menu, menu);
+        inflater.inflate(R.menu.add_info_menu, menu);
         
         return true;
     }
@@ -100,23 +99,19 @@ public class AccomplishmentsActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout: {
+    	case R.id.addViewAbout: {
         	// Launch the resumeActivity Intent
         	Intent intent = new Intent(this, AboutActivity.class);
         	this.startActivity(intent);
     		break;
     	}
-    	case R.id.editInfo: {
-    		// TODO make the EditText editable/not editable
-//    		mCoverLtr.setFocusable(true); 
-//    		mCoverLtr.setClickable(true);
-    		break;
-    	}
-    	case R.id.saveInfo: {
-    		// TODO make the EditText editable/not editable    		
-//    		mCoverLtr.setFocusable(false); 
-//    		mCoverLtr.setClickable(false);
-//    		saveAccomplishments();
+    	case R.id.addInfo: {
+        	// Launch the SaveAccomplishmentsActivity Intent
+        	Intent intent = new Intent(this, SaveAccomplishmentActivity.class);
+        	Bundle extras = new Bundle();
+        	intent.putExtras(extras);
+        	intent.putExtra("id", mJobId);					// pass the _Id of the selected job
+        	this.startActivity(intent);	
     		break;
     	}
     	default:
@@ -154,22 +149,13 @@ public class AccomplishmentsActivity extends Activity {
     }
     
     private void deleteAccomplishment(long itemId) {
-    	// TODO implement
+    	ContentResolver contentResolver = this.getContentResolver();
+    	Uri uri = KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI;
+    	Uri delUri = Uri.withAppendedPath(uri, Integer.toString((int) itemId));
+    	Log.d(TAG, "delUri = " + delUri);
+    	contentResolver.delete(delUri, null, null);
     }
 
-	private void insertAccomplishment(String name) {
-		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.AccomplishmentsTableMetaData.JOBS_ID, mJobId);
-	
-		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.AccomplishmentsTableMetaData.CONTENT_URI;
-		Log.d(TAG, "insertAccomplishment uri: " + uri);
-		Uri insertedUri = cr.insert(uri, cv);
-		Log.d(TAG, "inserted uri: " + insertedUri);
-}
-
-    
     private void showAlert(int titleString, int messageString) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setTitle(titleString);

@@ -79,7 +79,8 @@ public class KOResumeProvider extends ContentProvider {
 					+ AccomplishmentsTableMetaData.NAME	 			+ " TEXT,"
 					+ AccomplishmentsTableMetaData.SUMMARY			+ " TEXT,"
 					+ AccomplishmentsTableMetaData.JOBS_ID 			+ " INTEGER,"
-					+ AccomplishmentsTableMetaData.SEQUENCE_NUMBER	+ " INTEGER,"
+					// TODO figure out why autoincrement doesn't work
+					+ AccomplishmentsTableMetaData.SEQUENCE_NUMBER	+ " INTEGER AUTO INCREMENT,"
 					+ "FOREIGN KEY (" + AccomplishmentsTableMetaData.JOBS_ID + ") "
 					+ "REFERENCES " + JobsTableMetaData.TABLE_NAME 
 					+ " (" + JobsTableMetaData._ID + "));");
@@ -91,7 +92,8 @@ public class KOResumeProvider extends ContentProvider {
 					+ EducationTableMetaData.TITLE				+ " TEXT,"
 					+ EducationTableMetaData.CITY		 		+ " TEXT,"
 					+ EducationTableMetaData.STATE 				+ " TEXT,"
-					+ EducationTableMetaData.SEQUENCE_NUMBER	+ " INTEGER,"
+					// TODO figure out why autoincrement doesn't work
+					+ EducationTableMetaData.SEQUENCE_NUMBER	+ " INTEGER AUTO INCREMENT,"
 					+ EducationTableMetaData.EARNED_DATE		+ " INTEGER,"
 					+ "FOREIGN KEY (" + EducationTableMetaData.RESUME_ID + ") "
 					+ "REFERENCES " + ResumeTableMetaData.TABLE_NAME 

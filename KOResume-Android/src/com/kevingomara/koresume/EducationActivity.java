@@ -6,7 +6,6 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,28 +14,30 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.kevingomara.koresume.KOResumeProviderMetaData.EducationTableMetaData;
 
 public class EducationActivity extends Activity {
 
-	private static final String TAG = "EducationActivity";
+	private static final String TAG 		= "EducationActivity";
 	private static final int	EDIT_ITEM	= 998;
 	private static final int	DELETE_ITEM	= 999;
 	
 	private long 		mResumeId	= 0l;
+	private long		mEduId		= 0l;
 	
-	// references to the resume fields in the layout
+	// references to the fields in the layout
 	private ListView	mListView	= null;
 	
     @Override
@@ -50,13 +51,14 @@ public class EducationActivity extends Activity {
 //		mCoverLtr.setFocusable(false); 
 //		mCoverLtr.setClickable(false);
         
-        // Get the jobId passed from the extras
+        // Get the resumeId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
         mResumeId = extras.getLong("id");
-        Log.v(TAG, "jobId = " + mResumeId);
+        Log.v(TAG, "resumeId = " + mResumeId);
         
         // Get the ListView
         mListView	= (ListView) findViewById(R.id.educationListView);
+        registerForContextMenu(mListView);
         
         // Populate the list of accomplishments
         populateEducation(mResumeId);
@@ -64,16 +66,10 @@ public class EducationActivity extends Activity {
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-    	menu.add(Menu.NONE, EDIT_ITEM, 	 Menu.NONE, R.string.editAccomplishment);
-    	menu.add(Menu.NONE, DELETE_ITEM, Menu.NONE, R.string.deleteAccomplishment);
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.default_menu, menu);
-        
-        return true;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        mEduId = info.id;
+    	menu.add(Menu.NONE, EDIT_ITEM, 	 Menu.NONE, R.string.editEducation);
+    	menu.add(Menu.NONE, DELETE_ITEM, Menu.NONE, R.string.deleteEducation);
     }
     
     @Override
@@ -82,11 +78,16 @@ public class EducationActivity extends Activity {
     	int itemId = menuItem.getItemId();
     	switch (itemId) {
 	    	case EDIT_ITEM: {
-	    		editEducation(itemId);
+	        	// Launch the EditAccomplishmentsActivity Intent
+	        	Intent intent = new Intent(this, EditEducationActivity.class);
+	        	Bundle extras = new Bundle();
+	        	intent.putExtras(extras);
+	        	intent.putExtra("id", mEduId);					// pass the row _Id of the selected job
+	        	this.startActivity(intent);	
 	    		break;
 	    	}
 	    	case DELETE_ITEM: {
-	    		deleteEducation(itemId);
+	    		deleteEducation(mEduId);
 	    		break;
 	    	}
     	}
@@ -95,25 +96,29 @@ public class EducationActivity extends Activity {
     }
     
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_info_menu, menu);
+        
+        return true;
+    }
+    
+    @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
     	switch (menuItem.getItemId()) {
-    	case R.id.viewAbout: {
+    	case R.id.addViewAbout: {
         	// Launch the resumeActivity Intent
         	Intent intent = new Intent(this, AboutActivity.class);
         	this.startActivity(intent);
     		break;
     	}
-    	case R.id.editInfo: {
-    		// TODO make the EditText editable/not editable
-//    		mCoverLtr.setFocusable(true); 
-//    		mCoverLtr.setClickable(true);
-    		break;
-    	}
-    	case R.id.saveInfo: {
-    		// TODO make the EditText editable/not editable    		
-//    		mCoverLtr.setFocusable(false); 
-//    		mCoverLtr.setClickable(false);
-//    		saveEducation();
+    	case R.id.addInfo: {
+        	// Launch the SaveAccomplishmentsActivity Intent
+        	Intent intent = new Intent(this, SaveEducationActivity.class);
+        	Bundle extras = new Bundle();
+        	intent.putExtras(extras);
+        	intent.putExtra("id", mResumeId);					// pass the _Id of the resume
+        	this.startActivity(intent);	
     		break;
     	}
     	default:
@@ -177,27 +182,25 @@ public class EducationActivity extends Activity {
         }
     }
 
-    private void editEducation(int itemId) {
-    	// TODO implement
-    }
-    
-    private void deleteEducation(int itemId) {
-    	// TODO implement
+    private void deleteEducation(long itemId) {
+    	ContentResolver contentResolver = this.getContentResolver();
+    	Uri uri = EducationTableMetaData.CONTENT_URI;
+    	Uri delUri = Uri.withAppendedPath(uri, Integer.toString((int) itemId));
+    	Log.d(TAG, "delUri = " + delUri);
+    	contentResolver.delete(delUri, null, null);
+    	
+    	// Redraw the listView
+    	// TODO - there may be a more elegant way of doing this
+    	populateEducation(mResumeId);
     }
 
-	private void insertEducation(String name) {
-		ContentValues cv = new ContentValues();
-		cv.put(KOResumeProviderMetaData.EducationTableMetaData.NAME, name);
-		cv.put(KOResumeProviderMetaData.EducationTableMetaData.RESUME_ID, mResumeId);
-	
-		ContentResolver cr = this.getContentResolver();
-		Uri uri = KOResumeProviderMetaData.EducationTableMetaData.CONTENT_URI;
-		Log.d(TAG, "insertAccomplishment uri: " + uri);
-		Uri insertedUri = cr.insert(uri, cv);
-		Log.d(TAG, "inserted uri: " + insertedUri);
-}
-
-    
+    /**
+     * Show an Alert
+     * Not currently used - keeping as we really should confirm delete intent
+     * 
+     * @param titleString
+     * @param messageString
+     */
     private void showAlert(int titleString, int messageString) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setTitle(titleString);

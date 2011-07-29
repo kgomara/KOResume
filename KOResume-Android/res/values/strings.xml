@@ -45,6 +45,13 @@
     <string name="deleteJob">Delete Job</string>
     <string name="editAccomplishment">Edit Accomplishment</string>
     <string name="deleteAccomplishment">Delete Accomplishment</string>
-    <string name="accNameLbl">Name:</string>
+    <string name="accNameLbl">Accomplishment Name:</string>
     <string name="accSummary">Accomplishment:</string>
+    <string name="save">Save</string>
+    <string name="addInfo">Add Information</string>
+    <string name="eduNameLbl">Institution/Certification Name</string>
+    <string name="eduTitle">Degree/Certification Title</string>
+    <string name="editEducation">Edit Education/Certification</string>
+    <string name="deleteEducation">Delete Education/Certification</string>
+    <string name="eduEarnedDate">Date Awarded</string>
 </resources>

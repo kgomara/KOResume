@@ -3,6 +3,8 @@ package com.kevingomara.koresume;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.ContentResolver;
@@ -20,9 +22,11 @@ public class TestData {
 	private Context mContext		= null;
 	private int mPackageId			= 0;
 	private int mResumeId			= 0;
+	private DateFormat dateFormat	= null;
 	
 	public TestData(Context context) {
 		mContext = context;
+		dateFormat = SimpleDateFormat.getDateInstance();
 	}
 	
 	public void create() {
@@ -67,7 +71,7 @@ public class TestData {
 					+ "with a backend WebSphere CMS.  The app configured itself based on CMS metadata, maintained a "
 					+ "LRU cache cache of content objects, streamed video, and displayed several media types";
 		String acc4 = "Contributed to numerous iOS and Android apps - debugging, enhancing, and performing code reviews.";
-		
+				
 		int jobId = insertOneJob(	resumeId,
 									"Appiction, LLC", 
 									"www.appiction.com", 
@@ -82,6 +86,18 @@ public class TestData {
 		insertOneAccomplishment(jobId, 4, "Technical Lead",		acc4);
 	}
 	
+/*	private long getDateAsLong(String dateString) {
+		long retVal = 0l;
+		try {
+			Date date = dateFormat.parse(dateString);
+			Log.v(TAG, "date = " + date.toString());
+			retVal = date.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return retVal;
+	}
+*/	
 	private void insertOneAccomplishment(int jobId, int seqNum, String name, String summary) {
 
 		ContentValues contentValues = new ContentValues();
