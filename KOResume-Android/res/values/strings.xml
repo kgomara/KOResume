@@ -54,4 +54,6 @@
     <string name="editEducation">Edit Education/Certification</string>
     <string name="deleteEducation">Delete Education/Certification</string>
     <string name="eduEarnedDate">Date Awarded</string>
+    <string name="deleteResume">Delete Resume</string>
+    <string name="defaultJobName">Enter Job Name</string>
 </resources>

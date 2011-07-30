@@ -91,7 +91,7 @@ public class ResumeActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
-        MenuItem menuItem = menu.add(Menu.NONE, DELETE_RESUME, Menu.NONE, R.string.deletePackage);
+        MenuItem menuItem = menu.add(Menu.NONE, DELETE_RESUME, Menu.NONE, R.string.deleteResume);
         menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;

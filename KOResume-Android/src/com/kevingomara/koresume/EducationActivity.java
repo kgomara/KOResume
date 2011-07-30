@@ -142,7 +142,7 @@ public class EducationActivity extends Activity {
     		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     			@Override
     		    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-    		    	// Launch the packageActivity Intent
+    		    	// Nothing needed here
     		    }
     		});
     	}

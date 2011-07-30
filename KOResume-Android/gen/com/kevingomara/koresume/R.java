@@ -135,10 +135,12 @@ public final class R {
         public static final int cancel=0x7f050008;
         public static final int cityLbl=0x7f050018;
         public static final int cityStateLbl=0x7f050023;
+        public static final int defaultJobName=0x7f050037;
         public static final int deleteAccomplishment=0x7f05002c;
         public static final int deleteEducation=0x7f050034;
         public static final int deleteJob=0x7f05002a;
         public static final int deletePackage=0x7f050028;
+        public static final int deleteResume=0x7f050036;
         public static final int editAccomplishment=0x7f05002b;
         public static final int editEducation=0x7f050033;
         public static final int editInfo=0x7f05000c;

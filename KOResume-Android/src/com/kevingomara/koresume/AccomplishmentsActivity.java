@@ -58,6 +58,13 @@ public class AccomplishmentsActivity extends Activity {
     }
     
     @Override
+    public void onResume() {
+    	super.onResume();
+    	
+    	populateAccomplishments(mJobId);
+    }
+    
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         mAccId = info.id;

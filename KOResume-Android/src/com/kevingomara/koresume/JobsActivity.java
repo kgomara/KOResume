@@ -1,9 +1,14 @@
 package com.kevingomara.koresume;
 
+import java.util.Calendar;
+
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.kevingomara.koresume.KOResumeProviderMetaData.EducationTableMetaData;
 import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 
 public class JobsActivity extends Activity {
@@ -49,6 +55,8 @@ public class JobsActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
         MenuItem menuItem = menu.add(Menu.NONE, ADD_JOB, Menu.NONE, R.string.addJob);
+        menu.removeItem(R.id.saveInfo);
+        menu.removeItem(R.id.editInfo);
         menuItem.setIcon(R.drawable.ic_menu_add);
         
         return true;
@@ -61,19 +69,6 @@ public class JobsActivity extends Activity {
         	// Launch the aboutActivity Intent
         	Intent intent = new Intent(this, AboutActivity.class);
         	this.startActivity(intent);
-    		break;
-    	}
-    	case R.id.editInfo: {
-    		// TODO make the EditText editable/not editable
-//    		mCoverLtr.setFocusable(true); 
-//    		mCoverLtr.setClickable(true);
-    		break;
-    	}
-    	case R.id.saveInfo: {
-    		// TODO make the EditText editable/not editable    		
-//    		mCoverLtr.setFocusable(false); 
-//    		mCoverLtr.setClickable(false);
-    		saveJobs();
     		break;
     	}
     	case ADD_JOB: {
@@ -117,11 +112,20 @@ public class JobsActivity extends Activity {
     }
     
     private void insertJob() {
-    	// TODO implement
-    }
-    
-    private void saveJobs() {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(JobsTableMetaData.NAME,		getString(R.string.defaultJobName));
+		contentValues.put(JobsTableMetaData.RESUME_ID,	mResumeId);
+
+		// Convert the date fields to a long
+		Calendar calendar = Calendar.getInstance();				// Calendar date defaults to now
+		long defaultDate  = calendar.getTime().getTime();
+		contentValues.put(JobsTableMetaData.START_DATE,	defaultDate);
+		contentValues.put(JobsTableMetaData.END_DATE, 	defaultDate);
+	
+		ContentResolver contentResolver = this.getContentResolver();
+		Uri uri = JobsTableMetaData.CONTENT_URI;
+		contentResolver.insert(uri, contentValues);
     	
-    }
-    
+		mListView.invalidate();									// Force table update
+    }    
 }

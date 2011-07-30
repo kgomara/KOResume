@@ -1,5 +1,6 @@
 package com.kevingomara.koresume;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -26,7 +27,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.kevingomara.koresume.KOResumeProviderMetaData.EducationTableMetaData;
 import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 
 public class JobActivity extends Activity {
@@ -52,10 +52,12 @@ public class JobActivity extends Activity {
     private int 		mStartYear		= 0;
     private int 		mStartMonth		= 0;
     private int 		mStartDay		= 0;
+    private long		mStartDateTime	= 0l;
     private Button 		mPickEndDate	= null;
     private int 		mEndYear		= 0;
     private int 		mEndMonth		= 0;
-    private int 		mEndDay		= 0;
+    private int 		mEndDay			= 0;
+    private long		mEndDateTime	= 0l;
 
 	
     public void onAccomplishmentsBtn(View view) {
@@ -126,6 +128,13 @@ public class JobActivity extends Activity {
             mStartYear 	= year;
             mStartMonth = monthOfYear;
             mStartDay 	= dayOfMonth;
+    		// Convert the date fields to a long
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.set(Calendar.DAY_OF_MONTH, mStartDay);
+    		calendar.set(Calendar.MONTH, mStartMonth);
+    		calendar.set(Calendar.YEAR, mStartYear);
+    		mStartDateTime = calendar.getTime().getTime();
+
             updateDateDisplay();
         }
     };
@@ -153,26 +162,38 @@ public class JobActivity extends Activity {
         public void onDateSet(DatePicker view, int year, 
                               int monthOfYear, int dayOfMonth) {
             mEndYear 	= year;
-            mEndMonth = monthOfYear;
+            mEndMonth 	= monthOfYear;
             mEndDay 	= dayOfMonth;
+            
+    		// Convert the date fields to a long
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.set(Calendar.DAY_OF_MONTH, mEndDay);
+    		calendar.set(Calendar.MONTH, mEndMonth);
+    		calendar.set(Calendar.YEAR, mEndYear);
+    		mEndDateTime = calendar.getTime().getTime();
+    		
             updateDateDisplay();
         }
     };
 
     // updates the date in the TextView
     private void updateDateDisplay() {
-        mStartDate.setText(
-            new StringBuilder()
-                    // Month is 0 based so add 1
-                    .append(mStartMonth + 1).append("-")
-                    .append(mStartDay).append("-")
-                    .append(mStartYear).append(" "));
-        mEndDate.setText(
-                new StringBuilder()
-                        // Month is 0 based so add 1
-                        .append(mEndMonth + 1).append("-")
-                        .append(mEndDay).append("-")
-                        .append(mEndYear).append(" "));
+		// Set up Calendar and SimpleDateFormat objects for use
+        Calendar cal = Calendar.getInstance();
+        String format = "MMM yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+
+        // Set the start date for the job display
+        cal.setTimeInMillis(mStartDateTime);
+        String dateString = sdf.format(cal.getTime());
+        Log.v(TAG, "startDate = " + dateString);
+		mStartDate.setText(dateString);
+        
+        // Set the start date for the job display
+        cal.setTimeInMillis(mEndDateTime);
+        dateString = sdf.format(cal.getTime());
+        Log.v(TAG, "endDate = " + dateString);
+		mEndDate.setText(dateString);
     }
     
     @Override
@@ -183,10 +204,6 @@ public class JobActivity extends Activity {
         menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
-    }
-    
-    public void onEndDateBtn(View view) {
-    	// TODO Set the End Date
     }
     
     @Override
@@ -222,10 +239,6 @@ public class JobActivity extends Activity {
     	return true;
     }
     
-    public void onStartDateBtn(View view) {
-    	// Set the Start Date    	
-    }
-    
     private void deleteJob() {
     	// TODO implement
     }
@@ -251,21 +264,27 @@ public class JobActivity extends Activity {
 		mJobTitle.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.TITLE)));
 		mCity.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.CITY)));
 		mState.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.STATE)));
-		mStartDate.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.START_DATE)));
-		mEndDate.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.END_DATE)));
 		mSummary.setText(cursor.getString(cursor.getColumnIndex(JobsTableMetaData.SUMMARY)));
-		long startDate = cursor.getLong(cursor.getColumnIndex(JobsTableMetaData.START_DATE));
+
+        // Set the start date for the job display
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(startDate);
+		mStartDateTime = cursor.getLong(cursor.getColumnIndex(JobsTableMetaData.START_DATE));
+        cal.setTimeInMillis(mStartDateTime);
+        
+        // Set the start date fields for DatePicker usage
 		mStartYear 	= cal.get(Calendar.YEAR);
 		mStartMonth = cal.get(Calendar.MONTH);
 		mStartDay	= cal.get(Calendar.DAY_OF_MONTH);
-		long endDate = cursor.getLong(cursor.getColumnIndex(JobsTableMetaData.END_DATE));
-        cal.setTimeInMillis(endDate);
+		
+        // Set the end date for the job display
+		mEndDateTime = cursor.getLong(cursor.getColumnIndex(JobsTableMetaData.END_DATE));
+        cal.setTimeInMillis(mEndDateTime);
+        
+        // Set the start date fields for DatePicker usage
 		mEndYear 	= cal.get(Calendar.YEAR);
 		mEndMonth 	= cal.get(Calendar.MONTH);
 		mEndDay		= cal.get(Calendar.DAY_OF_MONTH);
-		
+
         // display the current date (this method is below)
         updateDateDisplay();
     }
@@ -292,18 +311,8 @@ public class JobActivity extends Activity {
 		contentValues.put(JobsTableMetaData.CITY, 				mCity.getText().toString());
 		contentValues.put(JobsTableMetaData.STATE,				mState.getText().toString());
 		contentValues.put(JobsTableMetaData.TITLE,				mJobTitle.getText().toString());
-		// Convert the date fields to a long
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, mStartDay);
-		calendar.set(Calendar.MONTH, mStartMonth);
-		calendar.set(Calendar.YEAR, mStartYear);
-		long startDate = calendar.getTime().getTime();
-		contentValues.put(JobsTableMetaData.START_DATE,			startDate);
-		calendar.set(Calendar.DAY_OF_MONTH, mEndDay);
-		calendar.set(Calendar.MONTH, mEndMonth);
-		calendar.set(Calendar.YEAR, mEndYear);
-		long endDate = calendar.getTime().getTime();
-		contentValues.put(JobsTableMetaData.END_DATE, 			endDate);
+		contentValues.put(JobsTableMetaData.START_DATE,			mStartDateTime);
+		contentValues.put(JobsTableMetaData.END_DATE, 			mEndDateTime);
 	
 		ContentResolver contentResolver = this.getContentResolver();
 		Uri uri = ContentUris.withAppendedId(JobsTableMetaData.CONTENT_URI, mJobId);
