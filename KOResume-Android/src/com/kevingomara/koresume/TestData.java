@@ -3,8 +3,6 @@ package com.kevingomara.koresume;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.ContentResolver;
@@ -22,11 +20,9 @@ public class TestData {
 	private Context mContext		= null;
 	private int mPackageId			= 0;
 	private int mResumeId			= 0;
-	private DateFormat dateFormat	= null;
 	
 	public TestData(Context context) {
 		mContext = context;
-		dateFormat = SimpleDateFormat.getDateInstance();
 	}
 	
 	public void create() {

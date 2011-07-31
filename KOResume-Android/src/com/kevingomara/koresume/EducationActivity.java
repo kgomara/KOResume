@@ -4,10 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -46,10 +44,6 @@ public class EducationActivity extends Activity {
         setContentView(R.layout.education_layout);
         
         Log.v(TAG, "onCreate() called");
-        
-        //TODO figure out how to enable/disable editing
-//		mCoverLtr.setFocusable(false); 
-//		mCoverLtr.setClickable(false);
         
         // Get the resumeId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
@@ -192,32 +186,5 @@ public class EducationActivity extends Activity {
     	// Redraw the listView
     	// TODO - there may be a more elegant way of doing this
     	populateEducation(mResumeId);
-    }
-
-    /**
-     * Show an Alert
-     * Not currently used - keeping as we really should confirm delete intent
-     * 
-     * @param titleString
-     * @param messageString
-     */
-    private void showAlert(int titleString, int messageString) {
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setTitle(titleString);
-    	builder.setMessage(messageString);
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-			public void onClick(DialogInterface dialog, int id) {
-                 // Nothing to do?
-            }
-        });
-/*        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                 dialog.cancel();
-            }
-        }); */
-        AlertDialog alert = builder.create();
-    	alert.show();
     }
 }

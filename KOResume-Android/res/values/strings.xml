@@ -56,4 +56,6 @@
     <string name="eduEarnedDate">Date Awarded</string>
     <string name="deleteResume">Delete Resume</string>
     <string name="defaultJobName">Enter Job Name</string>
+    <string name="areYouSure">Are You Sure?</string>
+    <string name="jobEverythingWillGo">This will delete the Job and all its Accomplishments!</string>
 </resources>

@@ -4,10 +4,6 @@
   	android:id="@+id/viewAbout"
   	android:title="@string/about" 
   	android:icon="@drawable/ic_menu_info_details" />
-  <item 
-  	android:id="@+id/editInfo"             
-  	android:title="@string/editInfo"
-  	android:icon="@drawable/ic_menu_edit" />
   <item
   	android:id="@+id/saveInfo"             
   	android:title="@string/saveInfo"

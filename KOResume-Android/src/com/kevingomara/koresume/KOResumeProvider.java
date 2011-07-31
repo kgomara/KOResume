@@ -287,6 +287,15 @@ public class KOResumeProvider extends ContentProvider {
 						selectionArgs);
 			break;
 		}
+		case IN_ACCOMPLISHMENTS_COLLECTION_URI_INDICATOR: {
+			if (TextUtils.isEmpty(selection) || !(selectionArgs.length > 0)) {
+				throw new IllegalArgumentException("selection and arguments are required");
+			}
+			count = db.delete(AccomplishmentsTableMetaData.TABLE_NAME,
+					selection,
+					selectionArgs);
+			break;
+		}
 		case IN_SINGLE_EDUCATION_URI_INDICATOR: {
 			String educationId = uri.getPathSegments().get(1);
 			count = db.delete(EducationTableMetaData.TABLE_NAME,

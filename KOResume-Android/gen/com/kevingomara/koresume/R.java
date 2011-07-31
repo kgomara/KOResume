@@ -23,7 +23,7 @@ public final class R {
     }
     public static final class id {
         public static final int InnerRelativeLayout=0x7f07002c;
-        public static final int about=0x7f070047;
+        public static final int about=0x7f070046;
         public static final int accMetaData=0x7f070003;
         public static final int accName=0x7f070005;
         public static final int accNameLbl=0x7f070004;
@@ -33,11 +33,10 @@ public final class R {
         public static final int accomplishmentsListView=0x7f070002;
         public static final int accomplishmentsTextView=0x7f070001;
         public static final int addInfo=0x7f070043;
-        public static final int addPackage=0x7f070048;
+        public static final int addPackage=0x7f070047;
         public static final int addViewAbout=0x7f070042;
         public static final int cancelAccomplishmentBtn=0x7f070008;
         public static final int cancelEducationBtn=0x7f070011;
-        public static final int editInfo=0x7f070045;
         public static final int editPackageName=0x7f07002f;
         public static final int eduDate=0x7f070013;
         public static final int eduEarnedDateBtn=0x7f070010;
@@ -90,7 +89,7 @@ public final class R {
         public static final int resumeTextView=0x7f070031;
         public static final int saveAccomplishmentBtn=0x7f070009;
         public static final int saveEducationBtn=0x7f070012;
-        public static final int saveInfo=0x7f070046;
+        public static final int saveInfo=0x7f070045;
         public static final int textView=0x7f070000;
         public static final int twoLineText1=0x7f070027;
         public static final int twoLineText2=0x7f070028;
@@ -132,6 +131,7 @@ public final class R {
         public static final int addPackage=0x7f050003;
         public static final int alertTitle=0x7f050009;
         public static final int app_name=0x7f050001;
+        public static final int areYouSure=0x7f050038;
         public static final int cancel=0x7f050008;
         public static final int cityLbl=0x7f050018;
         public static final int cityStateLbl=0x7f050023;
@@ -152,6 +152,7 @@ public final class R {
         public static final int homePhone=0x7f050011;
         public static final int jobAccomplishments=0x7f050024;
         public static final int jobContents=0x7f05001d;
+        public static final int jobEverythingWillGo=0x7f050039;
         public static final int jobNameLbl=0x7f05001e;
         public static final int jobResponsibilities=0x7f050022;
         public static final int jobTitleLbl=0x7f05001f;

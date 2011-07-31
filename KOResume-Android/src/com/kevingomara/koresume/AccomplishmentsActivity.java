@@ -1,9 +1,7 @@
 package com.kevingomara.koresume;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,10 +37,6 @@ public class AccomplishmentsActivity extends Activity {
         setContentView(R.layout.accomplishments_layout);
         
         Log.v(TAG, "onCreate() called");
-        
-        //TODO figure out how to enable/disable editing
-//		mCoverLtr.setFocusable(false); 
-//		mCoverLtr.setClickable(false);
         
         // Get the jobId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
@@ -162,25 +156,4 @@ public class AccomplishmentsActivity extends Activity {
     	Log.d(TAG, "delUri = " + delUri);
     	contentResolver.delete(delUri, null, null);
     }
-
-    private void showAlert(int titleString, int messageString) {
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setTitle(titleString);
-    	builder.setMessage(messageString);
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-			public void onClick(DialogInterface dialog, int id) {
-                 // Nothing to do?
-            }
-        });
-/*        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                 dialog.cancel();
-            }
-        }); */
-        AlertDialog alert = builder.create();
-    	alert.show();
-    }
-
 }

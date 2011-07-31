@@ -59,10 +59,6 @@ public class ResumeActivity extends Activity {
         mHomePhone		= (EditText) findViewById(R.id.resumeHomePhone);
         mMobilePhone	= (EditText) findViewById(R.id.resumeMobilePhone);
         
-        //TODO figure out how to enable/disable editing
-//		mCoverLtr.setFocusable(false); 
-//		mCoverLtr.setClickable(false);
-        
         // Get the packageId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
         mPackageId = extras.getLong("id");
@@ -126,16 +122,7 @@ public class ResumeActivity extends Activity {
         	this.startActivity(intent);
     		break;
     	}
-    	case R.id.editInfo: {
-    		// TODO make the EditText editable/not editable
-//    		mCoverLtr.setFocusable(true); 
-//    		mCoverLtr.setClickable(true);
-    		break;
-    	}
     	case R.id.saveInfo: {
-    		// TODO make the EditText editable/not editable    		
-//    		mCoverLtr.setFocusable(false); 
-//    		mCoverLtr.setClickable(false);
     		saveResume();
     		break;
     	}

@@ -32,11 +32,10 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 public class JobActivity extends Activity {
 
 	private static final String TAG 		= "jobActivity";
-	private static final int DELETE_JOB 	= 999;
     private static final int START_DATE_ID 	= 0;	
     private static final int END_DATE_ID 	= 1;	
 	
-	private long 		mJobId		= 0l;
+	private long 		mJobId			= 0l;
 	
 	// references to the fields in the layout
 	private EditText 	mJobName	= null;
@@ -99,10 +98,6 @@ public class JobActivity extends Activity {
             }
         });
 
-        //TODO figure out how to enable/disable editing
-//		mCoverLtr.setFocusable(false); 
-//		mCoverLtr.setClickable(false);
-        
         // Get the jobId passed from the extras
         Bundle extras =  this.getIntent().getExtras();
         mJobId = extras.getLong("id");
@@ -200,8 +195,6 @@ public class JobActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
-        MenuItem menuItem = menu.add(Menu.NONE, DELETE_JOB, Menu.NONE, R.string.deleteJob);
-        menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
     }
@@ -215,21 +208,8 @@ public class JobActivity extends Activity {
         	this.startActivity(intent);
     		break;
     	}
-    	case R.id.editInfo: {
-    		// TODO make the EditText editable/not editable
-//    		mCoverLtr.setFocusable(true); 
-//    		mCoverLtr.setClickable(true);
-    		break;
-    	}
     	case R.id.saveInfo: {
-    		// TODO make the EditText editable/not editable    		
-//    		mCoverLtr.setFocusable(false); 
-//    		mCoverLtr.setClickable(false);
     		saveJob();
-    		break;
-    	}
-    	case DELETE_JOB: {
-    		deleteJob();
     		break;
     	}
     	default:
@@ -238,11 +218,7 @@ public class JobActivity extends Activity {
     	
     	return true;
     }
-    
-    private void deleteJob() {
-    	// TODO implement
-    }
-    
+        
     private Cursor getJob() {
     	Cursor cursor = managedQuery(JobsTableMetaData.CONTENT_URI,
 				null,										// we want all the columns

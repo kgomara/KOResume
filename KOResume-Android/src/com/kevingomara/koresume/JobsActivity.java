@@ -3,33 +3,39 @@ package com.kevingomara.koresume;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.kevingomara.koresume.KOResumeProviderMetaData.EducationTableMetaData;
+import com.kevingomara.koresume.KOResumeProviderMetaData.AccomplishmentsTableMetaData;
 import com.kevingomara.koresume.KOResumeProviderMetaData.JobsTableMetaData;
 
 public class JobsActivity extends Activity {
 
-	private static final String TAG = "JobsActivity";
-	private static final int ADD_JOB	= 998;
+	private static final String TAG 		= "JobsActivity";
+	private static final int	ADD_JOB		= 997;
+	private static final int	DELETE_ITEM	= 999;
 	
 	private Context		mContext	= this;
 	private long		mResumeId	= 0;
 	private ListView	mListView	= null;
+	private long		mJobId		= 0l;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,7 @@ public class JobsActivity extends Activity {
         
         // Get the ListView
         mListView = (ListView) findViewById(R.id.jobsListView);
+        registerForContextMenu(mListView);
 
         // Populate the list of jobs
         populateJobs();        
@@ -56,7 +63,6 @@ public class JobsActivity extends Activity {
         inflater.inflate(R.menu.default_menu, menu);
         MenuItem menuItem = menu.add(Menu.NONE, ADD_JOB, Menu.NONE, R.string.addJob);
         menu.removeItem(R.id.saveInfo);
-        menu.removeItem(R.id.editInfo);
         menuItem.setIcon(R.drawable.ic_menu_add);
         
         return true;
@@ -80,6 +86,71 @@ public class JobsActivity extends Activity {
     	}
     	
     	return true;
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        mJobId = info.id;
+    	menu.add(Menu.NONE, DELETE_ITEM, Menu.NONE, R.string.deleteJob);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+    	
+    	int itemId = menuItem.getItemId();
+    	switch (itemId) {
+	    	case DELETE_ITEM: {
+	    		deleteJobOnConfirm();
+	    		break;
+	    	}
+    	}
+    	
+    	return true;
+    }
+    
+    
+    
+    private void deleteJobOnConfirm() {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle(getString(R.string.areYouSure));
+    	builder.setMessage(getString(R.string.jobEverythingWillGo));
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+			public void onClick(DialogInterface dialog, int id) {
+                 deleteJobAndAccomplishments();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                 dialog.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+    	alert.show();
+    }
+    
+    /**
+     * Delete the job and all related Accomplishments
+     * 
+     * @return
+     */
+    private void deleteJobAndAccomplishments() {
+    	// First delete all the Accomplishments associated with this job
+    	ContentResolver contentResolver = this.getContentResolver();
+    	Uri uri = AccomplishmentsTableMetaData.CONTENT_URI;
+    	String where = AccomplishmentsTableMetaData.JOBS_ID + " = ?";
+    	String[] whereArgs = {Integer.toString((int) mJobId)};
+    	Log.v(TAG, "Accomplishments uri = " + uri + " " + where);
+     	contentResolver.delete(uri, where, whereArgs);
+     	
+     	// There may be no Accomplishments to delete, so we assume all went OK
+     	// 		...so go ahead and delete the job
+     	uri = JobsTableMetaData.CONTENT_URI;
+    	Uri delUri = Uri.withAppendedPath(uri, Integer.toString((int) mJobId));
+    	Log.d(TAG, "delUri = " + delUri);
+     	contentResolver.delete(delUri, null, null);
     }
     
     private void populateJobs() {
