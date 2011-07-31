@@ -280,6 +280,15 @@ public class KOResumeProvider extends ContentProvider {
 						selectionArgs);
 			break;
 		}
+		case IN_JOBS_COLLECTION_URI_INDICATOR: {
+			if (TextUtils.isEmpty(selection) || !(selectionArgs.length > 0)) {
+				throw new IllegalArgumentException("selection and arguments are required");
+			}
+			count = db.delete(JobsTableMetaData.TABLE_NAME,
+					selection,
+					selectionArgs);
+			break;
+		}
 		case IN_SINGLE_ACCOMPLISHMENTS_URI_INDICATOR: {
 			String accomplishmentsId = uri.getPathSegments().get(1);
 			count = db.delete(AccomplishmentsTableMetaData.TABLE_NAME,
@@ -301,6 +310,15 @@ public class KOResumeProvider extends ContentProvider {
 			count = db.delete(EducationTableMetaData.TABLE_NAME,
 						EducationTableMetaData._ID + "=" + educationId + (!TextUtils.isEmpty(selection) ? "AND (" + selection + ')' : ""),
 						selectionArgs);
+			break;
+		}
+		case IN_EDUCATION_COLLECTION_URI_INDICATOR: {
+			if (TextUtils.isEmpty(selection) || !(selectionArgs.length > 0)) {
+				throw new IllegalArgumentException("selection and arguments are required");
+			}
+			count = db.delete(EducationTableMetaData.TABLE_NAME,
+					selection,
+					selectionArgs);
 			break;
 		}
 		default:

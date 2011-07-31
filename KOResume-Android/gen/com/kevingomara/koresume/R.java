@@ -161,6 +161,7 @@ public final class R {
         public static final int nameIsRequired=0x7f050013;
         public static final int ok=0x7f050007;
         public static final int packageContents=0x7f05000a;
+        public static final int packageEverythingWillGo=0x7f05003a;
         public static final int packageViewResume=0x7f05000b;
         public static final int package_header=0x7f050000;
         public static final int promptPackageHint=0x7f050004;

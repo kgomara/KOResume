@@ -109,8 +109,6 @@ public class JobsActivity extends Activity {
     	return true;
     }
     
-    
-    
     private void deleteJobOnConfirm() {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setTitle(getString(R.string.areYouSure));

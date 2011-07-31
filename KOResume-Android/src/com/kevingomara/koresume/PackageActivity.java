@@ -21,7 +21,6 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.PackageTableMetaData;
 public class PackageActivity extends Activity {
 
 	private static final String		TAG				= "PackageActivity";
-	private static final int		DELETE_PACKAGE	= 999;
 	private 			 EditText 	mCoverLtr		= null;
 	private static 		 long  		mPackageId		= -1l;
 	
@@ -40,8 +39,7 @@ public class PackageActivity extends Activity {
         mPackageId = extras.getLong("id");
         Log.v(TAG, "packageId = " + mPackageId);
         
-        getPackage();
-        
+        getPackage();      
     }
     
     private void getPackage() {
@@ -66,8 +64,6 @@ public class PackageActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
-        MenuItem menuItem = menu.add(Menu.NONE, DELETE_PACKAGE, Menu.NONE, R.string.deletePackage);
-        menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
     }
@@ -86,10 +82,6 @@ public class PackageActivity extends Activity {
     		updateCoverLtr(updatedCoverLtr);
     		break;
     	}
-    	case DELETE_PACKAGE: {
-    		deletePackage();
-    		break;
-    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
@@ -104,10 +96,6 @@ public class PackageActivity extends Activity {
     	intent.putExtras(extras);
     	intent.putExtra("id", mPackageId);					// pass the row _Id of the selected package
     	this.startActivity(intent);   	
-    }
-    
-    private void deletePackage() {
-    	// TODO implement
     }
     
 	private void updateCoverLtr(String coverLtr) {
