@@ -401,9 +401,9 @@ public class KOResumeProvider extends ContentProvider {
 			}
 		}
 		case IN_RESUME_COLLECTION_URI_INDICATOR: {
-			if (values.containsKey(ResumeTableMetaData.NAME) == false) {
-				throw new SQLException("insert() Failed to insert resume, Name is required" + uri);
-			}
+//			if (values.containsKey(ResumeTableMetaData.NAME) == false) {
+//				throw new SQLException("insert() Failed to insert resume, Name is required" + uri);
+//			}
 
 			// Insert the package
 			long rowId = db.insert(ResumeTableMetaData.TABLE_NAME, ResumeTableMetaData.NAME, values);
@@ -419,9 +419,9 @@ public class KOResumeProvider extends ContentProvider {
 			}
 		}
 		case IN_JOBS_COLLECTION_URI_INDICATOR: {
-			if (values.containsKey(JobsTableMetaData.NAME) == false) {
-				throw new SQLException("insert() Failed to insert job, Name is required" + uri);
-			}
+//			if (values.containsKey(JobsTableMetaData.NAME) == false) {
+//				throw new SQLException("insert() Failed to insert job, Name is required" + uri);
+//			}
 
 			// Insert the package
 			long rowId = db.insert(JobsTableMetaData.TABLE_NAME, JobsTableMetaData.NAME, values);

@@ -153,6 +153,7 @@ public final class R {
         public static final int jobAccomplishments=0x7f050024;
         public static final int jobContents=0x7f05001d;
         public static final int jobEverythingWillGo=0x7f050039;
+        public static final int jobNameHint=0x7f05003b;
         public static final int jobNameLbl=0x7f05001e;
         public static final int jobResponsibilities=0x7f050022;
         public static final int jobTitleLbl=0x7f05001f;

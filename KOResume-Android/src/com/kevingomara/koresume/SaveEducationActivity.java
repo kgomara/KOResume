@@ -1,5 +1,6 @@
 package com.kevingomara.koresume;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -95,12 +96,15 @@ public class SaveEducationActivity extends Activity {
     }
     // updates the date in the TextView
     private void updateDateDisplay() {
-        mEduDate.setText(
-            new StringBuilder()
-                    // Month is 0 based so add 1
-                    .append(mMonth + 1).append("-")
-                    .append(mDay).append("-")
-                    .append(mYear).append(" "));
+        Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, mDay);
+		calendar.set(Calendar.MONTH, mMonth);
+		calendar.set(Calendar.YEAR, mYear);
+
+        String format = "MMM yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String dateString = sdf.format(calendar.getTime());
+        mEduDate.setText(dateString);
     }
     
     /**

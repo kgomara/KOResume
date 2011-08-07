@@ -73,11 +73,7 @@ public class AccomplishmentsActivity extends Activity {
     	switch (itemId) {
 	    	case EDIT_ITEM: {
 	        	// Launch the EditAccomplishmentsActivity Intent
-	        	Intent intent = new Intent(this, EditAccomplishmentActivity.class);
-	        	Bundle extras = new Bundle();
-	        	intent.putExtras(extras);
-	        	intent.putExtra("id", mAccId);					// pass the row _Id of the selected job
-	        	this.startActivity(intent);	
+	    		editAccomplishment(mAccId);
 	    		break;
 	    	}
 	    	case DELETE_ITEM: {
@@ -87,6 +83,15 @@ public class AccomplishmentsActivity extends Activity {
     	}
     	
     	return true;
+    }
+    
+    private void editAccomplishment(long accId) {
+    	Intent intent = new Intent(this, EditAccomplishmentActivity.class);
+    	Bundle extras = new Bundle();
+    	intent.putExtras(extras);
+    	intent.putExtra("id", accId);						// pass the _Id of the selected job
+    	this.startActivity(intent);	
+
     }
     
     @Override
@@ -143,7 +148,7 @@ public class AccomplishmentsActivity extends Activity {
     		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     			@Override
     		    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-    		    	// Launch the packageActivity Intent
+    		    	editAccomplishment(id);
     		    }
     		});
     	}

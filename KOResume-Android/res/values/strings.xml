@@ -59,4 +59,5 @@
     <string name="areYouSure">Are You Sure?</string>
     <string name="jobEverythingWillGo">This will delete the Job and all its Accomplishments!</string>
     <string name="packageEverythingWillGo">This will delete the Resume, Cover Letter, Jobs, Education and all Accomplishments!</string>
+    <string name="jobNameHint">Enter Job Name</string>
 </resources>

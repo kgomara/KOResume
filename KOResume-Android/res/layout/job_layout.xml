@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
+	android:layout_height="wrap_content"
 	android:fillViewport="true"	>
 	<LinearLayout 
 	    android:orientation="vertical"
@@ -30,6 +30,7 @@
 				/>				
 			<EditText
 				android:id="@+id/jobName"
+				android:hint="@string/jobNameHint"
 				android:layout_below="@id/jobNameLbl"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
@@ -55,6 +56,7 @@
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
 				android:paddingRight="5dip"
+				android:minWidth="44dip"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				/>
 			<EditText
@@ -67,6 +69,7 @@
 				android:paddingRight="5dip"
 				android:minWidth="44dip"
 				android:gravity="center"
+				android:capitalize="characters"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				/>
 			<TextView
@@ -83,7 +86,7 @@
 			<EditText
 				android:id="@+id/jobTitle"
 				android:layout_below="@id/jobTitleLbl"
-				android:layout_width="wrap_content"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
 				android:paddingRight="5dip"
@@ -143,7 +146,7 @@
 			<EditText
 				android:id="@+id/jobSummary"
 				android:layout_below="@id/jobSummaryLbl"
-				android:layout_width="wrap_content"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dip"
 				android:paddingRight="5dip"

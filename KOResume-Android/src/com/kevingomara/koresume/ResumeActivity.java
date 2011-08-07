@@ -25,7 +25,6 @@ import com.kevingomara.koresume.KOResumeProviderMetaData.ResumeTableMetaData;
 public class ResumeActivity extends Activity {
 
 	private static final String TAG 		= "resumeActivity";
-	private static final int DELETE_RESUME 	= 999;
 	
 	private long 		mPackageId 		= 0l;
 	private long 		mResumeId		= 0l;
@@ -87,8 +86,6 @@ public class ResumeActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
-        MenuItem menuItem = menu.add(Menu.NONE, DELETE_RESUME, Menu.NONE, R.string.deleteResume);
-        menuItem.setIcon(R.drawable.ic_menu_delete);
         
         return true;
     }
@@ -126,19 +123,11 @@ public class ResumeActivity extends Activity {
     		saveResume();
     		break;
     	}
-    	case DELETE_RESUME: {
-    		deleteResume();
-    		break;
-    	}
     	default:
     		Log.e(TAG, "Error, unknown menuItem: " + menuItem.getItemId());	
     	}
     	
     	return true;
-    }
-    
-    private void deleteResume() {
-    	// TODO implement
     }
     
     private Cursor getResume() {

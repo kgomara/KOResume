@@ -58,6 +58,14 @@ public class JobsActivity extends Activity {
     }
     
     @Override
+    public void onResume() {
+    	super.onResume();
+    	
+    	// Hack to force reload of jobs data after intial add
+    	populateJobs();
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {        // Set up the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.default_menu, menu);
@@ -78,7 +86,12 @@ public class JobsActivity extends Activity {
     		break;
     	}
     	case ADD_JOB: {
-    		insertJob();
+    		long newJobId = insertJob();
+	    	Intent intent = new Intent(mContext, JobActivity.class);
+	    	Bundle extras = new Bundle();
+	    	intent.putExtras(extras);
+	    	intent.putExtra("id", newJobId);				// pass the row _Id of the selected job
+	    	mContext.startActivity(intent);
     		break;
     	}
     	default:
@@ -180,9 +193,9 @@ public class JobsActivity extends Activity {
     	}
     }
     
-    private void insertJob() {
+    private long insertJob() {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(JobsTableMetaData.NAME,		getString(R.string.defaultJobName));
+//		contentValues.put(JobsTableMetaData.NAME,		getString(R.string.defaultJobName));
 		contentValues.put(JobsTableMetaData.RESUME_ID,	mResumeId);
 
 		// Convert the date fields to a long
@@ -193,8 +206,8 @@ public class JobsActivity extends Activity {
 	
 		ContentResolver contentResolver = this.getContentResolver();
 		Uri uri = JobsTableMetaData.CONTENT_URI;
-		contentResolver.insert(uri, contentValues);
-    	
-		mListView.invalidate();									// Force table update
+		Uri insertedUri = contentResolver.insert(uri, contentValues);
+		
+		return Integer.parseInt(insertedUri.getPathSegments().get(1));    	
     }    
 }

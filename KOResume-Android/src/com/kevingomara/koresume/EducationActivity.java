@@ -59,6 +59,14 @@ public class EducationActivity extends Activity {
     }
     
     @Override
+    public void onResume() {
+    	super.onResume();
+    	
+    	// Hack to force list to update on initial add
+    	populateEducation(mResumeId);
+    }
+    
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         mEduId = info.id;
@@ -73,11 +81,7 @@ public class EducationActivity extends Activity {
     	switch (itemId) {
 	    	case EDIT_ITEM: {
 	        	// Launch the EditAccomplishmentsActivity Intent
-	        	Intent intent = new Intent(this, EditEducationActivity.class);
-	        	Bundle extras = new Bundle();
-	        	intent.putExtras(extras);
-	        	intent.putExtra("id", mEduId);					// pass the row _Id of the selected job
-	        	this.startActivity(intent);	
+	    		editEducation(mEduId);
 	    		break;
 	    	}
 	    	case DELETE_ITEM: {
@@ -87,6 +91,14 @@ public class EducationActivity extends Activity {
     	}
     	
     	return true;
+    }
+    
+    private void editEducation(long eduId) {
+    	Intent intent = new Intent(this, EditEducationActivity.class);
+    	Bundle extras = new Bundle();
+    	intent.putExtras(extras);
+    	intent.putExtra("id", eduId);						// pass the _Id of the selected job
+    	this.startActivity(intent);	
     }
     
     @Override
@@ -113,6 +125,7 @@ public class EducationActivity extends Activity {
         	intent.putExtras(extras);
         	intent.putExtra("id", mResumeId);					// pass the _Id of the resume
         	this.startActivity(intent);	
+        	mListView.invalidate();
     		break;
     	}
     	default:
@@ -125,10 +138,10 @@ public class EducationActivity extends Activity {
     /*
      * helper methods
      */    
-    private void populateEducation(long jobId) {
+    private void populateEducation(long resumeId) {
     	Cursor cursor = managedQuery(KOResumeProviderMetaData.EducationTableMetaData.CONTENT_URI,
     						null,
-    						KOResumeProviderMetaData.EducationTableMetaData.RESUME_ID + " = " + jobId,
+    						KOResumeProviderMetaData.EducationTableMetaData.RESUME_ID + " = " + resumeId,
     						null,
     						null);
     	if (cursor.getCount() > 0) {
@@ -136,7 +149,7 @@ public class EducationActivity extends Activity {
     		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     			@Override
     		    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-    		    	// Nothing needed here
+    		    	editEducation(id);
     		    }
     		});
     	}
