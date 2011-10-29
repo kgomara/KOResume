@@ -3,14 +3,14 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/16/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 
-@interface DesignViewController : UIViewController <UIScrollViewDelegate> {
-
+@interface DesignViewController : UIViewController <UIScrollViewDelegate> 
+{
 	UIImageView*    designView;
 	UIScrollView*   designScrollView;
     UILabel*        designExplanationLbl;

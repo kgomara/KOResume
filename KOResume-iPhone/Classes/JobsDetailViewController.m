@@ -3,13 +3,11 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "JobsDetailViewController.h"
 #import "KOExtensions.h"
-
-
 
 @implementation JobsDetailViewController
 
@@ -29,13 +27,13 @@
 
 #pragma mark Application lifecycle methods
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 	
 	self.view.backgroundColor		= [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
-	self.jobView.image              = [[UIImage imageNamed:@"contentpane_details.png"] 
-                                       stretchableImageWithLeftCapWidth:20 
-                                                           topCapHeight:20];
+	self.jobView.image              = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20 
+                                                                                                           topCapHeight:20];
 
 	// Get the data from the jobDictionary and stuff it into the fields
 	[self.jobCompanyUrlBtn setTitle:[jobDictionary objectForKey:@"Company"] 
@@ -67,11 +65,12 @@
 		jobItemFrame.origin.x		-= jobViewFrame.origin.x;
 		jobItemFrame.size.height	 = kLabelHeight;
 		UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
-		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];
+		[accomplishment setFont:[UIFont fontWithName:@"Helvetica-Bold" 
+                                                size:14.0]];
 		[accomplishment setBackgroundColor:[UIColor clearColor]];
         
         // Set the text, add the label to the view, and adjust the frames
-		accomplishment.text = @"Accomplishments:";
+		accomplishment.text = NSLocalizedString(@"Accomplishments:", @"Accomplishments:");
         [self.jobView addSubview:accomplishment];
 		jobItemFrame.origin.y		+= kLabelHeight;
 		jobViewFrame.size.height	+= kLabelHeight * 2;
@@ -82,7 +81,8 @@
 		while ((item = [jobEnum nextObject])) {
 			// handle an accomplishment
 			UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
-			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
+			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" 
+                                                    size:14.0]];
 			[accomplishment setBackgroundColor:[UIColor clearColor]];
 			accomplishment.text = item;
 			[accomplishment sizeToFitFixedWidth:kLabelWidth];
@@ -96,27 +96,30 @@
 	self.jobScrollView.minimumZoomScale = 1.0;
 	self.jobScrollView.maximumZoomScale = 2.0;
 	
-	//
 	self.jobView.frame = jobViewFrame;
 	self.jobScrollView.contentSize = jobViewFrame.size;
 }
 
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
 	self.jobCompany					= nil;
 	self.jobCompanyUrl				= nil;
 	self.jobLocation				= nil;
@@ -135,24 +138,21 @@
 
 #pragma mark User generated events
 
-- (IBAction)companyTapped:(id)sender {
-	
+- (IBAction)companyTapped:(id)sender 
+{
 	if (self.jobCompanyUrl == NULL || [self.jobCompanyUrl rangeOfString:@"://"].location == NSNotFound) {
 		return;
 	}
 
 	// Open the Url in Safari
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.jobCompanyUrl]];
-	
 }
 
 #pragma mark UIScrollView delegate methods
 
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView 
+{
 	return self.jobView;
 }
-
-
-
 
 @end

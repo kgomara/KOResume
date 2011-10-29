@@ -3,14 +3,14 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 
-@interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> {
-
+@interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> 
+{
 	UILabel*        jobCompany;
     NSString*       jobCompanyUrl;
 	UILabel*        jobLocation;
@@ -24,7 +24,6 @@
 	UIButton*       jobCompanyUrlBtn;
 	
 	NSDictionary*   jobDictionary;
-
 }
 
 @property (nonatomic, retain) IBOutlet  UILabel*        jobCompany;

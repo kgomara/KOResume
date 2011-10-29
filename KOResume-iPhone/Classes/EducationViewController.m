@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "EducationViewController.h"
@@ -38,23 +38,26 @@
 }
 */
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
     [super dealloc];
 }
-
 
 @end

@@ -3,24 +3,33 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "CoverLtrViewController.h"
 #import	"KOExtensions.h"
+#import <CoreData/CoreData.h>
 
 @implementation CoverLtrViewController
 
 @synthesize coverLtrLbl;
 @synthesize coverLtrView;
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 	
 	// get the cover letter into the view
 	NSBundle* bundle		= [NSBundle mainBundle];
 	NSString* coverLtrPath	= [bundle pathForResource:@"CoverLtrStandard" ofType:@"txt"];
-	NSString* coverLtr		= [[NSString alloc] initWithContentsOfFile:coverLtrPath];
+    NSError*  error         = nil;
+	NSString* coverLtr		= [[NSString alloc] initWithContentsOfFile:coverLtrPath 
+                                                          encoding:NSUTF8StringEncoding
+                                                             error:&error];
+    if (error) {
+        ELog(error, @"Failed to read CoverLtrStandard.txt");
+    }
+    
 	self.coverLtrLbl.text	= coverLtr;
 	[coverLtr release];
 	
@@ -36,30 +45,32 @@
 }
 
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
-*/
 
-- (void)didReceiveMemoryWarning {
+
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
 
 
-- (void)dealloc {
-
+- (void)dealloc 
+{
 	self.coverLtrLbl = nil;
 	self.coverLtrView = nil;
 	

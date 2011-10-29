@@ -3,11 +3,12 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara. All rights reserved.
 //
 
 #import "SummaryViewController.h"
 #import "KOExtensions.h"
+#import <CoreData/CoreData.h>
 
 #define kHomePhoneTag	0
 #define kMobilePhoneTag	1
@@ -21,13 +22,21 @@
 	NSString*   phoneNumber;
 
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 
 	// get the cover letter into the view
 	NSBundle* bundle		= [NSBundle mainBundle];
 	NSString* summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
-	NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath];
+    NSError*  error         = nil;
+	NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath
+                                                              encoding:NSUTF8StringEncoding
+                                                                 error:&error];
+    if (error) {
+        ELog(error, @"Failed to read Summary.txt");
+    }
+    
 	self.summaryLabel.text	= summaryTxt;
 	[summaryTxt release];
 	
@@ -36,14 +45,17 @@
 }
 
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -60,23 +72,25 @@
 
 #pragma mark User event methods
 
-- (IBAction)phoneTapped:(id)sender {
-	
+- (IBAction)phoneTapped:(id)sender 
+{
 	UIButton* phoneButton   = (UIButton *)sender;
 	phoneNumber             = phoneButton.currentTitle;
     
-    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Phone" 
-                                                     message:[NSString stringWithFormat:@"Call %@?", phoneNumber]
+    NSString* fmtString     = NSLocalizedString(@"Call %@?", @"Call %@?");
+    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Phone", @"Phone") 
+                                                     message:[NSString stringWithFormat:fmtString, phoneNumber]
                                                     delegate:self 
-                                           cancelButtonTitle:@"Cancel" 
-                                           otherButtonTitles:@"Call", nil] autorelease];
+                                           cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
+                                           otherButtonTitles:NSLocalizedString(@"Call", @"Call"), nil] autorelease];
     [alert show];
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex 
+{
     if(buttonIndex != alertView.cancelButtonIndex)
     {
-        NSLog(@"Calling %@", phoneNumber);
+        DLog(@"Calling %@", phoneNumber);
         NSMutableString* strippedString = [NSMutableString stringWithCapacity:10];
         for (int i = 0; i < [phoneNumber length]; i++) {
             if (isdigit([phoneNumber characterAtIndex:i])) {
@@ -84,13 +98,10 @@
             }
         }
         
-        NSURL* phoneURL = [NSURL URLWithString: [NSString stringWithFormat: @"tel:%@", strippedString]];
+        NSURL* phoneURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"tel:%@", @"tel:%@"), strippedString]];
         [[UIApplication sharedApplication] openURL:phoneURL];
     }
 	phoneNumber = nil;
 }
-
-
-
 
 @end

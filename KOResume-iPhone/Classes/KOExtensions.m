@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "KOExtensions.h"
@@ -15,11 +15,13 @@
 
 @implementation UILabel (KOExtensions)		// Category for UILabel
 
-- (void)sizeToFitFixedWidth:(NSInteger)fixedWidth {
+- (void)sizeToFitFixedWidth:(NSInteger)fixedWidth 
+{
     self.frame          = CGRectMake(self.frame.origin.x, self.frame.origin.y, fixedWidth, 0);
     self.lineBreakMode  = UILineBreakModeWordWrap;
     self.numberOfLines  = 0;
     [self sizeToFit];
 }
+
 @end
 

@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 6/5/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "PackagesViewController.h"
@@ -24,32 +24,33 @@
 #pragma mark View lifecycle
 
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 	
+    // TODO get from database
 	self.navigationItem.title = @"Kevin O'Mara";
 	self.view.backgroundColor = [UIColor clearColor];
 }
-
-
 
 #pragma mark -
 #pragma mark Table view data source
 
 // Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
+{
     return 1;
 }
 
 
 // Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
+{	
 	return 3;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
+{    
     static NSString* CellIdentifier = @"Cell";
     
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -61,15 +62,16 @@
 	// Configure the cell.
 	switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case kSummaryTableCell:
-			cell.textLabel.text = @"Cover Letter";
+			cell.textLabel.text = NSLocalizedString(@"Cover Letter", @"Cover Letter");
 			break;
 		case kResumeTableCell:
-			cell.textLabel.text = @"Resume";
+			cell.textLabel.text = NSLocalizedString(@"Resume", @"Resume");
 			break;
 		case kDesignTableCell:
-			cell.textLabel.text = @"Design Explanation";
+			cell.textLabel.text = NSLocalizedString(@"Design Explanation", @"Design Explanation");
 			break;
 		default:
+            ALog(@"Unexpected row %d", indexPath.row);
 			break;
 	}
 	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
@@ -77,61 +79,60 @@
     return cell;
 }
 
-
-
 #pragma mark -
 #pragma mark Table view delegates
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
+{	
 	UILabel* sectionLabel = [[[UILabel alloc] init] autorelease];
-	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0]];
+	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
+                                          size:18.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
-	sectionLabel.text = @"Package Contents:";
+	sectionLabel.text = NSLocalizedString(@"Package Contents:", @"Package Contents:");
 	return sectionLabel;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
+{	
 	return 44;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+{    
     switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case kSummaryTableCell: {
-			CoverLtrViewController* coverLtrViewController = [[CoverLtrViewController alloc] 
-                                                              initWithNibName:@"CoverLtrViewController" 
-                                                              bundle:nil];
-			coverLtrViewController.title = @"Cover Letter";
+			CoverLtrViewController* coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName:@"CoverLtrViewController" 
+                                                                                                      bundle:nil];
+			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", @"Cover Letter");
 			
 			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:coverLtrViewController animated:YES];
+			[self.navigationController pushViewController:coverLtrViewController 
+                                                 animated:YES];
 			[coverLtrViewController release];
 			break;
 		}
 		case kResumeTableCell: {
-			ResumeViewController* resumeViewController = [[ResumeViewController alloc] 
-                                                          initWithNibName:@"ResumeViewController" 
-                                                          bundle:nil];
-			resumeViewController.title = @"Resume";
+			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName:@"ResumeViewController" 
+                                                                                                bundle:nil];
+			resumeViewController.title = NSLocalizedString(@"Resume", @"Resume");
 			
 			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:resumeViewController animated:YES];
+			[self.navigationController pushViewController:resumeViewController 
+                                                 animated:YES];
 			[resumeViewController release];
 			break;
 		}
 		case kDesignTableCell: {
-			NSLog(@"Explanation");
-			DesignViewController* designViewController = [[DesignViewController alloc] 
-                                                          initWithNibName:@"DesignViewController" 
-                                                          bundle:nil];
-			designViewController.title = @"Design";
+			DLog(@"Explanation");
+			DesignViewController* designViewController = [[DesignViewController alloc] initWithNibName:@"DesignViewController" 
+                                                                                                bundle:nil];
+			designViewController.title = NSLocalizedString(@"Design", @"Design");
 			
 			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:designViewController animated:YES];
+			[self.navigationController pushViewController:designViewController 
+                                                 animated:YES];
 			[designViewController release];
 			break;
 		}
@@ -140,34 +141,36 @@
 	}
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
-    
 }
 
 
 #pragma mark -
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 	self.tblView = nil;
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
 	self.tblView = nil;
     self.managedObjectContext = nil;
     
     [super dealloc];
 }
-
 
 @end
 

@@ -3,12 +3,12 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/16/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "DesignViewController.h"
 #import "KOExtensions.h"
-
+#import <CoreData/CoreData.h>
 
 @implementation DesignViewController
 
@@ -18,7 +18,8 @@
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil 
+{
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization.
@@ -27,7 +28,8 @@
 }
 */
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 	
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
@@ -37,8 +39,15 @@
     // get the cover letter into the view
 	NSBundle* bundle		= [NSBundle mainBundle];
 	NSString* resourcePath	= [bundle pathForResource:@"DesignExplanation" ofType:@"txt"];
-	NSString* labelTxt      = [[NSString alloc] initWithContentsOfFile:resourcePath];
-    NSLog(@"text = %@", labelTxt);
+    NSError* error          = nil;
+    NSString* labelTxt      = [[NSString alloc] initWithContentsOfFile:resourcePath
+                                                              encoding:NSUTF8StringEncoding
+                                                                 error:&error];
+    if (error) {
+        ELog(error, @"Could not read DesignExplanation");
+    }
+    
+    DLog(@"text = %@", labelTxt);
 	self.designExplanationLbl.text	= labelTxt;
 	[labelTxt release];
 	
@@ -49,26 +58,27 @@
     CGRect designViewFrame = self.designView.frame;
     designViewFrame.size.height += self.designExplanationLbl.frame.size.height;
     self.designView.frame = designViewFrame;
-
 }
 
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
-*/
 
-- (void)didReceiveMemoryWarning {
+
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     [super viewDidUnload];
 	self.designView = nil;
 	self.designScrollView = nil;
@@ -78,13 +88,13 @@
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
 	self.designView = nil;
 	self.designScrollView = nil;
     self.designExplanationLbl = nil;
     
     [super dealloc];
 }
-
 
 @end

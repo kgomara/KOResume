@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 KevinGOMara.com. All rights reserved.
 //
 
 #import "RootViewController.h"
@@ -25,9 +25,11 @@
 #pragma mark View lifecycle
 
 
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
 	
+    // TODO get from database
 	self.navigationItem.title = @"Kevin O'Mara";
 	self.view.backgroundColor = [UIColor clearColor];
     
@@ -35,7 +37,8 @@
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
     addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                              target:self action:@selector(addPackage)];
+                                                              target:self 
+                                                              action:@selector(addPackage)];
     addButton.enabled = YES;
     self.navigationItem.rightBarButtonItem = addButton;
     
@@ -46,7 +49,8 @@
     [request setEntity:entity];
     
     // Create a sort descriptor to sort the Packages by creationDate
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" 
+                                                                   ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];    
     [request setSortDescriptors:sortDescriptors];
     [sortDescriptors release];    
@@ -57,7 +61,7 @@
     NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request
                                                                                error:&error] mutableCopy];
     if (mutableFetchResults == nil) {
-        NSLog(@"addPackage: fetch failed, %@, %@", error, [error userInfo]);
+        ELog(error, @"Failed to fetch Submission");
         abort();
     }
     
@@ -69,7 +73,8 @@
 
 #pragma mark UI handlers
 
-- (void)addPackage {
+- (void)addPackage 
+{
     Submission *submission = (Submission *)[NSEntityDescription insertNewObjectForEntityForName:@"Submission"
                                                                          inManagedObjectContext:managedObjectContext];
     [submission setName:[self getSubmissionName]];
@@ -77,44 +82,47 @@
     
     NSError* error = nil;
     if (![managedObjectContext save:&error]) {
-        NSLog(@"addPackage: save failed, %@, %@", error, [error userInfo]);
+        ELog(error, @"Failed to save");
         abort();
     }
     
-    [submissionsArray insertObject:submission atIndex:0];
+    [submissionsArray insertObject:submission 
+                           atIndex:0];
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
+                                                inSection:0];
     
     [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                         withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] 
-                        atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
+                                                            inSection:0] 
+                        atScrollPosition:UITableViewScrollPositionTop 
+                                animated:YES];
 }
 
-- (NSString *)getSubmissionName {
-    
-    return @"temp";
+- (NSString *)getSubmissionName 
+{    
+    return NSLocalizedString(@"temp", @"temp");
 }
-
-
 
 #pragma mark -
 #pragma mark Table view data source
 
 // Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
+{
     return 1;
 }
 
 
 // Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
+{	
 	return [submissionsArray count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
+{
     static NSString* CellIdentifier = @"Cell";
     
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -133,14 +141,14 @@
 }
 
 
-
 #pragma mark -
 #pragma mark Table view delegates
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
+{	
 	UILabel* sectionLabel = [[[UILabel alloc] init] autorelease];
-	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0]];
+	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
+                                          size:18.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
@@ -148,45 +156,48 @@
 	return sectionLabel;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
+{	
 	return 44;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+{
     switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case 0: {
-			PackagesViewController* packagesViewController = [[PackagesViewController alloc] 
-                                                              initWithNibName:@"PackagesViewController" 
-                                                              bundle:nil];
-			packagesViewController.title = @"Resumes";
+			PackagesViewController* packagesViewController = [[PackagesViewController alloc] initWithNibName:@"PackagesViewController" 
+                                                                                                      bundle:nil];
+			packagesViewController.title = NSLocalizedString(@"Resumes", @"Resumes");
 			
 			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:packagesViewController animated:YES];
+			[self.navigationController pushViewController:packagesViewController 
+                                                 animated:YES];
 			[packagesViewController release];
 			break;
 		}
 		default:
+            ALog(@"Unexpected row %d", indexPath.row);
 			break;
 	}
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
-
 }
 
 
 #pragma mark -
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning 
+{
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
+    ALog();
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload 
+{
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 	self.tblView = nil;
@@ -194,7 +205,8 @@
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
 	self.tblView = nil;
     
     self.submissionsArray = nil;
@@ -204,7 +216,6 @@
     
     [super dealloc];
 }
-
 
 @end
 
