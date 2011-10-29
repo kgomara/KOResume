@@ -12,7 +12,7 @@
 @interface RootViewController : UIViewController <UITableViewDelegate> {
 	UITableView*            tblView;
     
-    NSMutableArray*         submissionsArray;
+    NSMutableArray*         packagessArray;
     NSManagedObjectContext* managedObjectContext;
     
     UIBarButtonItem*        addButton;
@@ -20,12 +20,12 @@
 
 @property (nonatomic, retain) IBOutlet UITableView*     tblView;
 
-@property (nonatomic, retain) NSMutableArray*           submissionsArray;
+@property (nonatomic, retain) NSMutableArray*           packagesArray;
 @property (nonatomic, retain) NSManagedObjectContext*   managedObjectContext;
 
 @property (nonatomic, retain) IBOutlet UIBarButtonItem* addButton;
 
 - (void)addPackage;
-- (NSString *)getSubmissionName;
+- (NSString *)getPackageName;
 
 @end

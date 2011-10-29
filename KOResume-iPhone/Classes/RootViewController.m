@@ -8,7 +8,7 @@
 
 #import "RootViewController.h"
 #import "PackagesViewController.h"
-#import "Submission.h"
+#import "Packages.h"
 #import <CoreData/CoreData.h>
 
 
@@ -16,7 +16,7 @@
 
 @synthesize tblView;
 
-@synthesize submissionsArray;  
+@synthesize packagesArray;  
 @synthesize managedObjectContext;
 
 @synthesize addButton;
@@ -44,12 +44,12 @@
     
     // Create a fetch request object to get all the Packages
     NSFetchRequest* request = [[NSFetchRequest alloc] init];
-    NSEntityDescription* entity = [NSEntityDescription entityForName:@"Submission"
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"Packages"
                                               inManagedObjectContext:managedObjectContext];
     [request setEntity:entity];
     
     // Create a sort descriptor to sort the Packages by creationDate
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" 
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"created_date" 
                                                                    ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];    
     [request setSortDescriptors:sortDescriptors];
@@ -61,12 +61,12 @@
     NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request
                                                                                error:&error] mutableCopy];
     if (mutableFetchResults == nil) {
-        ELog(error, @"Failed to fetch Submission");
+        ELog(error, @"Failed to fetch Packages");
         abort();
     }
     
-    // Update packagesArrary and clean up
-    [self setSubmissionsArray:mutableFetchResults];
+    // Update packagesArray and clean up
+    [self setPackagesArray:mutableFetchResults];
     [mutableFetchResults release];    
     [request release];
 }
@@ -75,10 +75,10 @@
 
 - (void)addPackage 
 {
-    Submission *submission = (Submission *)[NSEntityDescription insertNewObjectForEntityForName:@"Submission"
+    Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName:@"Packages"
                                                                          inManagedObjectContext:managedObjectContext];
-    [submission setName:[self getSubmissionName]];
-    [submission setCreationDate:[NSDate date]];
+    [package setName:[self getPackageName]];
+    [package setCreated_date:[NSDate date]];
     
     NSError* error = nil;
     if (![managedObjectContext save:&error]) {
@@ -86,7 +86,7 @@
         abort();
     }
     
-    [submissionsArray insertObject:submission 
+    [packagesArray insertObject:package 
                            atIndex:0];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
@@ -100,7 +100,7 @@
                                 animated:YES];
 }
 
-- (NSString *)getSubmissionName 
+- (NSString *)getPackageName 
 {    
     return NSLocalizedString(@"temp", @"temp");
 }
@@ -118,7 +118,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
-	return [submissionsArray count];
+	return [packagesArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -132,8 +132,8 @@
     }
     
 	// Configure the cell.
-    Submission* submission = (Submission *)[submissionsArray objectAtIndex:indexPath.row];
-    cell.textLabel.text = submission.name;
+    Packages* package = (Packages *)[packagesArray objectAtIndex:indexPath.row];
+    cell.textLabel.text = package.name;
     
 	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 
@@ -209,7 +209,7 @@
 {
 	self.tblView = nil;
     
-    self.submissionsArray = nil;
+    self.packagesArray = nil;
     self.managedObjectContext = nil;
     
     self.addButton = nil;
