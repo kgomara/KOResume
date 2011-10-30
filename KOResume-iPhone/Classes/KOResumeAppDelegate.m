@@ -24,7 +24,8 @@
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
-{            
+{
+    DLog();
     NSManagedObjectContext *context = [self managedObjectContext];    
     if (!context) {
         ALog(@"Could not get managedObjectContext");
@@ -50,6 +51,7 @@
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+    DLog();
 }
 
 
@@ -59,6 +61,7 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
+    DLog();
 }
 
 
@@ -67,6 +70,7 @@
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
+    DLog();
 }
 
 
@@ -75,6 +79,7 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    DLog();
 }
 
 
@@ -84,6 +89,9 @@
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
+    DLog();
+    // Save changes to application's managed object context before application terminates
+    [self saveContext];
 }
 
 
@@ -95,11 +103,13 @@
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
+    ALog();
 }
 
 
 - (void)dealloc 
 {
+    DLog();
 	[navigationController release];
     [managedObjectContext release];
     [managedObjectModel release];
@@ -109,8 +119,16 @@
 	[super dealloc];
 }
 
+- (void)awakeFromNib
+{
+    DLog();
+    RootViewController* rootViewController = (RootViewController *)[self.navigationController topViewController];
+    rootViewController.managedObjectContext = self.managedObjectContext;
+}
+
 - (void)saveContext 
 {
+    DLog();
     NSError* error = nil;
     NSManagedObjectContext* moc = self.managedObjectContext;
     if (moc != nil) {
@@ -162,6 +180,28 @@
     if (__persistentStoreCoordinator != nil) {
         return __persistentStoreCoordinator;
     }
+    
+//    // Load default database pre-populated with Author's resume on first run of App
+//    NSString* docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+//    NSString* storePath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
+//    /*
+//     * Set up the Persistent Store
+//     *  Copy in the default database if one does not exist
+//     */
+//    NSFileManager* fileManager = [NSFileManager defaultManager];
+//    if (![fileManager fileExistsAtPath:storePath]) {
+//        // database does not exist, copy in default
+//        NSString* defaultStorePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
+//                                                                     ofType:@"sqlite"];
+//        DLog(@"defaultStorePath %@", defaultStorePath);
+//        if (defaultStorePath) {
+//            [fileManager copyItemAtPath:defaultStorePath
+//                                 toPath:storePath
+//                                  error:NULL];
+//        } else {
+//            ALog(@"Could not load default database");
+//        }
+//    }
     
     NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
     

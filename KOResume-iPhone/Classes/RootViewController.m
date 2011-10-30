@@ -11,13 +11,22 @@
 #import "Packages.h"
 #import <CoreData/CoreData.h>
 
+@interface RootViewController()
+
+- (void)addPackage;
+- (NSString *)getPackageName;
+- (void)configureCell:(UITableViewCell *)cell
+          atIndexPath:(NSIndexPath *)indexPath;
+
+@end
 
 @implementation RootViewController
 
-@synthesize tblView;
+@synthesize tableView = _tableView;
 
 @synthesize packagesArray;  
-@synthesize managedObjectContext;
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 @synthesize addButton;
 
@@ -29,8 +38,15 @@
 {
     [super viewDidLoad];
 	
-    // TODO get from database
-	self.navigationItem.title = @"Kevin O'Mara";
+    // Set the App name as the Title in the Navigation bar
+    NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+#ifdef DEBUG
+    // Include the version in the title for debug builds
+    NSString* version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    self.navigationItem.title = [appName stringByAppendingString: version];
+#else
+    self.navigationItem.title = appName;
+#endif
 	self.view.backgroundColor = [UIColor clearColor];
     
     // Set up the buttons.
@@ -45,7 +61,7 @@
     // Create a fetch request object to get all the Packages
     NSFetchRequest* request = [[NSFetchRequest alloc] init];
     NSEntityDescription* entity = [NSEntityDescription entityForName:@"Packages"
-                                              inManagedObjectContext:managedObjectContext];
+                                              inManagedObjectContext:__managedObjectContext];
     [request setEntity:entity];
     
     // Create a sort descriptor to sort the Packages by creationDate
@@ -58,8 +74,8 @@
     
     // Execute the request
     NSError *error = nil;    
-    NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request
-                                                                               error:&error] mutableCopy];
+    NSMutableArray *mutableFetchResults = [[__managedObjectContext executeFetchRequest:request
+                                                                                 error:&error] mutableCopy];
     if (mutableFetchResults == nil) {
         ELog(error, @"Failed to fetch Packages");
         abort();
@@ -76,12 +92,12 @@
 - (void)addPackage 
 {
     Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName:@"Packages"
-                                                                         inManagedObjectContext:managedObjectContext];
+                                                                         inManagedObjectContext:__managedObjectContext];
     [package setName:[self getPackageName]];
     [package setCreated_date:[NSDate date]];
     
     NSError* error = nil;
-    if (![managedObjectContext save:&error]) {
+    if (![__managedObjectContext save:&error]) {
         ELog(error, @"Failed to save");
         abort();
     }
@@ -92,12 +108,12 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
                                                 inSection:0];
     
-    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                        withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:0] 
-                        atScrollPosition:UITableViewScrollPositionTop 
-                                animated:YES];
+    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                          withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
+                                                              inSection:0] 
+                          atScrollPosition:UITableViewScrollPositionTop 
+                                  animated:YES];
 }
 
 - (NSString *)getPackageName 
@@ -200,21 +216,133 @@
 {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
-	self.tblView = nil;
+	self.tableView = nil;
     self.addButton = nil;
 }
 
 
 - (void)dealloc 
 {
-	self.tblView = nil;
+	self.tableView = nil;
     
     self.packagesArray = nil;
     self.managedObjectContext = nil;
+    self.fetchedResultsController = nil;
     
     self.addButton = nil;
     
     [super dealloc];
+}
+
+#pragma mark - Fetched results controller
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    DLog();
+    if (__fetchedResultsController != nil) {
+        return __fetchedResultsController;
+    }
+    
+    // Create the fetch request for the entity
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entity  = [NSEntityDescription entityForName:@"Packages"
+                                               inManagedObjectContext:__managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number
+    [fetchRequest setFetchBatchSize:5];
+    // Sort by package created_date descending
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"created_date"
+                                                                   ascending:NO];
+    NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Alloc and initialize the controller
+    NSFetchedResultsController* aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                                managedObjectContext:__managedObjectContext
+                                                                                                  sectionNameKeyPath:nil
+                                                                                                           cacheName:@"Root"];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    [aFetchedResultsController release];
+    [fetchRequest release];
+    [sortDescriptor release];
+    [sortDescriptors release];
+     
+    return __fetchedResultsController;
+}
+
+#pragma mark - Fetched results controller delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    DLog();
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo 
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    DLog();
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        default:
+            ALog();
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject 
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    DLog();
+    UITableView* tableView = self.tableView;
+    
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                                  withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath]
+                    atIndexPath:indexPath];
+            break;
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    DLog();
+    [self.tableView endUpdates];
+}
+
+#pragma mark - tableView helpers
+
+- (void)configureCell:(UITableViewCell *)cell
+          atIndexPath:(NSIndexPath *)indexPath
+{
+    DLog();
 }
 
 @end
