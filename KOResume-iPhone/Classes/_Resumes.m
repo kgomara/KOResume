@@ -29,6 +29,10 @@
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"sequence_numberValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"sequence_number"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
 
 	return keyPaths;
 }
@@ -73,6 +77,32 @@
 
 @dynamic postal_code;
 
+
+
+
+
+
+@dynamic sequence_number;
+
+
+
+- (short)sequence_numberValue {
+	NSNumber *result = [self sequence_number];
+	return [result shortValue];
+}
+
+- (void)setSequence_numberValue:(short)value_ {
+	[self setSequence_number:[NSNumber numberWithShort:value_]];
+}
+
+- (short)primitiveSequence_numberValue {
+	NSNumber *result = [self primitiveSequence_number];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveSequence_numberValue:(short)value_ {
+	[self setPrimitiveSequence_number:[NSNumber numberWithShort:value_]];
+}
 
 
 

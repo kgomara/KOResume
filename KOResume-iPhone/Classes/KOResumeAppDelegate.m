@@ -155,6 +155,10 @@
     if (coordinator != nil) {
         __managedObjectContext = [[NSManagedObjectContext alloc] init];
         [__managedObjectContext setPersistentStoreCoordinator:coordinator];
+        // Instantiate an UndoManager
+        NSUndoManager *undoManager = [[NSUndoManager alloc] init];
+        [__managedObjectContext setUndoManager:undoManager];
+        [undoManager release];
     }
     return __managedObjectContext;
 }

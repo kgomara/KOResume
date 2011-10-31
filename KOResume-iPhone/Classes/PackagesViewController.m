@@ -19,6 +19,7 @@
 
 @synthesize tblView;
 @synthesize managedObjectContext;
+@synthesize selectedPackage;
 
 #pragma mark -
 #pragma mark View lifecycle

@@ -51,4 +51,7 @@ green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
 blue:((float)(rgbValue & 0xFF))/255.0 alpha:a]
 
 
+#define kLabelWidth			280
+#define kLabelHeight		21
+
 

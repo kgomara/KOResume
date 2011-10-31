@@ -12,18 +12,19 @@
 @interface RootViewController : UIViewController <UITableViewDelegate, NSFetchedResultsControllerDelegate> {
 	UITableView*            tblView;
     
-    NSMutableArray*         packagessArray;
-//    NSManagedObjectContext* managedObjectContext;
+    NSMutableArray*         packagesArray;
     
-    UIBarButtonItem*        addButton;
+//    UIButton*               addButton;
+//    UIBarButtonItem*        editButton;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView*         tableView;
+@property (nonatomic, retain) IBOutlet UITableView*         tblView;
 
 @property (nonatomic, retain) NSMutableArray*               packagesArray;
 @property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
 
-@property (nonatomic, retain) IBOutlet UIBarButtonItem*     addButton;
+//@property (nonatomic, retain) IBOutlet UIButton*            addButton;
+//@property (nonatomic, retain) IBOutlet UIBarButtonItem*     editButton;
 
 @end

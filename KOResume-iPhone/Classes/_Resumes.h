@@ -19,6 +19,7 @@
 
 
 
+
 @interface ResumesID : NSManagedObjectID {}
 @end
 
@@ -75,6 +76,18 @@
 
 
 //- (BOOL)validatePostal_code:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, retain) NSNumber *sequence_number;
+
+
+@property short sequence_numberValue;
+- (short)sequence_numberValue;
+- (void)setSequence_numberValue:(short)value_;
+
+//- (BOOL)validateSequence_number:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -174,6 +187,15 @@
 
 - (NSString*)primitivePostal_code;
 - (void)setPrimitivePostal_code:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveSequence_number;
+- (void)setPrimitiveSequence_number:(NSNumber*)value;
+
+- (short)primitiveSequence_numberValue;
+- (void)setPrimitiveSequence_numberValue:(short)value_;
 
 
 

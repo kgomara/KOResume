@@ -10,6 +10,7 @@
 
 
 
+
 @interface PackagesID : NSManagedObjectID {}
 @end
 
@@ -46,6 +47,18 @@
 
 
 
+@property (nonatomic, retain) NSNumber *sequence_number;
+
+
+@property short sequence_numberValue;
+- (short)sequence_numberValue;
+- (void)setSequence_numberValue:(short)value_;
+
+//- (BOOL)validateSequence_number:(id*)value_ error:(NSError**)error_;
+
+
+
+
 
 @property (nonatomic, retain) Resumes* resume;
 
@@ -77,6 +90,15 @@
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveSequence_number;
+- (void)setPrimitiveSequence_number:(NSNumber*)value;
+
+- (short)primitiveSequence_numberValue;
+- (void)setPrimitiveSequence_numberValue:(short)value_;
 
 
 
