@@ -16,13 +16,26 @@
 #define k_tblHdrHeight      50.0f
 
 @interface RootViewController()
+{
+    @private
+    UIBarButtonItem*            addButton;
+    UIBarButtonItem*            editButton;
+    NSString*                   packageName;
+    
+    NSFetchedResultsController* fetchedResultsController;
+    NSMutableArray*             packagesArray;
+}
 
-- (IBAction)addPackage:(id)sender;
-- (NSString *)getPackageName;
+- (void)getPackageName;
+- (void)addPackage;
 - (void)configureCell:(UITableViewCell *)cell
           atIndexPath:(NSIndexPath *)indexPath;
 - (void)configureDefaultNavBar;
 - (void)loadPackages;
+
+@property (nonatomic, retain) NSString*                     packageName;
+@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, retain) NSMutableArray*               packagesArray;
 
 @end
 
@@ -33,12 +46,7 @@
 @synthesize packagesArray;  
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize fetchedResultsController    = __fetchedResultsController;
-
-//@synthesize addButton;
-//@synthesize editButton;
-
-UIButton*               addButton;
-UIBarButtonItem*        editButton;
+@synthesize packageName;
 
 
 #pragma mark -
@@ -65,19 +73,9 @@ UIBarButtonItem*        editButton;
     editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                target:self 
                                                                action:@selector(editAction)];
-    // Create an add button for the table header
-    addButton  = [[UIButton alloc] init];
-    // ...put if toward the right edge
-    // TODO - won't rotate correctly
-    CGFloat xOffset = self.tblView.bounds.size.width - k_addBtnWidth - 5.0f;
-    CGFloat yOffset = (k_tblHdrHeight - k_addBtnWidth) / 2;
-    [addButton setFrame:CGRectMake(xOffset, yOffset, k_addBtnWidth, k_addBtnWidth)];
-    [addButton setBackgroundColor:[UIColor clearColor]];
-    [addButton setImage:[UIImage imageNamed:@"addButton.png"] 
-               forState:UIControlStateNormal];
-    [addButton addTarget:self
-                  action:@selector(addPackage:) 
-        forControlEvents:UIControlEventTouchUpInside];
+    addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                              target:self 
+                                                              action:@selector(getPackageName)];
 
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
@@ -105,7 +103,8 @@ UIBarButtonItem*        editButton;
     NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
                                                                    error:&error] mutableCopy] autorelease];
     if (mutableFetchResults == nil) {
-        NSString* msg = [[NSString alloc] initWithFormat:@"A fatal error occured fetching the story %@", [error code]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching the story %@", 
+                                                                           @"A fatal error occured fetching the story %@"), [error code]];
         [KOExtensions showErrorWithMessage:msg];
         ELog(error, @"Failed to fetch Packages");
         abort();
@@ -119,12 +118,8 @@ UIBarButtonItem*        editButton;
 {
     DLog();
     // Set up the buttons.
-    [editButton setEnabled:YES];
-    [addButton  setHidden:YES];
-    
-    self.navigationItem.rightBarButtonItem = nil;           // Release the save button if there is one
-    self.navigationItem.rightBarButtonItem = editButton;
-    self.navigationItem.leftBarButtonItem  = nil;
+    self.navigationItem.rightBarButtonItem = addButton;
+    self.navigationItem.leftBarButtonItem  = editButton;
     
     [_tableView setEditing:NO];
 }
@@ -145,7 +140,6 @@ UIBarButtonItem*        editButton;
                                                                                 action:@selector(cancelAction)] autorelease];
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
-    [addButton setHidden:NO];
     
     // Start an undo group...it will either be commited or 
     //    undone in requestModalViewDismissal
@@ -206,12 +200,12 @@ UIBarButtonItem*        editButton;
     [self.tblView reloadData];
 }
 
-- (IBAction)addPackage:(id)sender
+- (void)addPackage
 {
     DLog();
     Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName:@"Packages"
                                                                   inManagedObjectContext:__managedObjectContext];
-    [package setName:[self getPackageName]];
+    [package setName:packageName];
     [package setCreated_date:[NSDate date]];
     
     NSError* error = nil;
@@ -234,10 +228,30 @@ UIBarButtonItem*        editButton;
                               animated:YES];
 }
 
-- (NSString *)getPackageName 
-{    
-    return NSLocalizedString(@"temp", @"temp");
+- (void)getPackageName 
+{
+    UIAlertView* packageNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Package Name", @"Enter Package Name") 
+                                                                message:nil
+                                                               delegate:self 
+                                                      cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel") 
+                                                      otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+    packageNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    
+    [packageNameAlert show];
 }
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        // OK
+        self.packageName = [[alertView textFieldAtIndex:0] text];            
+        [self addPackage];
+    } else {
+        // cancel
+        [self configureDefaultNavBar];
+    }
+}
+
 
 #pragma mark -
 #pragma mark Table view data source
@@ -290,11 +304,10 @@ UIBarButtonItem*        editButton;
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Packages Available:", @"Packages Available:");
+	sectionLabel.text = NSLocalizedString(@"Packages Available:", 
+                                          @"Packages Available:");
     // Add label to sectionView
     [sectionView addSubview:sectionLabel];
-    // ...and addButton to sectionView
-    [sectionView addSubview:addButton];
 
 	return sectionView;
 }
