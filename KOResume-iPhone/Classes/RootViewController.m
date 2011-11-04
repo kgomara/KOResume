@@ -18,12 +18,10 @@
 @interface RootViewController()
 {
     @private
-    UIBarButtonItem*            addButton;
-    UIBarButtonItem*            editButton;
-    NSString*                   packageName;
+    NSString*                   _packageName;
     
-    NSFetchedResultsController* fetchedResultsController;
-    NSMutableArray*             packagesArray;
+    NSFetchedResultsController* __fetchedResultsController;
+    NSMutableArray*             _packagesArray;
 }
 
 - (void)getPackageName;
@@ -41,12 +39,12 @@
 
 @implementation RootViewController
 
-@synthesize tblView = _tableView;
-
-@synthesize packagesArray;  
+@synthesize tblView = _tblView;
 @synthesize managedObjectContext        = __managedObjectContext;
+
+@synthesize packagesArray               = _packagesArray;  
 @synthesize fetchedResultsController    = __fetchedResultsController;
-@synthesize packageName;
+@synthesize packageName                 = _packageName;
 
 
 #pragma mark -
@@ -69,14 +67,6 @@
 #endif
 	self.view.backgroundColor = [UIColor clearColor];
     
-    // Initialize the buttons
-    editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                               target:self 
-                                                               action:@selector(editAction)];
-    addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                              target:self 
-                                                              action:@selector(getPackageName)];
-
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
     // ...and load the Packages
@@ -111,17 +101,25 @@
     }
     
     // Update packagesArray and clean up
-    [self setPackagesArray:mutableFetchResults];
+    self.packagesArray = mutableFetchResults;
 }
 
 - (void)configureDefaultNavBar
 {
     DLog();
     // Set up the buttons.
+    // Initialize the buttons
+    UIBarButtonItem* editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                                                                                 target:self 
+                                                                                 action:@selector(editAction)] autorelease];
+    UIBarButtonItem* addButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                target:self 
+                                                                                action:@selector(getPackageName)] autorelease];
+    
     self.navigationItem.rightBarButtonItem = addButton;
     self.navigationItem.leftBarButtonItem  = editButton;
     
-    [_tableView setEditing:NO];
+    [self.tblView setEditing:NO];
 }
 
 #pragma mark UI handlers
@@ -129,7 +127,7 @@
 - (void)editAction
 {
     DLog();
-    [_tableView setEditing:YES];
+    [self.tblView setEditing:YES];
     
     // Set up the navigation item and done button
     UIBarButtonItem* saveBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
@@ -143,7 +141,7 @@
     
     // Start an undo group...it will either be commited or 
     //    undone in requestModalViewDismissal
-    [[[self managedObjectContext] undoManager] beginUndoGrouping]; 
+    [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 - (void)saveAction
@@ -151,7 +149,7 @@
     DLog();
     // The sorted package array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the packages' sequence_number attribute
-    for (int i = 0; i < [packagesArray count]; i++) {
+    for (int i = 0; i < [self.packagesArray count]; i++) {
         if ([[self.packagesArray objectAtIndex:i] isDeleted]) {
             // skip it
         } else {
@@ -160,7 +158,7 @@
     }
     
     // Save the changes
-    [[[self managedObjectContext] undoManager] endUndoGrouping];
+    [[self.managedObjectContext undoManager] endUndoGrouping];
     NSError* error = nil;
     NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
     if (![context save:&error])
@@ -174,7 +172,7 @@
         abort();
     }
     // Cleanup the undoManager
-    [[[self managedObjectContext] undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the NavigationBar defaults
     [self configureDefaultNavBar];
     [self.tblView reloadData];
@@ -184,16 +182,16 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[[self managedObjectContext] undoManager] setActionName:@"Packages Editing"];
-    [[[self managedObjectContext] undoManager] endUndoGrouping];
-    if ([[[self managedObjectContext] undoManager] canUndo]) {
-        [[[self managedObjectContext] undoManager] undoNestedGroup];
+    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] endUndoGrouping];
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        [[self.managedObjectContext undoManager] undoNestedGroup];
     } else {
         DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[[self managedObjectContext] undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset Packages tableView
     [self configureDefaultNavBar];
     [self loadPackages];
@@ -204,12 +202,12 @@
 {
     DLog();
     Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName:@"Packages"
-                                                                  inManagedObjectContext:__managedObjectContext];
-    [package setName:packageName];
-    [package setCreated_date:[NSDate date]];
+                                                                  inManagedObjectContext:self.managedObjectContext];
+    package.name            = self.packageName;
+    package.created_date    = [NSDate date];
     
     NSError* error = nil;
-    if (![__managedObjectContext save:&error]) {
+    if (![self.managedObjectContext save:&error]) {
         ELog(error, @"Failed to save");
         abort();
     }
@@ -220,12 +218,12 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
                                                 inSection:0];
     
-    [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                      withRowAnimation:UITableViewRowAnimationFade];
-    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                          inSection:0] 
-                      atScrollPosition:UITableViewScrollPositionTop 
-                              animated:YES];
+    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                        withRowAnimation:UITableViewRowAnimationFade];
+    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
+                                                            inSection:0] 
+                        atScrollPosition:UITableViewScrollPositionTop 
+                                animated:YES];
 }
 
 - (void)getPackageName 
@@ -294,6 +292,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
+    // TODO - this won't rotate well...
     UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tblView.bounds.size.width, k_tblHdrHeight)] autorelease];
     [sectionView setBackgroundColor:[UIColor clearColor]];
     
@@ -323,8 +322,8 @@
         // Delete the row from the data source
         [self editAction];
         // Delete the managed object at the given index path.
-        NSManagedObject *packageToDelete = [packagesArray objectAtIndex:indexPath.row];
-        [__managedObjectContext deleteObject:packageToDelete];
+        NSManagedObject *packageToDelete = [self.packagesArray objectAtIndex:indexPath.row];
+        [self.managedObjectContext deleteObject:packageToDelete];
         [self.packagesArray removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
                          withRowAnimation:UITableViewRowAnimationFade];
@@ -379,25 +378,19 @@
 - (void)viewDidUnload 
 {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-	_tableView = nil;
-    
-    self.packagesArray = nil;
-    addButton = nil;
-    editButton = nil;
+	self.tblView        = nil;    
+    self.packagesArray  = nil;
 }
 
 
 - (void)dealloc 
 {
-	_tableView = nil;
+    // Apple recommends calling release on the ivar...
+	[_tblView release];
+    [_packagesArray release];
     
-    self.packagesArray = nil;
-    self.managedObjectContext = nil;
-    self.fetchedResultsController = nil;
-    
-    addButton = nil;
-    editButton = nil;
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
     
     [super dealloc];
 }
@@ -414,7 +407,7 @@
     // Create the fetch request for the entity
     NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription* entity  = [NSEntityDescription entityForName:@"Packages"
-                                               inManagedObjectContext:__managedObjectContext];
+                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number
@@ -427,7 +420,7 @@
     
     // Alloc and initialize the controller
     NSFetchedResultsController* aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                                managedObjectContext:__managedObjectContext
+                                                                                                managedObjectContext:self.managedObjectContext
                                                                                                   sectionNameKeyPath:nil
                                                                                                            cacheName:@"Root"];
     aFetchedResultsController.delegate = self;
@@ -446,7 +439,7 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();
-    [_tableView beginUpdates];
+    [self.tblView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo 
@@ -455,12 +448,12 @@
     DLog();
     switch (type) {
         case NSFetchedResultsChangeInsert:
-            [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
         case NSFetchedResultsChangeDelete:
-            [_tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
         default:
             ALog();
@@ -475,22 +468,22 @@
     
     switch (type) {
         case NSFetchedResultsChangeInsert:
-            [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                                withRowAnimation:UITableViewRowAnimationFade];
             break;
         case NSFetchedResultsChangeDelete:
-            [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                withRowAnimation:UITableViewRowAnimationFade];
             break;
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[_tableView cellForRowAtIndexPath:indexPath]
+            [self configureCell:[self.tblView cellForRowAtIndexPath:indexPath]
                     atIndexPath:indexPath];
             break;
         case NSFetchedResultsChangeMove:
-            [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
-            [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                              withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                                withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         default:
@@ -501,7 +494,7 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();
-    [_tableView endUpdates];
+    [self.tblView endUpdates];
 }
 
 #pragma mark - tableView helpers

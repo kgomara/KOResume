@@ -12,8 +12,8 @@
 
 @implementation KOResumeAppDelegate
 
-@synthesize window;
-@synthesize navigationController;
+@synthesize window                      = _window;
+@synthesize navigationController        = _navigationController;
 
 @synthesize managedObjectModel          = __managedObjectModel;
 @synthesize managedObjectContext        = __managedObjectContext;
@@ -26,20 +26,20 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
     DLog();
-    NSManagedObjectContext *context = [self managedObjectContext];    
+    NSManagedObjectContext *context = self.managedObjectContext;    
     if (!context) {
         ALog(@"Could not get managedObjectContext");
         abort();
     }
     
     // Pass the managed object context to the view controller.
-    RootViewController* rvc = (RootViewController *) navigationController.topViewController;
+    RootViewController* rvc = (RootViewController *) self.navigationController.topViewController;
     rvc.managedObjectContext = context;
     
     // Add the navigation controller's view to the window and display.
-    [self.window addSubview:navigationController.view];
+    [self.window addSubview:self.navigationController.view];
     [self.window makeKeyAndVisible];
-    DLog(@"RootViewController = %@", navigationController);
+    DLog(@"RootViewController = %@", self.navigationController);
 
     return YES;
 }
@@ -110,11 +110,12 @@
 - (void)dealloc 
 {
     DLog();
-	[navigationController release];
-    [managedObjectContext release];
-    [managedObjectModel release];
-    [persistentStoreCoordinator release];
-	[window release];
+	[_navigationController release];
+	[_window release];
+
+    [__managedObjectContext release];
+    [__managedObjectModel release];
+    [__persistentStoreCoordinator release];
     
 	[super dealloc];
 }
@@ -210,7 +211,7 @@
     NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
     
     NSError* error = nil;
-    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
     if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType 
                                                     configuration:nil 
                                                               URL:storeURL 

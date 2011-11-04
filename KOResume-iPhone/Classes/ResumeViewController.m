@@ -16,12 +16,21 @@
 #define kProgJobsInfoTbl	2
 #define kEducationInfoTbl	3
 
+@interface ResumeViewController ()
+{
+@private
+    NSArray*        mgmtJobsArray;
+    NSArray*        progJobsArray;
+}
+@end
+
 @implementation ResumeViewController
 
-@synthesize tblView;
-@synthesize mgmtJobsArray;
-@synthesize progJobsArray;
-@synthesize mgmtJobsDict;
+@synthesize tblView = _tblView;
+@synthesize mgmtJobsDict  = _mgmtJobsDict;
+@synthesize managedObjectContext = __managedObjectContext;
+@synthesize selectedPackage = _selectedPackage;
+@synthesize fetchedResultsController = __fetchedResultsController;
 
 #pragma mark -
 #pragma mark View lifecycle methods
@@ -104,11 +113,11 @@
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case kMgmtJobsInfoTbl:
-			cell.textLabel.text = [self.mgmtJobsArray objectAtIndex:indexPath.row];
+			cell.textLabel.text = [mgmtJobsArray objectAtIndex:indexPath.row];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case kProgJobsInfoTbl:
-			cell.textLabel.text = [self.progJobsArray objectAtIndex:indexPath.row];
+			cell.textLabel.text = [progJobsArray objectAtIndex:indexPath.row];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case kEducationInfoTbl:
@@ -182,7 +191,7 @@
 			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
                                                                                                         bundle:nil];
 			detailViewController.title = NSLocalizedString(@"Mgmt Hist", @"Mgmt Hist");
-			NSString* jobKey = [self.mgmtJobsArray objectAtIndex:indexPath.row];
+			NSString* jobKey = [mgmtJobsArray objectAtIndex:indexPath.row];
 			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
 			
 			// Pass the selected object to the new view controller.
@@ -195,7 +204,7 @@
 			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
                                                                                                         bundle:nil];
 			detailViewController.title = NSLocalizedString(@"Prog Hist", @"Prog Hist");
-			NSString* jobKey = [self.progJobsArray objectAtIndex:indexPath.row];
+			NSString* jobKey = [progJobsArray objectAtIndex:indexPath.row];
 			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
 			
 			// Pass the selected object to the new view controller.
@@ -239,6 +248,7 @@
 {
     [super viewDidUnload];
 	self.tblView = nil;
+    self.mgmtJobsDict  = nil;
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
@@ -246,10 +256,11 @@
 
 - (void)dealloc 
 {
-	self.tblView = nil;
-	self.mgmtJobsArray = nil;
-	self.progJobsArray = nil;
-	self.mgmtJobsDict  = nil;
+	[_tblView release];
+	[_mgmtJobsDict release];
+    [_selectedPackage release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
 	
     [super dealloc];
 }

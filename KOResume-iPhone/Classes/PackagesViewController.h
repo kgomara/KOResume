@@ -13,13 +13,15 @@
 
 @interface PackagesViewController : UIViewController <UITableViewDelegate> 
 {
-    UITableView*            tblView;
-    NSManagedObjectContext* managedObjectContext;
-    Packages*               selectedPackage;
+    UITableView*                tblView;
+    NSManagedObjectContext*     managedObjectContext;
+    Packages*                   selectedPackage;
+    NSFetchedResultsController* fetchedResultsController;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView*     tblView;
-@property (nonatomic, retain) NSManagedObjectContext*   managedObjectContext;
-@property (nonatomic, retain) Packages*                 selectedPackage;
+@property (nonatomic, retain) IBOutlet UITableView*         tblView;
+@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, retain) Packages*                     selectedPackage;
+@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
 
 @end

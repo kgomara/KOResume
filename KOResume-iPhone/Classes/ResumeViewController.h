@@ -7,18 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Packages.h"
 
 @interface ResumeViewController : UIViewController <UITableViewDelegate> 
 {
-    UITableView*    tblView;
-    NSArray*        mgmtJobsArray;
-    NSArray*        progJobsArray;
-    NSDictionary*   mgmtJobsDict;
+    UITableView*                tblView;
+    NSDictionary*               mgmtJobsDict;
+    NSManagedObjectContext*     managedObjectContext;
+    Packages*                   selectedPackage;
+    NSFetchedResultsController* fetchedResultsController;
 }
 
 @property (nonatomic, retain) IBOutlet      UITableView*    tblView;
-@property (nonatomic, retain)               NSArray*        mgmtJobsArray;
-@property (nonatomic, retain)               NSArray*        progJobsArray;
 @property (nonatomic, retain)               NSDictionary*   mgmtJobsDict;
+@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, retain) Packages*                     selectedPackage;
+@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
 
 @end

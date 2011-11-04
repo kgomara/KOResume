@@ -12,8 +12,11 @@
 
 @implementation CoverLtrViewController
 
-@synthesize coverLtrLbl;
-@synthesize coverLtrView;
+@synthesize coverLtrLbl = _coverLtrLbl;
+@synthesize coverLtrView = _coverLtrView;
+@synthesize managedObjectContext = __managedObjectContext;
+@synthesize selectedPackage = _selectedPackage;
+@synthesize fetchedResultsController = __fetchedResultsController;
 
 - (void)viewDidLoad 
 {
@@ -71,8 +74,12 @@
 
 - (void)dealloc 
 {
-	self.coverLtrLbl = nil;
-	self.coverLtrView = nil;
+    // Apple recommends calling release on the ivar...
+	[_coverLtrLbl release];
+	[_coverLtrView release];
+    [_selectedPackage release];
+    [__fetchedResultsController release];
+    [__managedObjectContext release];
 	
     [super dealloc];
 }

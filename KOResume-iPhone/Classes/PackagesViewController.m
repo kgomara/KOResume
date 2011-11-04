@@ -17,9 +17,10 @@
 
 @implementation PackagesViewController
 
-@synthesize tblView;
-@synthesize managedObjectContext;
-@synthesize selectedPackage;
+@synthesize tblView = _tblView;
+@synthesize managedObjectContext = __managedObjectContext;
+@synthesize selectedPackage = _selectedPackage;
+@synthesize fetchedResultsController = __fetchedResultsController;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -63,13 +64,16 @@
 	// Configure the cell.
 	switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case kSummaryTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Cover Letter", @"Cover Letter");
+			cell.textLabel.text = NSLocalizedString(@"Cover Letter", 
+                                                    @"Cover Letter");
 			break;
 		case kResumeTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Resume", @"Resume");
+			cell.textLabel.text = NSLocalizedString(@"Resume", 
+                                                    @"Resume");
 			break;
 		case kDesignTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Design Explanation", @"Design Explanation");
+			cell.textLabel.text = NSLocalizedString(@"Design Explanation", 
+                                                    @"Design Explanation");
 			break;
 		default:
             ALog(@"Unexpected row %d", indexPath.row);
@@ -91,7 +95,8 @@
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Package Contents:", @"Package Contents:");
+	sectionLabel.text = NSLocalizedString(@"Package Contents:", 
+                                          @"Package Contents:");
 	return sectionLabel;
 }
 
@@ -106,7 +111,11 @@
 		case kSummaryTableCell: {
 			CoverLtrViewController* coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName:@"CoverLtrViewController" 
                                                                                                       bundle:nil];
-			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", @"Cover Letter");
+			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", 
+                                                             @"Cover Letter");
+            coverLtrViewController.selectedPackage = self.selectedPackage;
+            coverLtrViewController.managedObjectContext = self.managedObjectContext;
+            coverLtrViewController.fetchedResultsController = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:coverLtrViewController 
@@ -117,7 +126,11 @@
 		case kResumeTableCell: {
 			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName:@"ResumeViewController" 
                                                                                                 bundle:nil];
-			resumeViewController.title = NSLocalizedString(@"Resume", @"Resume");
+			resumeViewController.title = NSLocalizedString(@"Resume", 
+                                                           @"Resume");
+            resumeViewController.selectedPackage = self.selectedPackage;
+            resumeViewController.managedObjectContext = self.managedObjectContext;
+            resumeViewController.fetchedResultsController = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:resumeViewController 
@@ -129,7 +142,11 @@
 			DLog(@"Explanation");
 			DesignViewController* designViewController = [[DesignViewController alloc] initWithNibName:@"DesignViewController" 
                                                                                                 bundle:nil];
-			designViewController.title = NSLocalizedString(@"Design", @"Design");
+			designViewController.title = NSLocalizedString(@"Design", 
+                                                           @"Design");
+            designViewController.selectedPackage = self.selectedPackage;
+            designViewController.managedObjectContext = self.managedObjectContext;
+            designViewController.fetchedResultsController = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:designViewController 
@@ -167,8 +184,11 @@
 
 - (void)dealloc 
 {
-	self.tblView = nil;
-    self.managedObjectContext = nil;
+    // Apple recommends calling release on the ivar...
+	[_tblView release];
+    [_selectedPackage release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
     
     [super dealloc];
 }
