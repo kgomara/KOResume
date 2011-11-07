@@ -9,11 +9,9 @@
 #import "PackagesViewController.h"
 #import "CoverLtrViewController.h"
 #import "ResumeViewController.h"
-#import "DesignViewController.h"
 
 #define kSummaryTableCell   0
 #define kResumeTableCell    1
-#define kDesignTableCell    2
 
 @implementation PackagesViewController
 
@@ -48,7 +46,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
-	return 3;
+	return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -70,10 +68,6 @@
 		case kResumeTableCell:
 			cell.textLabel.text = NSLocalizedString(@"Resume", 
                                                     @"Resume");
-			break;
-		case kDesignTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Design Explanation", 
-                                                    @"Design Explanation");
 			break;
 		default:
             ALog(@"Unexpected row %d", indexPath.row);
@@ -152,24 +146,6 @@
 			[resumeViewController release];
 			break;
 		}
-		case kDesignTableCell: {
-			DLog(@"Explanation");
-			DesignViewController* designViewController = [[DesignViewController alloc] initWithNibName:@"DesignViewController" 
-                                                                                                bundle:nil];
-			designViewController.title = NSLocalizedString(@"Design", 
-                                                           @"Design");
-            designViewController.selectedPackage            = self.selectedPackage;
-            designViewController.managedObjectContext       = self.managedObjectContext;
-            designViewController.fetchedResultsController   = self.fetchedResultsController;
-			
-			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:designViewController 
-                                                 animated:YES];
-			[designViewController release];
-			break;
-		}
-		default:
-			break;
 	}
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
