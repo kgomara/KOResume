@@ -11,10 +11,9 @@
 
 @interface SummaryViewController : UIViewController 
 {
-	UIButton*  homePhone;
-	UIButton*  mobilePhone;
-	UILabel*   summaryLabel;
-
+//	UIButton*  homePhone;
+//	UIButton*  mobilePhone;
+//	UILabel*   summaryLabel;
 }
 
 @property (nonatomic, retain) IBOutlet UIButton*    homePhone;

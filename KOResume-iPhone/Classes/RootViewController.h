@@ -13,8 +13,7 @@
                                                   NSFetchedResultsControllerDelegate,
                                                   UIAlertViewDelegate> 
 {
-	UITableView*                tblView;
-    NSManagedObjectContext*     managedObjectContext;
+
 }
 
 @property (nonatomic, retain) IBOutlet UITableView*         tblView;

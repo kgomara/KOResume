@@ -17,10 +17,11 @@
 
 @implementation PackagesViewController
 
-@synthesize tblView = _tblView;
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize selectedPackage = _selectedPackage;
-@synthesize fetchedResultsController = __fetchedResultsController;
+@synthesize tblView                     = _tblView;
+@synthesize selectedPackage             = _selectedPackage;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -30,8 +31,7 @@
 {
     [super viewDidLoad];
 	
-    // TODO get from database
-	self.navigationItem.title = @"Kevin O'Mara";
+	self.navigationItem.title = self.selectedPackage.name;
 	self.view.backgroundColor = [UIColor clearColor];
 }
 
@@ -84,6 +84,20 @@
     return cell;
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    }
+}
+
 #pragma mark -
 #pragma mark Table view delegates
 
@@ -113,8 +127,8 @@
                                                                                                       bundle:nil];
 			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", 
                                                              @"Cover Letter");
-            coverLtrViewController.selectedPackage = self.selectedPackage;
-            coverLtrViewController.managedObjectContext = self.managedObjectContext;
+            coverLtrViewController.selectedPackage          = self.selectedPackage;
+            coverLtrViewController.managedObjectContext     = self.managedObjectContext;
             coverLtrViewController.fetchedResultsController = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
@@ -128,9 +142,9 @@
                                                                                                 bundle:nil];
 			resumeViewController.title = NSLocalizedString(@"Resume", 
                                                            @"Resume");
-            resumeViewController.selectedPackage = self.selectedPackage;
-            resumeViewController.managedObjectContext = self.managedObjectContext;
-            resumeViewController.fetchedResultsController = self.fetchedResultsController;
+            resumeViewController.selectedPackage            = self.selectedPackage;
+            resumeViewController.managedObjectContext       = self.managedObjectContext;
+            resumeViewController.fetchedResultsController   = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:resumeViewController 
@@ -144,9 +158,9 @@
                                                                                                 bundle:nil];
 			designViewController.title = NSLocalizedString(@"Design", 
                                                            @"Design");
-            designViewController.selectedPackage = self.selectedPackage;
-            designViewController.managedObjectContext = self.managedObjectContext;
-            designViewController.fetchedResultsController = self.fetchedResultsController;
+            designViewController.selectedPackage            = self.selectedPackage;
+            designViewController.managedObjectContext       = self.managedObjectContext;
+            designViewController.fetchedResultsController   = self.fetchedResultsController;
 			
 			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:designViewController 
@@ -187,6 +201,7 @@
     // Apple recommends calling release on the ivar...
 	[_tblView release];
     [_selectedPackage release];
+    
     [__managedObjectContext release];
     [__fetchedResultsController release];
     

@@ -26,7 +26,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
     DLog();
-    NSManagedObjectContext *context = self.managedObjectContext;    
+    NSManagedObjectContext* context = self.managedObjectContext;    
     if (!context) {
         ALog(@"Could not get managedObjectContext");
         abort();

@@ -18,10 +18,10 @@
 @interface RootViewController()
 {
     @private
-    NSString*                   _packageName;
+    NSString*                   _packageName;    
+    NSMutableArray*             _packagesArray;
     
     NSFetchedResultsController* __fetchedResultsController;
-    NSMutableArray*             _packagesArray;
 }
 
 - (void)getPackageName;
@@ -40,11 +40,12 @@
 @implementation RootViewController
 
 @synthesize tblView = _tblView;
-@synthesize managedObjectContext        = __managedObjectContext;
 
 @synthesize packagesArray               = _packagesArray;  
-@synthesize fetchedResultsController    = __fetchedResultsController;
 @synthesize packageName                 = _packageName;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 
 #pragma mark -
@@ -122,6 +123,20 @@
     [self.tblView setEditing:NO];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    }
+}
+
 #pragma mark UI handlers
 
 - (void)editAction
@@ -129,7 +144,7 @@
     DLog();
     [self.tblView setEditing:YES];
     
-    // Set up the navigation item and done button
+    // Set up the navigation item and save button
     UIBarButtonItem* saveBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
                                                                               target:self
                                                                               action:@selector(saveAction)] autorelease];
@@ -139,8 +154,8 @@
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
-    // Start an undo group...it will either be commited or 
-    //    undone in requestModalViewDismissal
+    // Start an undo group...it will either be commited in saveAction or 
+    //    undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
@@ -352,8 +367,10 @@
     PackagesViewController* packagesViewController = [[[PackagesViewController alloc] initWithNibName:@"PackagesViewController" 
                                                                                                bundle:nil] autorelease];
     // Pass the selected object to the new view controller.
-    packagesViewController.title = [[self.packagesArray objectAtIndex:indexPath.row] name];
-    packagesViewController.selectedPackage = [self.packagesArray objectAtIndex:indexPath.row];
+    packagesViewController.title                    = [[self.packagesArray objectAtIndex:indexPath.row] name];
+    packagesViewController.selectedPackage          = [self.packagesArray objectAtIndex:indexPath.row];
+    packagesViewController.managedObjectContext     = self.managedObjectContext;
+    packagesViewController.fetchedResultsController = self.fetchedResultsController;
     [self.navigationController pushViewController:packagesViewController 
                                          animated:YES];
     

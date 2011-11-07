@@ -11,19 +11,19 @@
 
 @interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> 
 {
-	UILabel*        jobCompany;
-    NSString*       jobCompanyUrl;
-	UILabel*        jobLocation;
-	UILabel*        jobTitle;
-	UILabel*        jobStartDate;
-	UILabel*        jobEndDate;
-	UILabel*        jobResponsibilities;
-    NSArray*        jobAccomplishmentsArray;
-	UIImageView*    jobView;
-	UIScrollView*   jobScrollView;
-	UIButton*       jobCompanyUrlBtn;
-	
-	NSDictionary*   jobDictionary;
+//	UILabel*        jobCompany;
+//    NSString*       jobCompanyUrl;
+//	UILabel*        jobLocation;
+//	UILabel*        jobTitle;
+//	UILabel*        jobStartDate;
+//	UILabel*        jobEndDate;
+//	UILabel*        jobResponsibilities;
+//    NSArray*        jobAccomplishmentsArray;
+//	UIImageView*    jobView;
+//	UIScrollView*   jobScrollView;
+//	UIButton*       jobCompanyUrlBtn;
+//	
+//	NSDictionary*   jobDictionary;
 }
 
 @property (nonatomic, retain) IBOutlet  UILabel*        jobCompany;

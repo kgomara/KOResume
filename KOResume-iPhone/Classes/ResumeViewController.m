@@ -26,11 +26,12 @@
 
 @implementation ResumeViewController
 
-@synthesize tblView = _tblView;
-@synthesize mgmtJobsDict  = _mgmtJobsDict;
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize selectedPackage = _selectedPackage;
-@synthesize fetchedResultsController = __fetchedResultsController;
+@synthesize tblView                     = _tblView;
+@synthesize mgmtJobsDict                = _mgmtJobsDict;
+@synthesize selectedPackage             = _selectedPackage;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 #pragma mark -
 #pragma mark View lifecycle methods

@@ -12,12 +12,12 @@
 
 @implementation DesignViewController
 
-@synthesize designView = _designView;
-@synthesize designScrollView = _designScrollView;
-@synthesize designExplanationLbl = _designExplanationLbl;
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize selectedPackage = _selectedPackage;
-@synthesize fetchedResultsController = __fetchedResultsController;
+@synthesize designView                  = _designView;
+@synthesize designScrollView            = _designScrollView;
+@synthesize designExplanationLbl        = _designExplanationLbl;
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize selectedPackage             = _selectedPackage;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
