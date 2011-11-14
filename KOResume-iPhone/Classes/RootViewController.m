@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import "PackagesViewController.h"
 #import "Packages.h"
+#import "Resumes.h"
 #import <CoreData/CoreData.h>
 #import "KOExtensions.h"
 
@@ -221,6 +222,14 @@
     package.name            = self.packageName;
     package.created_date    = [NSDate date];
     
+    //  Add a Resume for the package
+    Resumes* resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName:@"Resumes"
+                                                                inManagedObjectContext:self.managedObjectContext];
+    resume.name                 = NSLocalizedString(@"Resume", @"Resume");
+    resume.created_date         = [NSDate date];
+    resume.sequence_numberValue = 1;
+    package.resume              = resume;
+
     NSError* error = nil;
     if (![self.managedObjectContext save:&error]) {
         ELog(error, @"Failed to save");

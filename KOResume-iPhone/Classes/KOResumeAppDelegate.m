@@ -209,6 +209,7 @@
 //    }
     
     NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
+    DLog(@"Core Data store path = \"%@\"", [storeURL path]); 
     
     NSError* error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];

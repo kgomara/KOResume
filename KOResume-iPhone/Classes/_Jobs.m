@@ -132,6 +132,13 @@
 @dynamic accomplishment;
 
 	
+- (NSMutableSet*)accomplishmentSet {
+	[self willAccessValueForKey:@"accomplishment"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"accomplishment"];
+	[self didAccessValueForKey:@"accomplishment"];
+	return result;
+}
+	
 
 @dynamic resume;
 

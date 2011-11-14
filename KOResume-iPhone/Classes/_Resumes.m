@@ -139,9 +139,23 @@
 @dynamic education;
 
 	
+- (NSMutableSet*)educationSet {
+	[self willAccessValueForKey:@"education"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"education"];
+	[self didAccessValueForKey:@"education"];
+	return result;
+}
+	
 
 @dynamic job;
 
+	
+- (NSMutableSet*)jobSet {
+	[self willAccessValueForKey:@"job"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"job"];
+	[self didAccessValueForKey:@"job"];
+	return result;
+}
 	
 
 @dynamic package;

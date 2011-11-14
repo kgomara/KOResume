@@ -9,6 +9,7 @@
 #import "PackagesViewController.h"
 #import "CoverLtrViewController.h"
 #import "ResumeViewController.h"
+#import "Resumes.h"
 
 #define kSummaryTableCell   0
 #define kResumeTableCell    1
@@ -64,10 +65,12 @@
 		case kSummaryTableCell:
 			cell.textLabel.text = NSLocalizedString(@"Cover Letter", 
                                                     @"Cover Letter");
+            cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
 		case kResumeTableCell:
 			cell.textLabel.text = NSLocalizedString(@"Resume", 
                                                     @"Resume");
+            cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
             ALog(@"Unexpected row %d", indexPath.row);
@@ -136,7 +139,7 @@
                                                                                                 bundle:nil];
 			resumeViewController.title = NSLocalizedString(@"Resume", 
                                                            @"Resume");
-            resumeViewController.selectedPackage            = self.selectedPackage;
+            resumeViewController.selectedResume             = self.selectedPackage.resume;
             resumeViewController.managedObjectContext       = self.managedObjectContext;
             resumeViewController.fetchedResultsController   = self.fetchedResultsController;
 			

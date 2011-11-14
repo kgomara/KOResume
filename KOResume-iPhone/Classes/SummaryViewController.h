@@ -7,18 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Resumes.h"
+#import <CoreData/CoreData.h>
 
 @interface SummaryViewController : UIViewController 
 {
-//	UIButton*  homePhone;
-//	UIButton*  mobilePhone;
-//	UILabel*   summaryLabel;
+
 }
 
-@property (nonatomic, retain) IBOutlet UIButton*    homePhone;
-@property (nonatomic, retain) IBOutlet UIButton*    mobilePhone;
-@property (nonatomic, retain) IBOutlet UILabel*     summaryLabel;
+@property (nonatomic, retain) IBOutlet UIButton*                    homePhone;
+@property (nonatomic, retain) IBOutlet UIButton*                    mobilePhone;
+@property (nonatomic, retain) IBOutlet UILabel*                     summaryLabel;
+@property (nonatomic, retain)          Resumes*                     selectedResume;
+
+@property (nonatomic, retain)          NSManagedObjectContext*      managedObjectContext;
+@property (nonatomic, retain)          NSFetchedResultsController*  fetchedResultsController;
 
 - (IBAction)phoneTapped:(id)sender;
 

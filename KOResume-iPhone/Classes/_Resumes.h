@@ -125,16 +125,16 @@
 
 
 
-@property (nonatomic, retain) Education* education;
+@property (nonatomic, retain) NSSet* education;
 
-//- (BOOL)validateEducation:(id*)value_ error:(NSError**)error_;
-
-
+- (NSMutableSet*)educationSet;
 
 
-@property (nonatomic, retain) Jobs* job;
 
-//- (BOOL)validateJob:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, retain) NSSet* job;
+
+- (NSMutableSet*)jobSet;
 
 
 
@@ -149,6 +149,16 @@
 @end
 
 @interface _Resumes (CoreDataGeneratedAccessors)
+
+- (void)addEducation:(NSSet*)value_;
+- (void)removeEducation:(NSSet*)value_;
+- (void)addEducationObject:(Education*)value_;
+- (void)removeEducationObject:(Education*)value_;
+
+- (void)addJob:(NSSet*)value_;
+- (void)removeJob:(NSSet*)value_;
+- (void)addJobObject:(Jobs*)value_;
+- (void)removeJobObject:(Jobs*)value_;
 
 @end
 
@@ -225,13 +235,13 @@
 
 
 
-- (Education*)primitiveEducation;
-- (void)setPrimitiveEducation:(Education*)value;
+- (NSMutableSet*)primitiveEducation;
+- (void)setPrimitiveEducation:(NSMutableSet*)value;
 
 
 
-- (Jobs*)primitiveJob;
-- (void)setPrimitiveJob:(Jobs*)value;
+- (NSMutableSet*)primitiveJob;
+- (void)setPrimitiveJob:(NSMutableSet*)value;
 
 
 

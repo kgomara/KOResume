@@ -11,6 +11,11 @@
 
 @implementation EducationViewController
 
+@synthesize selectedResume              = _selectedResume;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
+
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*

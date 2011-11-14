@@ -115,9 +115,9 @@
 
 
 
-@property (nonatomic, retain) Accomplishments* accomplishment;
+@property (nonatomic, retain) NSSet* accomplishment;
 
-//- (BOOL)validateAccomplishment:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)accomplishmentSet;
 
 
 
@@ -132,6 +132,11 @@
 @end
 
 @interface _Jobs (CoreDataGeneratedAccessors)
+
+- (void)addAccomplishment:(NSSet*)value_;
+- (void)removeAccomplishment:(NSSet*)value_;
+- (void)addAccomplishmentObject:(Accomplishments*)value_;
+- (void)removeAccomplishmentObject:(Accomplishments*)value_;
 
 @end
 
@@ -202,8 +207,8 @@
 
 
 
-- (Accomplishments*)primitiveAccomplishment;
-- (void)setPrimitiveAccomplishment:(Accomplishments*)value;
+- (NSMutableSet*)primitiveAccomplishment;
+- (void)setPrimitiveAccomplishment:(NSMutableSet*)value;
 
 
 

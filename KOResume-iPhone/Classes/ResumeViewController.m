@@ -9,29 +9,49 @@
 #import "ResumeViewController.h"
 #import "JobsDetailViewController.h"
 #import "SummaryViewController.h"
-#import "EducationViewController.h"
+#import "EditEducationViewController.h"
+#import "Jobs.h"
+#import "Accomplishments.h"
+#import "Education.h"
 
-#define kSummaryInfoTbl		0
-#define	kMgmtJobsInfoTbl	1
-#define kProgJobsInfoTbl	2
-#define kEducationInfoTbl	3
+#define k_SummaryInfoTbl	0
+#define	k_JobsInfoTbl       1
+#define k_EducationInfoTbl	2
 
 @interface ResumeViewController ()
 {
 @private
-    NSArray*        mgmtJobsArray;
-    NSArray*        progJobsArray;
+    NSMutableArray*     professionalHistoryArray;
+    NSMutableArray*     educationAndCertificationArray;
 }
+
+@property (nonatomic, strong) NSMutableArray*     professionalHistoryArray;
+@property (nonatomic, strong) NSMutableArray*     educationAndCertificationArray;
+
+- (Jobs *)createJob:(NSDictionary *)jobDict;
+- (Accomplishments *)createAccomplishment:(NSString *)accomp;
+- (Education *)createEducation:(NSString *)eduName 
+                    dateEarned:(NSString *)dateEarned 
+                        inCity:(NSString *)inCity 
+                       inState:(NSString *)inState 
+                 atInstitution:(NSString *)atInstitution 
+                  withSequence:(int)withSequence;
+- (UITableViewCell *)configureCell:(UITableViewCell *)cell
+                       atIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
 @implementation ResumeViewController
 
-@synthesize tblView                     = _tblView;
-@synthesize mgmtJobsDict                = _mgmtJobsDict;
-@synthesize selectedPackage             = _selectedPackage;
+@synthesize tblView                         = _tblView;
+@synthesize mgmtJobsDict                    = _mgmtJobsDict;
+@synthesize selectedResume                  = _selectedResume;
 
-@synthesize managedObjectContext        = __managedObjectContext;
-@synthesize fetchedResultsController    = __fetchedResultsController;
+@synthesize managedObjectContext            = __managedObjectContext;
+@synthesize fetchedResultsController        = __fetchedResultsController;
+
+@synthesize professionalHistoryArray        = _professionalHistoryArray;
+@synthesize educationAndCertificationArray  = _educationAndCertificationArray;
 
 #pragma mark -
 #pragma mark View lifecycle methods
@@ -41,27 +61,134 @@
 {
     [super viewDidLoad];
 	
-	self.navigationItem.title = NSLocalizedString(@"Resume", @"Resume");	
+    DLog(@"job count %d", [self.selectedResume.job count]);
+
+	self.navigationItem.title = NSLocalizedString(@"Resume", 
+                                                  @"Resume");	
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+    
+    self.fetchedResultsController.delegate = self;
 	
-	// get the jobs.plist dictionary into mgmtJobsDict
-	NSBundle* bundle    = [NSBundle mainBundle];
-	NSString* plistPath = [bundle pathForResource:@"jobs" ofType:@"plist"];
-	NSDictionary* dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-	self.mgmtJobsDict = dictionary;
-	[dictionary release];
-	
-	// List the jobs in the order they should appear in the table.  Strings must match keys in jobs.plist
-    // TODO get from database
-	mgmtJobsArray = [[NSArray alloc] initWithObjects:@"Appiction, LLC", @"Macy's West", 
-                     @"O'Mara Consulting Associates", @"Loquendo",
-					 @"Per-Se Technologies", @"Tenth Planet", @"Apple Computer", @"Jostens Learning Corp.",
-					 nil];
-	progJobsArray = [[NSArray alloc] initWithObjects:@"Intrepid Software Development, Inc.", 
-                     @"National Semiconductor Corp.", @"NCR Corp.", @"California First Bank", @"IBM Corp.", 
-					 nil];
+    if ([self.selectedResume.job count] == 0) {
+        // Load the test database
+        // get the jobs.plist dictionary into mgmtJobsDict
+        NSBundle* bundle    = [NSBundle mainBundle];
+        NSString* plistPath = [bundle pathForResource:@"jobs" ofType:@"plist"];
+        NSDictionary* dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+        self.mgmtJobsDict = dictionary;
+        [dictionary release];
+        for (NSString* key in self.mgmtJobsDict) {
+            NSDictionary* jobDict = [self.mgmtJobsDict objectForKey:key];
+            [self.selectedResume addJobObject:[self createJob:jobDict]];
+        }
+    }
+    if ([self.selectedResume.education count] == 0) {
+        [self.selectedResume addEducationObject:[self createEducation:@"B.A. Business Administration" 
+                                                           dateEarned:@"Jun 1972" 
+                                                               inCity:@"Columbia" 
+                                                              inState:@"MO" 
+                                                        atInstitution:@"University of Missouri" 
+                                                         withSequence:1]];
+        [self.selectedResume addEducationObject:[self createEducation:@"MBA" 
+                                                           dateEarned:@"Jun 1978" 
+                                                               inCity:@"San Diego" 
+                                                              inState:@"CA" 
+                                                        atInstitution:@"San Diego State University" 
+                                                         withSequence:2]];
+        [self.selectedResume addEducationObject:[self createEducation:@"Certified Scrum Master" 
+                                                           dateEarned:@"Jan 2009" 
+                                                               inCity:@"San Francisco" 
+                                                              inState:@"CA" 
+                                                        atInstitution:@"Scrum Alliance" 
+                                                         withSequence:3]];
+        [self.selectedResume addEducationObject:[self createEducation:@"Sun Certified Java Programmer" 
+                                                           dateEarned:@"Apr 2009" 
+                                                               inCity:@"San Francisco" 
+                                                              inState:@"CA" 
+                                                        atInstitution:@"Sun" 
+                                                         withSequence:4]];
+    }
+    // Sort jobs in the order they should appear in the table.  
+    NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
+                                                                   ascending:YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    self.professionalHistoryArray = [NSMutableArray arrayWithArray:[self.selectedResume.job sortedArrayUsingDescriptors:sortDescriptors]];
+    // ...and the Education and Certification array
+    self.educationAndCertificationArray = [NSMutableArray arrayWithArray:[self.selectedResume.education sortedArrayUsingDescriptors:sortDescriptors]];
 }
 
+- (Jobs *)createJob:(NSDictionary *)jobDict
+{
+    DLog();
+    Jobs *newJob = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName:@"Jobs"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    newJob.created_date = [NSDate date];
+	newJob.name			= [jobDict objectForKey:@"Company"];
+	newJob.uri			= [jobDict objectForKey:@"CompanyUrl"];
+	newJob.city			= [jobDict objectForKey:@"Location"];
+	newJob.title		= [jobDict objectForKey:@"Title"];
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"MMM yyyy"];
+	newJob.start_date   = [dateFormatter dateFromString:[jobDict objectForKey:@"StartDate"]];
+	newJob.end_date		= [dateFormatter dateFromString:[jobDict objectForKey:@"EndDate"]];
+	newJob.summary      = [jobDict objectForKey:@"Responsibilities"];
+    newJob.resume       = self.selectedResume;
+    NSArray* accomplishments = [jobDict objectForKey:@"Accomplishments"];
+    for (NSString* accomp in accomplishments) {
+        [newJob addAccomplishmentObject:[self createAccomplishment:accomp]];
+    }
+    
+    DLog(@"accomplishment count %d", [[newJob accomplishment] count]);
+    return newJob;
+}
+
+- (Accomplishments *)createAccomplishment:(NSString *)accomp
+{
+    Accomplishments* newAccomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName:@"Accomplishments"
+                                                                                  inManagedObjectContext:self.managedObjectContext];
+    newAccomp.created_date  = [NSDate date];
+    newAccomp.summary       = accomp;
+    
+    return newAccomp;
+}
+
+- (Education *)createEducation:(NSString *)eduName 
+                    dateEarned:(NSString *)dateEarned 
+                        inCity:(NSString *)inCity 
+                       inState:(NSString *)inState 
+                 atInstitution:(NSString *)atInstitution 
+                  withSequence:(int)withSequence
+{
+    DLog();
+    Education *newEdu = (Education *)[NSEntityDescription insertNewObjectForEntityForName:@"Education"
+                                                                   inManagedObjectContext:self.managedObjectContext];
+    newEdu.created_date             = [NSDate date];
+    newEdu.name                     = eduName;
+    NSDateFormatter *dateFormatter  = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"MMM yyyy"];
+    newEdu.earned_date              = [dateFormatter dateFromString:dateEarned];
+    newEdu.city                     = inCity;
+    newEdu.state                    = inState;
+    newEdu.title                    = atInstitution;
+    newEdu.resume                   = self.selectedResume;
+
+    return newEdu;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if (![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+    }
+}
 
 #pragma mark -
 #pragma mark Table view data source
@@ -69,7 +196,7 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    return 4;
+    return 3;
 }
 
 
@@ -77,17 +204,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
 	switch (section) {
-		case kSummaryInfoTbl:
+		case k_SummaryInfoTbl:
 			return 1;
 			break;
-		case kMgmtJobsInfoTbl:
-			return [mgmtJobsArray count];
+		case k_JobsInfoTbl:
+			return [self.selectedResume.job count];
 			break;
-		case kProgJobsInfoTbl:
-			return [progJobsArray count];
-			break;
-		case kEducationInfoTbl:
-			return 1;
+		case k_EducationInfoTbl:
+			return [self.selectedResume.education count];
 			break;
 		default:
 			ALog(@"Unexpected section = %d", section);
@@ -107,30 +231,35 @@
     }
     
 	// Configure the cell.
-	switch (indexPath.section) {
-		case kSummaryInfoTbl:
-            // TODO this should come from database
-			cell.textLabel.text = @"Kevin O'Mara";          // There is only 1 row in this section
+    cell = [self configureCell:cell 
+                   atIndexPath:indexPath];
+
+    return cell;
+}
+
+- (UITableViewCell *)configureCell:(UITableViewCell *)cell
+           atIndexPath:(NSIndexPath *) indexPath
+{
+    switch (indexPath.section) {
+		case k_SummaryInfoTbl:
+			cell.textLabel.text = self.selectedResume.name;          // There is only 1 row in this section
+			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
+			break;
+		case k_JobsInfoTbl:
+			cell.textLabel.text = [[self.professionalHistoryArray objectAtIndex:indexPath.row] name];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
-		case kMgmtJobsInfoTbl:
-			cell.textLabel.text = [mgmtJobsArray objectAtIndex:indexPath.row];
-			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
-			break;
-		case kProgJobsInfoTbl:
-			cell.textLabel.text = [progJobsArray objectAtIndex:indexPath.row];
-			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
-			break;
-		case kEducationInfoTbl:
-			cell.textLabel.text = NSLocalizedString(@"Education & Certs.", @"Education & Certs.");    // There is only 1 row in this section
-			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
+		case k_EducationInfoTbl:
+			cell.textLabel.text = [(Education *)[self.educationAndCertificationArray objectAtIndex:indexPath.row] name];
+			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
 		default:
 			ALog(@"Unexpected section = %d", indexPath.section);
 			break;
 	}
-
+    
     return cell;
+
 }
 
 
@@ -146,19 +275,15 @@
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 
 	switch (section) {
-		case kSummaryInfoTbl: {
+		case k_SummaryInfoTbl: {
 			sectionLabel.text = NSLocalizedString(@"Summary", @"Summary");
 			return sectionLabel;
 		}
-		case kMgmtJobsInfoTbl: {
-			sectionLabel.text = NSLocalizedString(@"Management History", @"Management History");
+		case k_JobsInfoTbl: {
+			sectionLabel.text = NSLocalizedString(@"Professional History", @"Professional History");
 			return sectionLabel;
 		}
-		case kProgJobsInfoTbl: {
-			sectionLabel.text = NSLocalizedString(@"Programming History", @"Programming History");
-			return sectionLabel;
-		}
-		case kEducationInfoTbl: {
+		case k_EducationInfoTbl: {
 			sectionLabel.text = NSLocalizedString(@"Education & Certifications", @"Education & Certifications");
 			return sectionLabel;
 		}
@@ -177,9 +302,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     switch (indexPath.section) {
-		case kSummaryInfoTbl: {			// There is only 1 row in this section, so ignore row.
+		case k_SummaryInfoTbl: {			// There is only 1 row in this section, so ignore row.
 			SummaryViewController* summaryViewController = [[SummaryViewController alloc] initWithNibName:@"SummaryViewController" 
                                                                                                    bundle:nil];
+            summaryViewController.selectedResume            = self.selectedResume;
+            summaryViewController.managedObjectContext      = self.managedObjectContext;
+            summaryViewController.fetchedResultsController  = self.fetchedResultsController;
 			summaryViewController.title = NSLocalizedString(@"Summary", @"Summary");
 			
 			// Pass the selected object to the new view controller.
@@ -188,38 +316,27 @@
 			[summaryViewController release];
 			break;
 		}
-		case kMgmtJobsInfoTbl: {
+		case k_JobsInfoTbl: {
 			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
                                                                                                         bundle:nil];
-			detailViewController.title = NSLocalizedString(@"Mgmt Hist", @"Mgmt Hist");
-			NSString* jobKey = [mgmtJobsArray objectAtIndex:indexPath.row];
-			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
-			
 			// Pass the selected object to the new view controller.
+			detailViewController.title          = NSLocalizedString(@"Jobs", @"Jobs");
+			detailViewController.selectedJob    = [self.professionalHistoryArray objectAtIndex:indexPath.row];
+			
 			[self.navigationController pushViewController:detailViewController 
                                                  animated:YES];
 			[detailViewController release];
 			break;
 		}
-		case kProgJobsInfoTbl: {
-			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
-                                                                                                        bundle:nil];
-			detailViewController.title = NSLocalizedString(@"Prog Hist", @"Prog Hist");
-			NSString* jobKey = [progJobsArray objectAtIndex:indexPath.row];
-			detailViewController.jobDictionary = [self.mgmtJobsDict objectForKey:jobKey];
-			
+		case k_EducationInfoTbl: {			// There is only 1 row in this section, so ignore row.
+			EditEducationViewController *educationViewController = [[EditEducationViewController alloc] initWithNibName:@"EditEducationViewController" 
+                                                                                                                 bundle:nil];
 			// Pass the selected object to the new view controller.
-			[self.navigationController pushViewController:detailViewController 
-                                                 animated:YES];
-			[detailViewController release];
-			break;
-		}
-		case kEducationInfoTbl: {			// There is only 1 row in this section, so ignore row.
-			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
-                                                                                                         bundle:nil];
+            educationViewController.educationArray              = educationAndCertificationArray;
+            educationViewController.managedObjectContext        = self.managedObjectContext;
+            educationViewController.fetchedResultsController    = self.fetchedResultsController;
 			educationViewController.title = NSLocalizedString(@"Education", @"Education");
 			
-			// Pass the selected object to the new view controller.
 			[self.navigationController pushViewController:educationViewController 
                                                  animated:YES];
 			[educationViewController release];
@@ -230,6 +347,61 @@
 	}
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
+}
+
+#pragma mark - Fetched Results Controller delegate methods
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
+    [self.tblView beginUpdates];
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    UITableView *tableView = self.tblView;
+    
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            // Reloading the section inserts a new row and ensures that titles are updated appropriately.
+            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
+    [self.tblView endUpdates];
 }
 
 
@@ -248,10 +420,10 @@
 - (void)viewDidUnload 
 {
     [super viewDidUnload];
-	self.tblView = nil;
-    self.mgmtJobsDict  = nil;
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+	self.tblView                        = nil;
+    self.mgmtJobsDict                   = nil;
+    self.professionalHistoryArray       = nil;
+    self.educationAndCertificationArray = nil;
 }
 
 
@@ -259,9 +431,11 @@
 {
 	[_tblView release];
 	[_mgmtJobsDict release];
-    [_selectedPackage release];
+    [_selectedResume release];
     [__managedObjectContext release];
     [__fetchedResultsController release];
+    [_professionalHistoryArray release];
+    [_educationAndCertificationArray release];
 	
     [super dealloc];
 }

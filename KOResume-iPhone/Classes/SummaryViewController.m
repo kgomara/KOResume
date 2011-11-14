@@ -18,6 +18,10 @@
 @synthesize homePhone;
 @synthesize mobilePhone;
 @synthesize summaryLabel;
+@synthesize selectedResume              = _selectedResume;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 	NSString*   phoneNumber;
 

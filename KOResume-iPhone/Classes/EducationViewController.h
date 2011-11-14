@@ -7,12 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Resumes.h"
+#import <CoreData/CoreData.h>
 
 @interface EducationViewController : UIViewController 
 {
 
 }
+
+@property (nonatomic, retain)               Resumes*                    selectedResume;
+
+@property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
+@property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
 
 
 @end

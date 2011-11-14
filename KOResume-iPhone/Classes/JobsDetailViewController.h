@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Jobs.h"
 
 
 @interface JobsDetailViewController : UIViewController <UIScrollViewDelegate> 
@@ -28,7 +29,8 @@
 
 @property (nonatomic, retain) IBOutlet  UILabel*        jobCompany;
 @property (nonatomic, retain)           NSString*		jobCompanyUrl;
-@property (nonatomic, retain) IBOutlet	UILabel*        jobLocation;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobCity;
+@property (nonatomic, retain) IBOutlet	UILabel*        jobState;
 @property (nonatomic, retain) IBOutlet	UILabel*        jobTitle;
 @property (nonatomic, retain) IBOutlet	UILabel*        jobStartDate;
 @property (nonatomic, retain) IBOutlet	UILabel*        jobEndDate;
@@ -38,7 +40,11 @@
 @property (nonatomic, retain) IBOutlet	UIScrollView*   jobScrollView;
 @property (nonatomic, retain) IBOutlet	UIButton*       jobCompanyUrlBtn;
 
-@property (nonatomic, retain)           NSDictionary*   jobDictionary;
+@property (nonatomic, retain)               Jobs*                       selectedJob;
+//@property (nonatomic, retain)               Resumes*                    selectedResume;
+
+@property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
+@property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
 
 - (IBAction)companyTapped:(id)sender;
 

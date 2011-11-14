@@ -8,12 +8,14 @@
 
 #import "JobsDetailViewController.h"
 #import "KOExtensions.h"
+#import "Accomplishments.h"
 
 @implementation JobsDetailViewController
 
 @synthesize	jobCompany;
 @synthesize jobCompanyUrl;
-@synthesize	jobLocation;
+@synthesize	jobCity;
+@synthesize jobState;
 @synthesize	jobTitle;
 @synthesize	jobStartDate;
 @synthesize	jobEndDate;
@@ -22,7 +24,11 @@
 @synthesize	jobView;
 @synthesize jobScrollView;
 @synthesize	jobCompanyUrlBtn;
-@synthesize	jobDictionary;
+@synthesize	selectedJob;
+//@synthesize selectedResume              = _selectedResume;
+
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
 
 
 #pragma mark Application lifecycle methods
@@ -36,16 +42,19 @@
                                                                                                            topCapHeight:20];
 
 	// Get the data from the jobDictionary and stuff it into the fields
-	[self.jobCompanyUrlBtn setTitle:[jobDictionary objectForKey:@"Company"] 
+	[self.jobCompanyUrlBtn setTitle:self.selectedJob.uri 
 						   forState:UIControlStateNormal];
 
-	self.jobCompanyUrl				= [jobDictionary objectForKey:@"CompanyUrl"];
-	self.jobLocation.text			= [jobDictionary objectForKey:@"Location"];
-	self.jobTitle.text				= [jobDictionary objectForKey:@"Title"];
-	self.jobStartDate.text			= [jobDictionary objectForKey:@"StartDate"];
-	self.jobEndDate.text			= [jobDictionary objectForKey:@"EndDate"];
-	self.jobResponsibilities.text	= [jobDictionary objectForKey:@"Responsibilities"];
-	self.jobAccomplishmentsArray	= [jobDictionary objectForKey:@"Accomplishments"];
+	self.jobCompanyUrl				= self.selectedJob.uri;
+	self.jobCity.text               = self.selectedJob.city;
+    self.jobState.text              = self.selectedJob.state;
+	self.jobTitle.text				= self.selectedJob.title;
+    NSDateFormatter* dateFormatter  = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
+	self.jobStartDate.text			= [dateFormatter stringFromDate:self.selectedJob.start_date];
+    self.jobEndDate.text            = [dateFormatter stringFromDate:self.selectedJob.end_date];
+	self.jobResponsibilities.text	= self.selectedJob.summary;
 	
 	// Size jobResponsibilities Label to fit the string
 	[self.jobResponsibilities sizeToFitFixedWidth:kLabelWidth];
@@ -54,12 +63,9 @@
 	CGRect jobItemFrame       = self.jobResponsibilities.frame;
 	CGRect jobViewFrame       = self.jobView.frame;
 	jobViewFrame.size.height += jobItemFrame.size.height - kLabelHeight;
-	
-	// Get the jobAccomplishmentsArray
-	self.jobAccomplishmentsArray	= [jobDictionary objectForKey:@"Accomplishments"];
-	
+		
 	// Add the Accomplishments (if any) to the View and adjust size accordingly
-	if ([self.jobAccomplishmentsArray count] > 0) {
+	if ([self.selectedJob.accomplishment count] > 0) {
 		// Create a label for the Accomplishment items
 		jobItemFrame.origin.y		 = jobViewFrame.size.height;
 		jobItemFrame.origin.x		-= jobViewFrame.origin.x;
@@ -75,16 +81,19 @@
 		jobItemFrame.origin.y		+= kLabelHeight;
 		jobViewFrame.size.height	+= kLabelHeight * 2;
 		
-		// Loop through the jobAccomplishmentsArray adding accomplishment items to the view
-		NSEnumerator* jobEnum = [jobAccomplishmentsArray objectEnumerator];
-		NSString* item;
-		while ((item = [jobEnum nextObject])) {
+		// Loop through the accomplishment adding accomplishment items to the view
+        NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
+                                                                        ascending:YES] autorelease];
+        NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+        self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
+
+        for (Accomplishments* accomp in self.jobAccomplishmentsArray) {
 			// handle an accomplishment
 			UILabel* accomplishment = [[[UILabel alloc] initWithFrame:jobItemFrame] autorelease];
 			[accomplishment setFont:[UIFont fontWithName:@"Helvetica" 
                                                     size:14.0]];
 			[accomplishment setBackgroundColor:[UIColor clearColor]];
-			accomplishment.text = item;
+			accomplishment.text = accomp.summary;
 			[accomplishment sizeToFitFixedWidth:kLabelWidth];
 			[self.jobView addSubview:accomplishment];
 			jobItemFrame.origin.y		+= accomplishment.frame.size.height;
@@ -122,7 +131,8 @@
 {
 	self.jobCompany					= nil;
 	self.jobCompanyUrl				= nil;
-	self.jobLocation				= nil;
+	self.jobCity                    = nil;
+    self.jobState                   = nil;
 	self.jobTitle					= nil;
 	self.jobStartDate				= nil;
 	self.jobEndDate					= nil;
@@ -131,7 +141,7 @@
 	self.jobView					= nil;
 	self.jobScrollView				= nil;
 	self.jobCompanyUrlBtn			= nil;
-	self.jobDictionary				= nil;
+	self.selectedJob				= nil;
 	
     [super dealloc];
 }
