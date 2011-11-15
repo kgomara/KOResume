@@ -9,7 +9,7 @@
 #import "ResumeViewController.h"
 #import "JobsDetailViewController.h"
 #import "SummaryViewController.h"
-#import "EditEducationViewController.h"
+#import "EducationViewController.h"
 #import "Jobs.h"
 #import "Accomplishments.h"
 #import "Education.h"
@@ -328,11 +328,11 @@
 			[detailViewController release];
 			break;
 		}
-		case k_EducationInfoTbl: {			// There is only 1 row in this section, so ignore row.
-			EditEducationViewController *educationViewController = [[EditEducationViewController alloc] initWithNibName:@"EditEducationViewController" 
+		case k_EducationInfoTbl: {			
+			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
                                                                                                                  bundle:nil];
 			// Pass the selected object to the new view controller.
-            educationViewController.educationArray              = educationAndCertificationArray;
+            educationViewController.selectedEducation           = [self.educationAndCertificationArray objectAtIndex:indexPath.row];
             educationViewController.managedObjectContext        = self.managedObjectContext;
             educationViewController.fetchedResultsController    = self.fetchedResultsController;
 			educationViewController.title = NSLocalizedString(@"Education", @"Education");

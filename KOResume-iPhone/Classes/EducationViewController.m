@@ -11,11 +11,16 @@
 
 @implementation EducationViewController
 
-@synthesize selectedResume              = _selectedResume;
+@synthesize selectedEducation           = _selectedEducation;
 
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize fetchedResultsController    = __fetchedResultsController;
 
+@synthesize nameFld                     = _nameFld;
+@synthesize degreeDateFld               = _degreeDateFld;
+@synthesize cityFld                     = _cityFld;
+@synthesize stateFld                    = _stateFld;
+@synthesize titleFld                    = _titleFld;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -28,20 +33,25 @@
 }
 */
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
+- (void)viewDidLoad 
+{
     [super viewDidLoad];
+    
+    self.nameFld.text               = self.selectedEducation.name;
+    NSDateFormatter* dateFormatter  = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
+	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
+    self.cityFld.text               = self.selectedEducation.city;
+    self.stateFld.text              = self.selectedEducation.state;
+    self.titleFld.text              = self.selectedEducation.title;
 }
-*/
 
-/*
-// Override to allow orientations other than the default portrait orientation.
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
-*/
 
 - (void)didReceiveMemoryWarning 
 {
@@ -55,13 +65,27 @@
 - (void)viewDidUnload 
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    
+    self.nameFld        = nil;
+    self.degreeDateFld  = nil;
+    self.cityFld        = nil;
+    self.stateFld       = nil;
+    self.titleFld       = nil;
 }
 
 
 - (void)dealloc 
 {
+    [_nameFld release];
+    [_degreeDateFld release];
+    [_cityFld release];
+    [_stateFld release];
+    [_titleFld release];
+    
+    [_selectedEducation release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+    
     [super dealloc];
 }
 

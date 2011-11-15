@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Resumes.h"
+#import "Education.h"
 #import <CoreData/CoreData.h>
 
 @interface EducationViewController : UIViewController 
@@ -15,10 +15,16 @@
 
 }
 
-@property (nonatomic, retain)               Resumes*                    selectedResume;
+@property (nonatomic, retain)               Education*                  selectedEducation;
 
 @property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
 @property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
+
+@property (nonatomic, strong) IBOutlet  UITextField*                    nameFld;
+@property (nonatomic, strong) IBOutlet  UITextField*                    degreeDateFld;
+@property (nonatomic, strong) IBOutlet  UITextField*                    cityFld;
+@property (nonatomic, strong) IBOutlet  UITextField*                    stateFld;
+@property (nonatomic, strong) IBOutlet  UITextField*                    titleFld;
 
 
 @end
