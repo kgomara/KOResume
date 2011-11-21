@@ -10,7 +10,7 @@
 #import "Education.h"
 #import <CoreData/CoreData.h>
 
-@interface EducationViewController : UIViewController 
+@interface EducationViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
 {
 
 }
@@ -20,11 +20,15 @@
 @property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
 @property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
 
-@property (nonatomic, strong) IBOutlet  UITextField*                    nameFld;
-@property (nonatomic, strong) IBOutlet  UITextField*                    degreeDateFld;
-@property (nonatomic, strong) IBOutlet  UITextField*                    cityFld;
-@property (nonatomic, strong) IBOutlet  UITextField*                    stateFld;
-@property (nonatomic, strong) IBOutlet  UITextField*                    titleFld;
+@property (nonatomic, strong) IBOutlet      UIScrollView*               scrollView;
+@property (nonatomic, strong) IBOutlet      UITextField*                nameFld;
+@property (nonatomic, strong) IBOutlet      UITextField*                degreeDateFld;
+@property (nonatomic, strong) IBOutlet      UITextField*                cityFld;
+@property (nonatomic, strong) IBOutlet      UITextField*                stateFld;
+@property (nonatomic, strong) IBOutlet      UITextField*                titleFld;
 
+@property (nonatomic, strong) IBOutlet      UIDatePicker*               datePicker;
+
+- (IBAction)getEarnedDate:(id)sender;
 
 @end
