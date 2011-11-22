@@ -188,14 +188,12 @@
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
     // Start the slide down animation
-    // TODO convert to block
-    [UIView beginAnimations:nil 
-                    context:NULL];    
-    [UIView setAnimationDuration:0.3];    
-    self.datePicker.frame = endFrame;
-    [self.scrollView setContentOffset:CGPointZero
-                             animated:NO];
-    [UIView commitAnimations];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.datePicker.frame = endFrame;
+                         [self.scrollView setContentOffset:CGPointZero
+                                                  animated:NO];
+                     }];
     
     // Reset the UI
     self.navigationItem.rightBarButtonItem = saveBtn;
@@ -304,16 +302,11 @@
     CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height, pickerSize.width, pickerSize.height);
     
     // Start the slide up animation        
-    // TODO convert to block
-    [UIView beginAnimations:nil context:NULL];        
-    [UIView setAnimationDuration:0.3];
-    
-    // We need to perform some post operations after the animation is complete        
-    [UIView setAnimationDelegate:self];
-    self.datePicker.frame = pickerRect;
-    [self.scrollView setContentOffset:CGPointMake(0.0f, 100.0f)];
-    [UIView commitAnimations];
-    
+    [UIView animateWithDuration:0.3
+                     animations:^ {
+                         self.datePicker.frame = pickerRect;
+                         [self.scrollView setContentOffset:CGPointMake(0.0f, 100.0f)];
+                     }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
     // ...and clear the cancel button
