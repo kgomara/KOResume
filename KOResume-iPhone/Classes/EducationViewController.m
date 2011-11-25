@@ -104,6 +104,8 @@
             ELog(error, @"Failed to save");
             abort();
         }
+    } else {
+        ALog(@"managedObjectContext is null");
     }
 }
 
@@ -253,7 +255,6 @@
         [textField resignFirstResponder];
         [self.datePicker setDate:self.selectedEducation.earned_date];
         [self animateDatePickerOn];
-//        [self scrollToViewTextField:textField];
         return NO;
     }
     return YES;
@@ -266,7 +267,7 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
 {
-	// Validate fields
+	// Validate fields - nothing to do in this version
 	
 	return YES;
 }

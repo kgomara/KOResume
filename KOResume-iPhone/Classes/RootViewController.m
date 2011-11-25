@@ -40,7 +40,7 @@
 
 @implementation RootViewController
 
-@synthesize tblView = _tblView;
+@synthesize tblView                     = _tblView;
 
 @synthesize packagesArray               = _packagesArray;  
 @synthesize packageName                 = _packageName;
