@@ -19,19 +19,21 @@
 #define	k_JobsSection       1
 #define k_EducationSection	2
 
+#define k_addBtnWidth       29.0f
+#define k_addBtnHeight      29.0f
+
 @interface ResumeViewController ()
 {
 @private
     NSMutableArray*     _jobArray;
     NSMutableArray*     _educationArray;
-    
     NSString*           _jobName;
     
+    // These ivars are singletons and do not have properties
     UIBarButtonItem*    editBtn;
     UIBarButtonItem*    cancelBtn;
     UIBarButtonItem*    saveBtn;
     UIBarButtonItem*    backBtn;
-    
     UIButton*           addJobBtn;
     UIButton*           addEducationBtn;
 }
@@ -52,6 +54,7 @@
                        atIndexPath:(NSIndexPath *)indexPath;
 - (void)configureDefaultNavBar;
 - (void)sortTables;
+- (void)resequenceTables;
 
 @end
 
@@ -78,11 +81,10 @@
 	
     DLog(@"job count %d", [self.selectedResume.job count]);
 
-	self.navigationItem.title = NSLocalizedString(@"Resume", 
-                                                  @"Resume");	
+	self.navigationItem.title = NSLocalizedString(@"Resume", @"Resume");	
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
-    // Set up btn items
-    backBtn     = self.navigationItem.leftBarButtonItem;    
+    // Set up button items
+    backBtn     = self.navigationItem.leftBarButtonItem;    // remember where "back" is
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                 target:self 
                                                                 action:@selector(editAction)];
@@ -95,18 +97,17 @@
     addJobBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [addJobBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
                          forState:UIControlStateNormal];
-    [addJobBtn setFrame:CGRectMake(280, 0, 29.0f, 29.0f)];
+    [addJobBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
     [addJobBtn addTarget:self 
                   action:@selector(getJobName) 
         forControlEvents:UIControlEventTouchUpInside];
     addEducationBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [addEducationBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
                                forState:UIControlStateNormal];
-    [addEducationBtn setFrame:CGRectMake(280, 0, 29.0f, 29.0f)];
+    [addEducationBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
     [addEducationBtn addTarget:self 
                         action:@selector(getEducationName) 
               forControlEvents:UIControlEventTouchUpInside];
-
     // ...and the NavBar
     [self configureDefaultNavBar];
     
@@ -156,14 +157,13 @@
 
 - (void)sortTables
 {
-    // Sort jobs in the order they should appear in the table.  
+    // Sort jobs in the order they should appear in the table  
     NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
                                                                     ascending:YES] autorelease];
     NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
     self.jobArray = [NSMutableArray arrayWithArray:[self.selectedResume.job sortedArrayUsingDescriptors:sortDescriptors]];
-    // ...and the Education and Certification array
+    // ...sort the Education and Certification array
     self.educationArray = [NSMutableArray arrayWithArray:[self.selectedResume.education sortedArrayUsingDescriptors:sortDescriptors]];
-
 }
 
 - (void)configureDefaultNavBar
@@ -175,6 +175,7 @@
 
     // Set table editing off
     [self.tblView setEditing:NO];
+    // ...and hide the add buttons
     [addJobBtn setHidden:YES];
     [addEducationBtn setHidden:YES];
 }
@@ -260,15 +261,14 @@
     // Enable table editing
     [self.tblView setEditing:YES];
     
-    // Set up the navigation item and done button
+    // Set up the cancel and save buttons
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
-    
+    // ...and show the add buttons
     [addJobBtn setHidden:NO];
     [addEducationBtn setHidden:NO];
     
-    // Start an undo group...it will either be commited in saveAction or 
-    //    undone in cancelAction
+    // Start an undo group...it will either be commited in saveAction or undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
@@ -279,24 +279,9 @@
 
 - (void)saveAction
 {
-    DLog();    
-    // The job array is in the order (including deletes) the user wants
-    // ...loop through the array by index resetting the job's sequence_number attribute
-    for (int i = 0; i < [self.jobArray count]; i++) {
-        if ([[self.jobArray objectAtIndex:i] isDeleted]) {
-            // skip it
-        } else {
-            [(Jobs *)[self.jobArray objectAtIndex:i] setSequence_numberValue:i];
-        }
-    }
-    // ...same for the education array
-    for (int i = 0; i < [self.educationArray count]; i++) {
-        if ([[self.educationArray objectAtIndex:i] isDeleted]) {
-            // skip it
-        } else {
-            [(Education *)[self.educationArray objectAtIndex:i] setSequence_numberValue:i];
-        }
-    }
+    DLog();
+    // Reset the sequence_number of the Job and Education items in case they were re-ordered during the edit
+    [self resequenceTables];
     
     // Save the changes
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -316,6 +301,27 @@
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self.tblView reloadData];
+}
+
+- (void)resequenceTables
+{
+    // The job array is in the order (including deletes) the user wants
+    // ...loop through the array by index resetting the job's sequence_number attribute
+    for (int i = 0; i < [self.jobArray count]; i++) {
+        if ([[self.jobArray objectAtIndex:i] isDeleted]) {
+            // skip it
+        } else {
+            [[self.jobArray objectAtIndex:i] setSequence_numberValue:i];
+        }
+    }
+    // ...same for the education array
+    for (int i = 0; i < [self.educationArray count]; i++) {
+        if ([[self.educationArray objectAtIndex:i] isDeleted]) {
+            // skip it
+        } else {
+            [[self.educationArray objectAtIndex:i] setSequence_numberValue:i];
+        }
+    }
 }
 
 - (void)cancelAction 
@@ -497,7 +503,7 @@
     switch (indexPath.section) {
 		case k_SummarySection:
 			cell.textLabel.text = self.selectedResume.name;          // There is only 1 row in this section
-			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case k_JobsSection:
 			cell.textLabel.text = [[self.jobArray objectAtIndex:indexPath.row] name];
@@ -505,7 +511,7 @@
 			break;
 		case k_EducationSection:
 			cell.textLabel.text = [[self.educationArray objectAtIndex:indexPath.row] name];
-			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
 			ALog(@"Unexpected section = %d", indexPath.section);
@@ -522,7 +528,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
-	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, 29.0f)] autorelease];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, k_addBtnHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
                                           size:18.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
@@ -537,7 +543,7 @@
 		case k_JobsSection: {
 			sectionLabel.text = NSLocalizedString(@"Professional History", 
                                                   @"Professional History");
-            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 29.0f)] autorelease];
+            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
             [sectionView addSubview:sectionLabel];
             [sectionView addSubview:addJobBtn];
 			return sectionView;
@@ -545,7 +551,7 @@
 		case k_EducationSection: {
 			sectionLabel.text = NSLocalizedString(@"Education & Certifications", 
                                                   @"Education & Certifications");
-            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 29.0f)] autorelease];
+            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
             [sectionView addSubview:sectionLabel];
             [sectionView addSubview:addEducationBtn];
 			return sectionView;
@@ -564,14 +570,20 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [self editAction];
         // Delete the managed object at the given index path.
-        NSManagedObject *jobToDelete = [self.jobArray objectAtIndex:indexPath.row];
-        [self.managedObjectContext deleteObject:jobToDelete];
-        [self.jobArray removeObjectAtIndex:indexPath.row];
+        if (indexPath.section == k_JobsSection) {
+            NSManagedObject *jobToDelete = [self.jobArray objectAtIndex:indexPath.row];
+            [self.managedObjectContext deleteObject:jobToDelete];
+            [self.jobArray removeObjectAtIndex:indexPath.row];
+        } else {
+            NSManagedObject *jobToDelete = [self.educationArray objectAtIndex:indexPath.row];
+            [self.managedObjectContext deleteObject:jobToDelete];
+            [self.educationArray removeObjectAtIndex:indexPath.row];
+        }
+        // ...delete the object from the tableView
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
                          withRowAnimation:UITableViewRowAnimationFade];
+        // ...and reload the table
         [tableView reloadData];
     }   
 }
@@ -591,14 +603,25 @@
     NSUInteger fromRow  = [fromIndexPath row];
     NSUInteger toRow    = [toIndexPath row];
     
-    // Get the Job at the fromRow 
-    Jobs* movedJob = [[self.jobArray objectAtIndex:fromRow] retain];
-    // ...remove it from that "order"
-    [self.jobArray removeObjectAtIndex:fromRow];
-    // ...and insert it where the user wants
-    [self.jobArray insertObject:movedJob
-                             atIndex:toRow];
-    [movedJob release];
+    if (toIndexPath.section == k_JobsSection) {
+        // Get the Job at the fromRow 
+        Jobs* movedJob = [[self.jobArray objectAtIndex:fromRow] retain];
+        // ...remove it from that "order"
+        [self.jobArray removeObjectAtIndex:fromRow];
+        // ...and insert it where the user wants
+        [self.jobArray insertObject:movedJob
+                            atIndex:toRow];
+        [movedJob release];
+    } else {
+        // Get the Education at the fromRow 
+        Education* movedEducation = [[self.educationArray objectAtIndex:fromRow] retain];
+        // ...remove it from that "order"
+        [self.educationArray removeObjectAtIndex:fromRow];
+        // ...and insert it where the user wants
+        [self.educationArray insertObject:movedEducation
+                                  atIndex:toRow];
+        [movedEducation release];
+    }
 }
 
 
