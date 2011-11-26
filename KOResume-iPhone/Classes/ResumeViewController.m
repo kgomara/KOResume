@@ -15,9 +15,9 @@
 #import "Education.h"
 #import "KOExtensions.h"
 
-#define k_SummaryInfoTbl	0
-#define	k_JobsInfoTbl       1
-#define k_EducationInfoTbl	2
+#define k_SummarySection	0
+#define	k_JobsSection       1
+#define k_EducationSection	2
 
 @interface ResumeViewController ()
 {
@@ -31,6 +31,9 @@
     UIBarButtonItem*    cancelBtn;
     UIBarButtonItem*    saveBtn;
     UIBarButtonItem*    backBtn;
+    
+    UIButton*           addJobBtn;
+    UIButton*           addEducationBtn;
 }
 
 @property (nonatomic, strong) NSMutableArray*     jobArray;
@@ -89,6 +92,21 @@
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                 target:self
                                                                 action:@selector(cancelAction)];
+    addJobBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+    [addJobBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
+                         forState:UIControlStateNormal];
+    [addJobBtn setFrame:CGRectMake(280, 0, 29.0f, 29.0f)];
+    [addJobBtn addTarget:self 
+                  action:@selector(getJobName) 
+        forControlEvents:UIControlEventTouchUpInside];
+    addEducationBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+    [addEducationBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
+                               forState:UIControlStateNormal];
+    [addEducationBtn setFrame:CGRectMake(280, 0, 29.0f, 29.0f)];
+    [addEducationBtn addTarget:self 
+                        action:@selector(getEducationName) 
+              forControlEvents:UIControlEventTouchUpInside];
+
     // ...and the NavBar
     [self configureDefaultNavBar];
     
@@ -157,6 +175,8 @@
 
     // Set table editing off
     [self.tblView setEditing:NO];
+    [addJobBtn setHidden:YES];
+    [addEducationBtn setHidden:YES];
 }
 
 - (Jobs *)createJob:(NSDictionary *)jobDict
@@ -244,6 +264,9 @@
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
+    [addJobBtn setHidden:NO];
+    [addEducationBtn setHidden:NO];
+    
     // Start an undo group...it will either be commited in saveAction or 
     //    undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
@@ -322,6 +345,7 @@
                                                       inManagedObjectContext:self.managedObjectContext];
     job.name            = self.jobName;
     job.created_date    = [NSDate date];
+    job.resume          = self.selectedResume;
         
     NSError* error = nil;
     if (![self.managedObjectContext save:&error]) {
@@ -333,12 +357,12 @@
                         atIndex:0];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
-                                                inSection:0];
+                                                inSection:k_JobsSection];
     
     [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                         withRowAnimation:UITableViewRowAnimationFade];
     [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:0] 
+                                                            inSection:k_JobsSection] 
                         atScrollPosition:UITableViewScrollPositionTop 
                                 animated:YES];
 }
@@ -354,16 +378,66 @@
                                                   otherButtonTitles:NSLocalizedString(@"OK",
                                                                                       @"OK"), nil] autorelease];
     jobNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    jobNameAlert.tag = k_JobsSection;
     
     [jobNameAlert show];
+}
+
+- (void)addEducation
+{
+    DLog();
+    Education *education = (Education *)[NSEntityDescription insertNewObjectForEntityForName:@"Education"
+                                                                      inManagedObjectContext:self.managedObjectContext];
+    education.name            = self.jobName;
+    education.created_date    = [NSDate date];
+    education.resume          = self.selectedResume;
+    
+    NSError* error = nil;
+    if (![self.managedObjectContext save:&error]) {
+        ELog(error, @"Failed to save");
+        abort();
+    }
+    
+    [self.educationArray insertObject:education 
+                              atIndex:0];
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
+                                                inSection:k_EducationSection];
+    
+    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                        withRowAnimation:UITableViewRowAnimationFade];
+    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
+                                                            inSection:k_EducationSection] 
+                        atScrollPosition:UITableViewScrollPositionTop 
+                                animated:YES];
+}
+
+- (void)getEducationName 
+{
+    UIAlertView* educationNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Institution Name", 
+                                                                                            @"Enter Institution Name") 
+                                                                  message:nil
+                                                                 delegate:self 
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel",
+                                                                                            @"Cancel") 
+                                                        otherButtonTitles:NSLocalizedString(@"OK",
+                                                                                            @"OK"), nil] autorelease];
+    educationNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    educationNameAlert.tag = k_EducationSection;
+    
+    [educationNameAlert show];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
         // OK
-        self.jobName = [[alertView textFieldAtIndex:0] text];            
-        [self addJob];
+        self.jobName = [[alertView textFieldAtIndex:0] text];
+        if (alertView.tag == k_JobsSection) {
+            [self addJob];
+        } else {
+            [self addEducation];
+        }
     } else {
         // cancel
         [self configureDefaultNavBar];
@@ -384,14 +458,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
 	switch (section) {
-		case k_SummaryInfoTbl:
+		case k_SummarySection:
 			return 1;
 			break;
-		case k_JobsInfoTbl:
-			return [self.selectedResume.job count];
+		case k_JobsSection:
+			return [self.jobArray count];
 			break;
-		case k_EducationInfoTbl:
-			return [self.selectedResume.education count];
+		case k_EducationSection:
+			return [self.educationArray count];
 			break;
 		default:
 			ALog(@"Unexpected section = %d", section);
@@ -421,16 +495,16 @@
            atIndexPath:(NSIndexPath *) indexPath
 {
     switch (indexPath.section) {
-		case k_SummaryInfoTbl:
+		case k_SummarySection:
 			cell.textLabel.text = self.selectedResume.name;          // There is only 1 row in this section
 			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
-		case k_JobsInfoTbl:
+		case k_JobsSection:
 			cell.textLabel.text = [[self.jobArray objectAtIndex:indexPath.row] name];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
-		case k_EducationInfoTbl:
-			cell.textLabel.text = [(Education *)[self.educationArray objectAtIndex:indexPath.row] name];
+		case k_EducationSection:
+			cell.textLabel.text = [[self.educationArray objectAtIndex:indexPath.row] name];
 			cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
 		default:
@@ -448,27 +522,33 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
-	UILabel *sectionLabel = [[[UILabel alloc] init] autorelease];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, 29.0f)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
                                           size:18.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 
 	switch (section) {
-		case k_SummaryInfoTbl: {
+		case k_SummarySection: {
 			sectionLabel.text = NSLocalizedString(@"Summary",
                                                   @"Summary");
 			return sectionLabel;
 		}
-		case k_JobsInfoTbl: {
+		case k_JobsSection: {
 			sectionLabel.text = NSLocalizedString(@"Professional History", 
                                                   @"Professional History");
-			return sectionLabel;
+            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 29.0f)] autorelease];
+            [sectionView addSubview:sectionLabel];
+            [sectionView addSubview:addJobBtn];
+			return sectionView;
 		}
-		case k_EducationInfoTbl: {
+		case k_EducationSection: {
 			sectionLabel.text = NSLocalizedString(@"Education & Certifications", 
                                                   @"Education & Certifications");
-			return sectionLabel;
+            UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 29.0f)] autorelease];
+            [sectionView addSubview:sectionLabel];
+            [sectionView addSubview:addEducationBtn];
+			return sectionView;
 		}
 		default:
 			ALog(@"Unexpected section = %d", section);
@@ -525,7 +605,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     switch (indexPath.section) {
-		case k_SummaryInfoTbl: {			// There is only 1 row in this section, so ignore row.
+		case k_SummarySection: {			// There is only 1 row in this section, so ignore row.
 			SummaryViewController* summaryViewController = [[SummaryViewController alloc] initWithNibName:@"SummaryViewController" 
                                                                                                    bundle:nil];
             summaryViewController.selectedResume            = self.selectedResume;
@@ -539,7 +619,7 @@
 			[summaryViewController release];
 			break;
 		}
-		case k_JobsInfoTbl: {
+		case k_JobsSection: {
 			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
                                                                                                         bundle:nil];
 			// Pass the selected object to the new view controller.
@@ -551,7 +631,7 @@
 			[detailViewController release];
 			break;
 		}
-		case k_EducationInfoTbl: {			
+		case k_EducationSection: {			
 			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
                                                                                                                  bundle:nil];
 			// Pass the selected object to the new view controller.
@@ -659,6 +739,8 @@
     [__fetchedResultsController release];
     [_jobArray release];
     [_educationArray release];
+    [addJobBtn release];
+    [addEducationBtn release];
 	
     [super dealloc];
 }
