@@ -272,11 +272,6 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
-- (void)addAction
-{
-    DLog();
-}
-
 - (void)saveAction
 {
     DLog();
@@ -646,8 +641,10 @@
 			JobsDetailViewController* detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController" 
                                                                                                         bundle:nil];
 			// Pass the selected object to the new view controller.
-			detailViewController.title          = NSLocalizedString(@"Jobs", @"Jobs");
-			detailViewController.selectedJob    = [self.jobArray objectAtIndex:indexPath.row];
+			detailViewController.title                      = NSLocalizedString(@"Jobs", @"Jobs");
+			detailViewController.selectedJob                = [self.jobArray objectAtIndex:indexPath.row];
+            detailViewController.managedObjectContext       = self.managedObjectContext;
+            detailViewController.fetchedResultsController   = self.fetchedResultsController;
 			
 			[self.navigationController pushViewController:detailViewController 
                                                  animated:YES];

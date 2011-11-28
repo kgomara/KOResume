@@ -272,7 +272,7 @@
 	return YES;
 }
 
-- (BOOL) textFieldShouldReturn:(UITextField *)textField 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
