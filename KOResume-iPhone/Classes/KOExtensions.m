@@ -88,8 +88,7 @@
     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:theType
                                                     message:theMessage
                                                    delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", 
-                                                                              @"OK")
+                                          cancelButtonTitle:NSLocalizedString(@"OK", @"OK")
                                           otherButtonTitles:nil];
     [alert show];
     [alert release];
@@ -103,8 +102,7 @@
 + (void)showErrorWithMessage:(NSString*)theMessage
 {
     [self showAlertWithMessageAndType:theMessage
-                            alertType:NSLocalizedString(@"Error", 
-                                                        @"Error")];
+                            alertType:NSLocalizedString(@"Error", @"Error")];
 }
 
 /*!
@@ -115,8 +113,7 @@
 + (void)showWarningWithMessage:(NSString*)theMessage
 {
     [self showAlertWithMessageAndType:theMessage
-                            alertType:NSLocalizedString(@"Warning",
-                                                        @"Warning")];
+                            alertType:NSLocalizedString(@"Warning", @"Warning")];
 }
 
 #pragma mark - Dismiss keyboard

@@ -23,15 +23,14 @@
 @property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
 
 @property (nonatomic, retain) IBOutlet	UIImageView*    jobView;
-@property (nonatomic, retain) IBOutlet	UIScrollView*   jobScrollView;
 @property (nonatomic, retain) IBOutlet  UITextField*    jobCompany;
 @property (nonatomic, retain) IBOutlet  UITextField*    jobCompanyUrl;
 @property (nonatomic, retain) IBOutlet	UIButton*       jobCompanyUrlBtn;
 @property (nonatomic, retain) IBOutlet	UITextField*    jobCity;
 @property (nonatomic, retain) IBOutlet	UITextField*    jobState;
 @property (nonatomic, retain) IBOutlet	UITextField*    jobTitle;
-@property (nonatomic, retain) IBOutlet	UILabel*        jobStartDate;
-@property (nonatomic, retain) IBOutlet	UILabel*        jobEndDate;
+@property (nonatomic, retain) IBOutlet	UITextField*    jobStartDate;
+@property (nonatomic, retain) IBOutlet	UITextField*    jobEndDate;
 @property (nonatomic, retain) IBOutlet	UITextView*     jobResponsibilities;
 
 @property (nonatomic, strong) IBOutlet  UIDatePicker*   datePicker;

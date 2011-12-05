@@ -148,8 +148,7 @@
     if (![context save:&error])
     {
         // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", 
-                                                                           @"Unresolved error %@, %@"), error, [error userInfo]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
         [KOExtensions showErrorWithMessage:msg];
         [msg release];
         ELog(error, @"Failed to save to data store");

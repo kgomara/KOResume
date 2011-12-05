@@ -63,13 +63,11 @@
 	// Configure the cell.
 	switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case kSummaryTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Cover Letter", 
-                                                    @"Cover Letter");
+			cell.textLabel.text = NSLocalizedString(@"Cover Letter", @"Cover Letter");
             cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
 		case kResumeTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Resume", 
-                                                    @"Resume");
+			cell.textLabel.text = NSLocalizedString(@"Resume", @"Resume");
             cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
@@ -106,8 +104,7 @@
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Package Contents:", 
-                                          @"Package Contents:");
+	sectionLabel.text = NSLocalizedString(@"Package Contents:", @"Package Contents:");
 	return sectionLabel;
 }
 
@@ -122,8 +119,7 @@
 		case kSummaryTableCell: {
 			CoverLtrViewController* coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName:@"CoverLtrViewController" 
                                                                                                       bundle:nil];
-			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", 
-                                                             @"Cover Letter");
+			coverLtrViewController.title = NSLocalizedString(@"Cover Letter", @"Cover Letter");
             coverLtrViewController.selectedPackage          = self.selectedPackage;
             coverLtrViewController.managedObjectContext     = self.managedObjectContext;
             coverLtrViewController.fetchedResultsController = self.fetchedResultsController;
@@ -137,8 +133,7 @@
 		case kResumeTableCell: {
 			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName:@"ResumeViewController" 
                                                                                                 bundle:nil];
-			resumeViewController.title = NSLocalizedString(@"Resume", 
-                                                           @"Resume");
+			resumeViewController.title = NSLocalizedString(@"Resume", @"Resume");
             resumeViewController.selectedResume             = self.selectedPackage.resume;
             resumeViewController.managedObjectContext       = self.managedObjectContext;
             resumeViewController.fetchedResultsController   = self.fetchedResultsController;

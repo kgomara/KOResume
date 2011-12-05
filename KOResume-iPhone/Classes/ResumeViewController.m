@@ -284,8 +284,7 @@
     NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
     if (![context save:&error]) {
         // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", 
-                                                                           @"Unresolved error %@, %@"), error, [error userInfo]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
         [KOExtensions showErrorWithMessage:msg];
         [msg release];
         ELog(error, @"Failed to save to data store");
@@ -370,14 +369,11 @@
 
 - (void)getJobName 
 {
-    UIAlertView* jobNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Job Name", 
-                                                                                      @"Enter Job Name") 
+    UIAlertView* jobNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Job Name", @"Enter Job Name") 
                                                             message:nil
                                                            delegate:self 
-                                                  cancelButtonTitle:NSLocalizedString(@"Cancel",
-                                                                                      @"Cancel") 
-                                                  otherButtonTitles:NSLocalizedString(@"OK",
-                                                                                      @"OK"), nil] autorelease];
+                                                  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
+                                                  otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     jobNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     jobNameAlert.tag = k_JobsSection;
     
@@ -415,14 +411,11 @@
 
 - (void)getEducationName 
 {
-    UIAlertView* educationNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Institution Name", 
-                                                                                            @"Enter Institution Name") 
+    UIAlertView* educationNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name") 
                                                                   message:nil
                                                                  delegate:self 
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel",
-                                                                                            @"Cancel") 
-                                                        otherButtonTitles:NSLocalizedString(@"OK",
-                                                                                            @"OK"), nil] autorelease];
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
+                                                        otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     educationNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     educationNameAlert.tag = k_EducationSection;
     
@@ -531,21 +524,18 @@
 
 	switch (section) {
 		case k_SummarySection: {
-			sectionLabel.text = NSLocalizedString(@"Summary",
-                                                  @"Summary");
+			sectionLabel.text = NSLocalizedString(@"Summary", @"Summary");
 			return sectionLabel;
 		}
 		case k_JobsSection: {
-			sectionLabel.text = NSLocalizedString(@"Professional History", 
-                                                  @"Professional History");
+			sectionLabel.text = NSLocalizedString(@"Professional History", @"Professional History");
             UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
             [sectionView addSubview:sectionLabel];
             [sectionView addSubview:addJobBtn];
 			return sectionView;
 		}
 		case k_EducationSection: {
-			sectionLabel.text = NSLocalizedString(@"Education & Certifications", 
-                                                  @"Education & Certifications");
+			sectionLabel.text = NSLocalizedString(@"Education & Certifications", @"Education & Certifications");
             UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
             [sectionView addSubview:sectionLabel];
             [sectionView addSubview:addEducationBtn];
@@ -587,8 +577,7 @@
 {
     if (fromIndexPath.section != toIndexPath.section) {
         // Cannot move between sections
-        [KOExtensions showAlertWithMessageAndType:NSLocalizedString(@"Sorry, move not allowed", 
-                                                                    @"Sorry, move not allowed")
+        [KOExtensions showAlertWithMessageAndType:NSLocalizedString(@"Sorry, move not allowed", @"Sorry, move not allowed")
                                         alertType:UIAlertViewStyleDefault];
         [self.tblView reloadData];
         return;

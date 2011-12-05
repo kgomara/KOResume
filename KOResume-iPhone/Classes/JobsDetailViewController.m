@@ -9,9 +9,12 @@
 #import "JobsDetailViewController.h"
 #import "KOExtensions.h"
 #import "Accomplishments.h"
+#import "AccomplishmentViewController.h"
 
 #define k_addBtnWidth       29.0f
 #define k_addBtnHeight      29.0f
+#define k_startDateTextFld  6
+#define k_endDateTextFld    7
 
 @interface JobsDetailViewController ()
 {
@@ -29,6 +32,7 @@
     NSDateFormatter* dateFormatter;
     
     UIButton*        addAccompBtn;
+    int              activeDateFld;
 }
 
 @property (nonatomic, strong) NSMutableArray*   jobAccomplishmentsArray;
@@ -48,7 +52,6 @@
 @implementation JobsDetailViewController
 
 @synthesize	jobView;
-@synthesize jobScrollView;
 @synthesize	jobCompany;
 @synthesize jobCompanyUrl;
 @synthesize	jobCompanyUrlBtn;
@@ -80,19 +83,21 @@
 	self.jobView.image              = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20 
                                                                                                            topCapHeight:20];
     self.fetchedResultsController.delegate = self;
+    
+    activeDateFld                   = 0;
 
 	// Get the data and stuff it into the fields
-    self.jobCompany.text            = self.selectedJob.name;
-	self.jobCompanyUrl.text			= self.selectedJob.uri;
-	self.jobCity.text               = self.selectedJob.city;
-    self.jobState.text              = self.selectedJob.state;
-	self.jobTitle.text				= self.selectedJob.title;
-    dateFormatter                   = [[NSDateFormatter alloc] init];
+    self.jobCompany.text                = self.selectedJob.name;
+	self.jobCompanyUrl.text             = self.selectedJob.uri;
+	self.jobCity.text                   = self.selectedJob.city;
+    self.jobState.text                  = self.selectedJob.state;
+	self.jobTitle.text                  = self.selectedJob.title;
+    dateFormatter                       = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
-	self.jobStartDate.text			= [dateFormatter stringFromDate:self.selectedJob.start_date];
-    self.jobEndDate.text            = [dateFormatter stringFromDate:self.selectedJob.end_date];
-	self.jobResponsibilities.text	= self.selectedJob.summary;
+	self.jobStartDate.text              = [dateFormatter stringFromDate:self.selectedJob.start_date];
+    self.jobEndDate.text                = [dateFormatter stringFromDate:self.selectedJob.end_date];
+	self.jobResponsibilities.text       = self.selectedJob.summary;
 	
     // Set up button items
 	[self.jobCompanyUrlBtn setTitle:self.selectedJob.name 
@@ -128,10 +133,6 @@
                                                                         ascending:YES] autorelease];
         NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
         self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
-
-	//set the zooming properties of the scroll view
-	self.jobScrollView.minimumZoomScale = 1.0;
-	self.jobScrollView.maximumZoomScale = 2.0;
 	
     [self sortTables];
 }
@@ -164,7 +165,10 @@
     [self.jobCity setEnabled:NO];
     [self.jobState setEnabled:NO];
     [self.jobTitle setEnabled:NO];
+    [self.jobStartDate setEnabled:NO];
+    [self.jobEndDate setEnabled:NO];
     [self.jobResponsibilities setEditable:NO];
+    [self.datePicker setHidden:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -204,7 +208,10 @@
     [self.jobCity setEnabled:YES];
     [self.jobState setEnabled:YES];
     [self.jobTitle setEnabled:YES];
+    [self.jobStartDate setEnabled:YES];
+    [self.jobEndDate setEnabled:YES];
     [self.jobResponsibilities setEditable:YES];
+    [self.datePicker setHidden:NO];
     
     // Start an undo group...it will either be commited in saveAction or undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
@@ -233,8 +240,7 @@
     NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
     if (![context save:&error]) {
         // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", 
-                                                                           @"Unresolved error %@, %@"), error, [error userInfo]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
         [KOExtensions showErrorWithMessage:msg];
         [msg release];
         ELog(error, @"Failed to save to data store");
@@ -285,18 +291,18 @@
 - (void)doneAction
 {
     DLog();
-//    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];    
-//    CGRect endFrame = self.datePicker.frame;
-//    
-//    endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
-//    
-//    // Start the slide down animation
-//    [UIView animateWithDuration:0.3
-//                     animations:^{
-//                         self.datePicker.frame = endFrame;
-//                         [self.scrollView setContentOffset:CGPointZero
-//                                                  animated:NO];
-//                     }];
+    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];    
+    CGRect endFrame = self.datePicker.frame;
+    
+    endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
+    
+    // Start the slide down animation
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.datePicker.frame = endFrame;
+                         [self.tblView setContentOffset:CGPointZero
+                                               animated:NO];
+                     }];
     
     // Reset the UI
     self.navigationItem.rightBarButtonItem = saveBtn;
@@ -334,14 +340,11 @@
 
 - (void)getAccomplishmentSummary 
 {
-    UIAlertView* accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", 
-                                                                                      @"Enter Accomplishment") 
-                                                            message:nil
-                                                           delegate:self 
-                                                  cancelButtonTitle:NSLocalizedString(@"Cancel",
-                                                                                      @"Cancel") 
-                                                  otherButtonTitles:NSLocalizedString(@"OK",
-                                                                                      @"OK"), nil] autorelease];
+    UIAlertView* accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment") 
+                                                                  message:nil
+                                                                 delegate:self 
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
+                                                        otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     accompSummaryAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     
     [accompSummaryAlert show];
@@ -372,7 +375,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
-    return [self.selectedJob.accomplishment count];
+    return [self.jobAccomplishmentsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -407,6 +410,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
+    DLog();
 	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, k_addBtnHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
                                           size:18.0]];
@@ -461,6 +465,18 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
+    AccomplishmentViewController* accomplishmentViewController = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController" 
+                                                                                                                bundle:nil];
+    accomplishmentViewController.selectedAccomplishment = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
+    accomplishmentViewController.managedObjectContext      = self.managedObjectContext;
+    accomplishmentViewController.fetchedResultsController  = self.fetchedResultsController;
+    accomplishmentViewController.title = accomplishmentViewController.selectedAccomplishment.name;
+    
+    // Pass the selected object to the new view controller.
+    [self.navigationController pushViewController:accomplishmentViewController 
+                                         animated:YES];
+    [accomplishmentViewController release];
+
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
 }
@@ -540,7 +556,6 @@
 - (void)dealloc 
 {
 	self.jobView					= nil;
-	self.jobScrollView				= nil;
 	self.jobCompany					= nil;
 	self.jobCompanyUrl				= nil;
 	self.jobCompanyUrlBtn			= nil;
@@ -583,13 +598,24 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-//    if (textField.tag == k_degreeDateFldTag) {
-//        // we are in the date field, dismiss the keyboard and show the data picker
-//        [textField resignFirstResponder];
-//        [self.datePicker setDate:self.selectedEducation.earned_date];
-//        [self animateDatePickerOn];
-//        return NO;
-//    }
+    if (textField.tag == k_startDateTextFld) {
+        // we are in the start date field, dismiss the keyboard and show the data picker
+        [textField resignFirstResponder];
+        [self.datePicker setDate:self.selectedJob.start_date];
+        [self animateDatePickerOn];
+        // remember which date field we're editing
+        activeDateFld = k_startDateTextFld;
+        return NO;
+    }
+    if (textField.tag == k_endDateTextFld) {
+        // we are in the end date field, dismiss the keyboard and show the data picker
+        [textField resignFirstResponder];
+        [self.datePicker setDate:self.selectedJob.end_date];
+        [self animateDatePickerOn];
+        // remember which date field we're editing
+        activeDateFld = k_endDateTextFld;
+        return NO;
+    }
     return YES;
 }
 
@@ -639,7 +665,7 @@
     [UIView animateWithDuration:0.3
                      animations:^ {
                          self.datePicker.frame = pickerRect;
-                         [self.jobScrollView setContentOffset:CGPointMake(0.0f, 100.0f)];
+                         [self.tblView setContentOffset:CGPointMake(0.0f, 100.0f)];
                      }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
@@ -650,23 +676,31 @@
 - (void)scrollToViewTextField:(UITextField *)textField 
 {
 	float textFieldOriginY = textField.frame.origin.y;
-	[self.jobScrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                                animated:YES];
+	[self.tblView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                          animated:YES];
 }
 
 - (void)resetView
 {
     DLog();
-    [self.jobScrollView setContentOffset:CGPointZero
-                                animated:YES];
+    [self.tblView setContentOffset:CGPointZero
+                          animated:YES];
 }
 
 - (IBAction)getEndDate:(id)sender
 {
-    // Update the database
-    self.selectedJob.end_date  = [self.datePicker date];
-    // ...and the textField
-	self.jobEndDate.text       = [dateFormatter stringFromDate:self.selectedJob.end_date];
+    if (activeDateFld == k_startDateTextFld) {
+        // Update the database
+        self.selectedJob.start_date = [self.datePicker date];
+        // ...and the textField
+        self.jobStartDate.text      = [dateFormatter stringFromDate:self.selectedJob.start_date];
+
+    } else {
+        // Update the database
+        self.selectedJob.end_date   = [self.datePicker date];
+        // ...and the textField
+        self.jobEndDate.text        = [dateFormatter stringFromDate:self.selectedJob.end_date];
+    }
 }
 
 @end

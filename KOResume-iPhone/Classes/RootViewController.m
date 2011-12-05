@@ -95,8 +95,7 @@
     NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
                                                                    error:&error] mutableCopy] autorelease];
     if (mutableFetchResults == nil) {
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching the story %@", 
-                                                                           @"A fatal error occured fetching the story %@"), [error code]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching the story %@", @"A fatal error occured fetching the story %@"), [error code]];
         [KOExtensions showErrorWithMessage:msg];
         ELog(error, @"Failed to fetch Packages");
         abort();
@@ -114,9 +113,9 @@
     UIBarButtonItem* editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                                  target:self 
                                                                                  action:@selector(editAction)] autorelease];
-    UIBarButtonItem* addButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                target:self 
-                                                                                action:@selector(getPackageName)] autorelease];
+    UIBarButtonItem* addButton  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                 target:self 
+                                                                                 action:@selector(getPackageName)] autorelease];
     
     self.navigationItem.rightBarButtonItem = addButton;
     self.navigationItem.leftBarButtonItem  = editButton;
@@ -146,9 +145,9 @@
     [self.tblView setEditing:YES];
     
     // Set up the navigation item and save button
-    UIBarButtonItem* saveBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                              target:self
-                                                                              action:@selector(saveAction)] autorelease];
+    UIBarButtonItem* saveBtn   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                                                                                target:self
+                                                                                action:@selector(saveAction)] autorelease];
     UIBarButtonItem* cancelBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                 target:self
                                                                                 action:@selector(cancelAction)] autorelease];
@@ -180,8 +179,7 @@
     if (![context save:&error])
     {
         // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", 
-                                                                           @"Unresolved error %@, %@"), error, [error userInfo]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
         [KOExtensions showErrorWithMessage:msg];
         [msg release];
         ELog(error, @"Failed to save to data store");
@@ -327,8 +325,7 @@
 	[sectionLabel setTextColor:[UIColor whiteColor]];
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Packages Available:", 
-                                          @"Packages Available:");
+	sectionLabel.text = NSLocalizedString(@"Packages Available:", @"Packages Available:");
     // Add label to sectionView
     [sectionView addSubview:sectionLabel];
 
