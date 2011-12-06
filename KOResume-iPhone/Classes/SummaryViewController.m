@@ -15,11 +15,18 @@
 
 @implementation SummaryViewController
 
-@synthesize homePhone;
-@synthesize mobilePhone;
-@synthesize summaryLabel;
-@synthesize selectedResume              = _selectedResume;
+@synthesize nameFld                     = _nameFld;
+@synthesize street1Fld                  = _street1Fld;
+@synthesize cityFld                     = _cityFld;
+@synthesize stateFld                    = _stateFld;
+@synthesize zipFld                      = _zipFld;
+@synthesize homePhoneFld                = _homePhoneFld;
+@synthesize mobilePhoneFld              = _mobilePhoneFld;
+@synthesize emailFld                    = _emailFld;
+@synthesize summaryFld                  = _summaryFld;
 
+
+@synthesize selectedResume              = _selectedResume;
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize fetchedResultsController    = __fetchedResultsController;
 
@@ -30,22 +37,31 @@
 {
     [super viewDidLoad];
 
-	// get the cover letter into the view
-	NSBundle* bundle		= [NSBundle mainBundle];
-	NSString* summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
-    NSError*  error         = nil;
-	NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath
-                                                              encoding:NSUTF8StringEncoding
-                                                                 error:&error];
-    if (error) {
-        ELog(error, @"Failed to read Summary.txt");
+    if (!self.selectedResume.summary) {
+        // get the cover letter into the view
+        NSBundle* bundle		= [NSBundle mainBundle];
+        NSString* summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
+        NSError*  error         = nil;
+        NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath
+                                                               encoding:NSUTF8StringEncoding
+                                                                  error:&error];
+        if (error) {
+            ELog(error, @"Failed to read Summary.txt");
+        }
+        
+        self.selectedResume.summary	= summaryTxt;
+        [summaryTxt release];
     }
     
-	self.summaryLabel.text	= summaryTxt;
-	[summaryTxt release];
-	
-	// Size jobResponsibilities Label to fit the string
-	[self.summaryLabel sizeToFitFixedWidth:kLabelWidth];
+    self.nameFld.text        = self.selectedResume.name;
+    self.street1Fld.text     = self.selectedResume.street1;
+    self.cityFld.text        = self.selectedResume.city;
+    self.stateFld.text       = self.selectedResume.state;
+    self.zipFld.text         = self.selectedResume.postal_code;
+    self.homePhoneFld.text   = self.selectedResume.home_phone;
+    self.mobilePhoneFld.text = self.selectedResume.mobile_phone;
+//    self.emailFld.text       = self.selectedResume.email;
+    self.summaryFld.text     = self.selectedResume.summary;
 }
 
 
@@ -61,15 +77,33 @@
 - (void)viewDidUnload 
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+
+    self.nameFld            = nil;
+    self.street1Fld         = nil;
+    self.cityFld            = nil;
+    self.stateFld           = nil;
+    self.zipFld             = nil;
+	self.homePhoneFld       = nil;
+	self.mobilePhoneFld     = nil;
+    self.emailFld           = nil;
+	self.summaryFld         = nil;
 }
 
 
 - (void)dealloc {
-	self.homePhone = nil;
-	self.mobilePhone = nil;
-	self.summaryLabel = nil;
+    self.nameFld            = nil;
+    self.street1Fld         = nil;
+    self.cityFld            = nil;
+    self.stateFld           = nil;
+    self.zipFld             = nil;
+	self.homePhoneFld       = nil;
+	self.mobilePhoneFld     = nil;
+    self.emailFld           = nil;
+	self.summaryFld         = nil;
+    
+    self.selectedResume             = nil;
+    self.managedObjectContext       = nil;
+    self.fetchedResultsController   = nil;
 	
     [super dealloc];
 }
@@ -78,8 +112,12 @@
 
 - (IBAction)phoneTapped:(id)sender 
 {
-	UIButton* phoneButton   = (UIButton *)sender;
-	phoneNumber             = phoneButton.currentTitle;
+    DLog();
+	if ([sender tag] == 1) {
+        phoneNumber = self.selectedResume.home_phone;
+    } else {
+        phoneNumber = self.selectedResume.mobile_phone;
+    }
     
     NSString* fmtString     = NSLocalizedString(@"Call %@?", @"Call %@?");
     UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Phone", @"Phone") 
@@ -106,6 +144,11 @@
         [[UIApplication sharedApplication] openURL:phoneURL];
     }
 	phoneNumber = nil;
+}
+
+- (IBAction)emailTapped:(id)sender
+{
+    DLog();
 }
 
 @end
