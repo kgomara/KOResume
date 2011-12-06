@@ -9,13 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "Accomplishments.h"
 
-@interface AccomplishmentViewController : UIViewController
+@interface AccomplishmentViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
+{
+    
+}
 
-@property (nonatomic, strong) IBOutlet UITextField          *accomplishmentName;
-@property (nonatomic, strong) IBOutlet UITextView           *accomplishmentSummary;
+@property (nonatomic, strong)          Accomplishments*     selectedAccomplishment;
+@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
 
-@property (nonatomic, strong)          Accomplishments      *selectedAccomplishment;
-@property (nonatomic, retain) NSManagedObjectContext*   managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
+@property (nonatomic, strong) IBOutlet UIScrollView*        scrollView;
+@property (nonatomic, strong) IBOutlet UITextField*         accomplishmentName;
+@property (nonatomic, strong) IBOutlet UITextView*          accomplishmentSummary;
 
 @end

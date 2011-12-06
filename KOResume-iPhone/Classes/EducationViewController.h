@@ -16,7 +16,6 @@
 }
 
 @property (nonatomic, retain)               Education*                  selectedEducation;
-
 @property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
 @property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
 

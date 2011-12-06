@@ -32,7 +32,6 @@
 @implementation EducationViewController
 
 @synthesize selectedEducation           = _selectedEducation;
-
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize fetchedResultsController    = __fetchedResultsController;
 
@@ -77,6 +76,44 @@
                                                                 action:@selector(doneAction)];
 
     [self configureDefaultNavBar];
+}
+
+- (void)didReceiveMemoryWarning 
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc. that aren't in use.
+    ALog();
+}
+
+- (void)viewDidUnload 
+{
+    [super viewDidUnload];
+    
+    self.nameFld        = nil;
+    self.degreeDateFld  = nil;
+    self.cityFld        = nil;
+    self.stateFld       = nil;
+    self.titleFld       = nil;
+    self.scrollView     = nil;
+}
+
+
+- (void)dealloc 
+{
+    [_nameFld release];
+    [_degreeDateFld release];
+    [_cityFld release];
+    [_stateFld release];
+    [_titleFld release];
+    [_scrollView release];
+    
+    [_selectedEducation release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+    
+    [super dealloc];
 }
 
 - (void)configureDefaultNavBar
@@ -204,44 +241,6 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations.
     return YES;
-}
-
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-    ALog();
-}
-
-- (void)viewDidUnload 
-{
-    [super viewDidUnload];
-    
-    self.nameFld        = nil;
-    self.degreeDateFld  = nil;
-    self.cityFld        = nil;
-    self.stateFld       = nil;
-    self.titleFld       = nil;
-    self.scrollView     = nil;
-}
-
-
-- (void)dealloc 
-{
-    [_nameFld release];
-    [_degreeDateFld release];
-    [_cityFld release];
-    [_stateFld release];
-    [_titleFld release];
-    [_scrollView release];
-    
-    [_selectedEducation release];
-    [__managedObjectContext release];
-    [__fetchedResultsController release];
-    
-    [super dealloc];
 }
 
 #pragma mark -

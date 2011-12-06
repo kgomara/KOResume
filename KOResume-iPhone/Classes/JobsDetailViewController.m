@@ -73,6 +73,7 @@
 @synthesize jobAccomplishmentsArray     = _jobAccomplishmentsArray;
 @synthesize accomplishmentSummary       = _accomplishmentSummary;
 
+
 #pragma mark Application lifecycle methods
 
 - (void)viewDidLoad 
@@ -185,6 +186,11 @@
     } else {
         ALog(@"managedObjectContext is null");
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.tblView reloadData];
 }
 
 #pragma mark UI handlers
@@ -398,8 +404,12 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
-    cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] summary];
-    cell.accessoryType  = UITableViewCellAccessoryNone;
+    if ([[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name]) {
+        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name];
+    } else {
+        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] summary];
+    }
+    cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
 }
@@ -653,7 +663,7 @@
     [self.view bringSubviewToFront:self.datePicker];
     // Size up the picker view to our screen and compute the start/end frame origin for our slide up animation
     // ... compute the start frame        
-    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];        
+    CGRect screenRect = [self.view bounds];        
     CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];        
     CGRect startRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height, pickerSize.width, pickerSize.height);        
     self.datePicker.frame = startRect;   
@@ -665,7 +675,7 @@
     [UIView animateWithDuration:0.3
                      animations:^ {
                          self.datePicker.frame = pickerRect;
-                         [self.tblView setContentOffset:CGPointMake(0.0f, 100.0f)];
+                         [self.tblView setContentOffset:CGPointMake(0.0f, 80.f)];
                      }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
@@ -685,6 +695,7 @@
     DLog();
     [self.tblView setContentOffset:CGPointZero
                           animated:YES];
+    [KOExtensions dismissKeyboard];
 }
 
 - (IBAction)getEndDate:(id)sender

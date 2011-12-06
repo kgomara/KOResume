@@ -48,7 +48,7 @@
 					<object class="IBUIImageView" id="307724361">
 						<reference key="NSNextResponder" ref="1006344868"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrameSize">{320, 460}</string>
+						<string key="NSFrameSize">{320, 436}</string>
 						<reference key="NSSuperview" ref="1006344868"/>
 						<reference key="NSNextKeyView" ref="161096319"/>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -498,7 +498,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</object>
-						<string key="NSFrameSize">{320, 460}</string>
+						<string key="NSFrameSize">{320, 436}</string>
 						<reference key="NSSuperview" ref="1006344868"/>
 						<reference key="NSNextKeyView" ref="525642149"/>
 						<string key="NSReuseIdentifierKey">_NS:418</string>
@@ -518,7 +518,7 @@
 					<object class="IBUIDatePicker" id="221310062">
 						<reference key="NSNextResponder" ref="1006344868"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{0, 460}, {320, 216}}</string>
+						<string key="NSFrame">{{0, 435}, {320, 216}}</string>
 						<reference key="NSSuperview" ref="1006344868"/>
 						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:578</string>
@@ -556,7 +556,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 						<int key="IBUIMinuteInterval">1</int>
 					</object>
 				</object>
-				<string key="NSFrameSize">{320, 460}</string>
+				<string key="NSFrame">{{0, 44}, {320, 436}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="307724361"/>
 				<string key="NSReuseIdentifierKey">_NS:196</string>
@@ -564,6 +564,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MQA</bytes>
 					<reference key="NSCustomColorSpace" ref="646539324"/>
+				</object>
+				<object class="IBUISimulatedNavigationBarMetrics" key="IBUISimulatedTopBarMetrics">
+					<bool key="IBUIPrompted">NO</bool>
 				</object>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
