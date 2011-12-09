@@ -10,11 +10,16 @@
 #import "Resumes.h"
 #import <CoreData/CoreData.h>
 
-@interface SummaryViewController : UIViewController 
+@interface SummaryViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
 {
 
 }
 
+@property (nonatomic, strong)          Resumes*                     selectedResume;
+@property (nonatomic, strong)          NSManagedObjectContext*      managedObjectContext;
+@property (nonatomic, strong)          NSFetchedResultsController*  fetchedResultsController;
+
+@property (nonatomic, strong) IBOutlet UIScrollView*                scrollView;
 @property (nonatomic, strong) IBOutlet UITextField*                 nameFld;
 @property (nonatomic, strong) IBOutlet UITextField*                 street1Fld;
 @property (nonatomic, strong) IBOutlet UITextField*                 cityFld;
@@ -24,10 +29,6 @@
 @property (nonatomic, strong) IBOutlet UITextField*                 mobilePhoneFld;
 @property (nonatomic, strong) IBOutlet UITextField*                 emailFld;
 @property (nonatomic, strong) IBOutlet UITextView*                  summaryFld;
-@property (nonatomic, strong)          Resumes*                     selectedResume;
-
-@property (nonatomic, strong)          NSManagedObjectContext*      managedObjectContext;
-@property (nonatomic, strong)          NSFetchedResultsController*  fetchedResultsController;
 
 - (IBAction)phoneTapped:(id)sender;
 - (IBAction)emailTapped:(id)sender;

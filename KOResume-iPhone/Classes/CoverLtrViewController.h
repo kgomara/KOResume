@@ -9,16 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "Packages.h"
 
-@interface CoverLtrViewController : UIViewController 
+@interface CoverLtrViewController : UIViewController <UITextViewDelegate>
 {	
 
 }
 
-@property (nonatomic, retain) IBOutlet	UILabel*            coverLtrLbl;
-@property (nonatomic, retain) IBOutlet	UIView*             coverLtrView;
-@property (nonatomic, retain) Packages*                     selectedPackage;
+@property (nonatomic, strong) IBOutlet  UIScrollView*       scrollView;
+@property (nonatomic, strong) IBOutlet	UITextView*         coverLtrFld;
+@property (nonatomic, strong) IBOutlet	UIView*             coverLtrView;
+@property (nonatomic, strong) IBOutlet  UIImageView*        contentPaneBackground;
+@property (nonatomic, strong) Packages*                     selectedPackage;
 
-@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, strong) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
 
 @end

@@ -475,10 +475,7 @@
 										<reference key="NSSuperview" ref="525642149"/>
 										<reference key="NSNextKeyView" ref="221310062"/>
 										<string key="NSReuseIdentifierKey">_NS:639</string>
-										<object class="NSColor" key="IBUIBackgroundColor">
-											<int key="NSColorSpace">1</int>
-											<bytes key="NSRGB">MSAxIDEAA</bytes>
-										</object>
+										<reference key="IBUIBackgroundColor" ref="349875080"/>
 										<bool key="IBUIClipsSubviews">YES</bool>
 										<bool key="IBUIMultipleTouchEnabled">YES</bool>
 										<int key="IBUITag">8</int>

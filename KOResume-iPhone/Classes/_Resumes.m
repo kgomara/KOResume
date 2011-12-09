@@ -54,6 +54,13 @@
 
 
 
+@dynamic email;
+
+
+
+
+
+
 @dynamic home_phone;
 
 

@@ -86,6 +86,7 @@
     self.fetchedResultsController.delegate = self;
     
     activeDateFld                   = 0;
+    [self.datePicker setDatePickerMode:UIDatePickerModeDate];
 
 	// Get the data and stuff it into the fields
     self.jobCompany.text                = self.selectedJob.name;
@@ -611,6 +612,10 @@
     if (textField.tag == k_startDateTextFld) {
         // we are in the start date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
+        [KOExtensions dismissKeyboard];
+        if (!self.selectedJob.start_date) {
+            self.selectedJob.start_date = [NSDate date];
+        }
         [self.datePicker setDate:self.selectedJob.start_date];
         [self animateDatePickerOn];
         // remember which date field we're editing
@@ -620,6 +625,10 @@
     if (textField.tag == k_endDateTextFld) {
         // we are in the end date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
+        [KOExtensions dismissKeyboard];
+        if (!self.selectedJob.end_date) {
+            self.selectedJob.end_date = [NSDate date];
+        }
         [self.datePicker setDate:self.selectedJob.end_date];
         [self animateDatePickerOn];
         // remember which date field we're editing

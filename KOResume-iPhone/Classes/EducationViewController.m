@@ -243,14 +243,14 @@
     return YES;
 }
 
-#pragma mark -
-#pragma mark UITextFieldDelegate methods
+#pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     if (textField.tag == k_degreeDateFldTag) {
         // we are in the date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
+        [KOExtensions dismissKeyboard];
         [self.datePicker setDate:self.selectedEducation.earned_date];
         [self animateDatePickerOn];
         return NO;

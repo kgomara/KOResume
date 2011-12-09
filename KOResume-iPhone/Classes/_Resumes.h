@@ -20,6 +20,7 @@
 
 
 
+
 @interface ResumesID : NSManagedObjectID {}
 @end
 
@@ -44,6 +45,14 @@
 
 
 //- (BOOL)validateCreated_date:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, retain) NSString *email;
+
+
+//- (BOOL)validateEmail:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -173,6 +182,12 @@
 
 - (NSDate*)primitiveCreated_date;
 - (void)setPrimitiveCreated_date:(NSDate*)value;
+
+
+
+
+- (NSString*)primitiveEmail;
+- (void)setPrimitiveEmail:(NSString*)value;
 
 
 

@@ -14,14 +14,22 @@
 @interface CoverLtrViewController()
 {
 @private
-    
+    UIBarButtonItem* backBtn;
+    UIBarButtonItem* editBtn;
+    UIBarButtonItem* saveBtn;
+    UIBarButtonItem* cancelBtn;
 }
+
+- (void)configureDefaultNavBar;
+- (void)resetView;
 
 @end
 
 @implementation CoverLtrViewController
 
-@synthesize coverLtrLbl                 = _coverLtrLbl;
+@synthesize contentPaneBackground       = _contentPaneBackground;
+@synthesize scrollView                  = _scrollView;
+@synthesize coverLtrFld                 = _coverLtrFld;
 @synthesize coverLtrView                = _coverLtrView;
 @synthesize selectedPackage             = _selectedPackage;
 
@@ -48,28 +56,63 @@
         [coverLtr release];
     }
     
-	self.coverLtrLbl.text	= self.selectedPackage.cover_ltr;
-	
-	// Size coverLtrLbl to fit the string
-	[self.coverLtrLbl sizeToFitFixedWidth:kLabelWidth];	
-	
-	// Re-size the sub-view to allow for the number of lines in jobResponsibilities
-	CGRect coverLtrLblFrame	= self.coverLtrLbl.frame;
-	CGRect viewFrame		= self.coverLtrView.frame;
-	viewFrame.size.height  += coverLtrLblFrame.size.height + kLabelHeight;
-	
-	self.coverLtrView.frame = viewFrame;
-    UIBarButtonItem* editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                                 target:self 
-                                                                                 action:@selector(editAction)] autorelease];
+	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
+	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
+                                                                                                      topCapHeight:44];
+		
+    // Register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self     
+                                             selector:@selector(keyboardWillBeHidden:)     
+                                                 name:UIKeyboardWillHideNotification object:nil];
     
-    self.navigationItem.rightBarButtonItem = editButton;
+    // Set up btn items
+    backBtn     = self.navigationItem.leftBarButtonItem;    
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                                                                target:self 
+                                                                action:@selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                                                                target:self
+                                                                action:@selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                target:self
+                                                                action:@selector(cancelAction)];
+    
+    [self configureDefaultNavBar];
+}
+
+- (void)configureDefaultNavBar
+{
+    DLog();
+    // Set the buttons.    
+    self.navigationItem.rightBarButtonItem = editBtn;
+    self.navigationItem.leftBarButtonItem  = backBtn;
+    
+    [self.coverLtrFld setEditable:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     // Re-load the text in case we're coming back from editing
-	self.coverLtrLbl.text	= self.selectedPackage.cover_ltr;    
+	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;    
 }
 
 #pragma mark UI handlers
@@ -77,15 +120,103 @@
 - (void)editAction
 {
     DLog();
-    EditCoverLtrViewController* editCoverLtrViewController = [[[EditCoverLtrViewController alloc] init] autorelease];
-    editCoverLtrViewController.selectedPackage = self.selectedPackage;
-    editCoverLtrViewController.managedObjectContext = self.managedObjectContext;
-    editCoverLtrViewController.fetchedResultsController = self.fetchedResultsController;
     
-    [self.navigationController pushViewController:editCoverLtrViewController
-                                         animated:YES];
+    // Set up the navigation item and save button
+    self.navigationItem.leftBarButtonItem  = cancelBtn;
+    self.navigationItem.rightBarButtonItem = saveBtn;
+    
+    // Enable the fields for editing
+    [self.coverLtrFld setEditable:YES];
+    
+    // Start an undo group...it will either be commited in saveAction or 
+    //    undone in cancelAction
+    [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+- (void)saveAction
+{
+    DLog();    
+    // Save the changes
+    self.selectedPackage.cover_ltr    = self.coverLtrFld.text;
+    
+    [[self.managedObjectContext undoManager] endUndoGrouping];
+    NSError* error = nil;
+    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
+    if (![context save:&error])
+    {
+        // Fatal Error
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
+        [KOExtensions showErrorWithMessage:msg];
+        [msg release];
+        ELog(error, @"Failed to save to data store");
+        abort();
+    }
+    // Cleanup the undoManager
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    // ...and reset the UI defaults
+    [self configureDefaultNavBar];
+    [self resetView];
+}
+
+- (void)cancelAction
+{
+    DLog();
+    // Undo any changes the user has made
+    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] endUndoGrouping];
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        [[self.managedObjectContext undoManager] undoNestedGroup];
+    } else {
+        DLog(@"User cancelled, nothing to undo");
+    }
+    
+    // Cleanup the undoManager
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    // ...and reset the UI defaults
+    self.coverLtrFld.text    = self.selectedPackage.cover_ltr;
+    [self configureDefaultNavBar];
+    [self resetView];
+}
+
+- (void)keyboardWillShow:(NSNotification*)aNotification
+{
+    // Get the size of the keyboard
+    NSDictionary* info = [aNotification userInfo];    
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    // ...and adjust the contentInset for its height
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    
+    self.coverLtrFld.contentInset           = contentInsets;
+    self.coverLtrFld.scrollIndicatorInsets  = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible    
+    CGRect aRect = self.view.frame;    
+    aRect.size.height -= kbSize.height;    
+    if (!CGRectContainsPoint(aRect, self.coverLtrFld.frame.origin) ) {
+        // calculate the contentOffset for the scroller
+        CGPoint scrollPoint = CGPointMake(0.0, self.coverLtrFld.frame.origin.y - kbSize.height);        
+        [self.coverLtrFld setContentOffset:scrollPoint animated:YES];        
+    }
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{    
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    
+    self.coverLtrFld.contentInset = contentInsets;    
+    self.coverLtrFld.scrollIndicatorInsets = contentInsets;
+}
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{    
+    return YES;
+}
+
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    DLog();;
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
@@ -110,11 +241,17 @@
     // e.g. self.myOutlet = nil;
 }
 
+- (void)resetView
+{
+    DLog();
+    [self.scrollView setContentOffset:CGPointZero
+                             animated:YES];
+}
 
 - (void)dealloc 
 {
     // Apple recommends calling release on the ivar...
-	[_coverLtrLbl release];
+	[_coverLtrFld release];
 	[_coverLtrView release];
     [_selectedPackage release];
 

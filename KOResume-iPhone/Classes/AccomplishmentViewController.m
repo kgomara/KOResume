@@ -124,7 +124,6 @@
     DLog();
     
     // Set up the navigation item and save button
-    
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
