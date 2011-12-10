@@ -58,22 +58,13 @@
     [self configureDefaultNavBar];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    ALog();
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 - (void)viewDidUnload 
 {
     [super viewDidUnload];
     
-    self.accomplishmentName        = nil;
+    self.accomplishmentName     = nil;
     self.accomplishmentSummary  = nil;
-    self.scrollView     = nil;
+    self.scrollView             = nil;
 }
 
 
@@ -90,15 +81,13 @@
     [super dealloc];
 }
 
-- (void)configureDefaultNavBar
+- (void)didReceiveMemoryWarning
 {
-    DLog();
-    // Set the buttons.    
-    self.navigationItem.rightBarButtonItem = editBtn;
-    self.navigationItem.leftBarButtonItem  = backBtn;
+    ALog();
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
     
-    [self.accomplishmentName setEnabled:NO];
-    [self.accomplishmentSummary setEditable:NO];
+    // Release any cached data, images, etc that aren't in use.
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -117,7 +106,24 @@
     }
 }
 
-#pragma mark UI handlers
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)configureDefaultNavBar
+{
+    DLog();
+    // Set the buttons.    
+    self.navigationItem.rightBarButtonItem = editBtn;
+    self.navigationItem.leftBarButtonItem  = backBtn;
+    
+    [self.accomplishmentName setEnabled:NO];
+    [self.accomplishmentSummary setEditable:NO];
+}
+
+#pragma mark - UI handlers
 
 - (void)editAction
 {
@@ -181,12 +187,6 @@
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
     [self configureDefaultNavBar];
     [self resetView];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark -

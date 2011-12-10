@@ -15,28 +15,29 @@
                                                         UITextFieldDelegate, UITextViewDelegate,
                                                         NSFetchedResultsControllerDelegate> 
 {
-
+    Jobs*                       _selectedJob;
+    NSManagedObjectContext*     __managedObjectConext;
+    NSFetchedResultsController* __fetchedResultsController;
 }
 
-@property (nonatomic, retain)           Jobs*           selectedJob;
-@property (nonatomic, retain) NSManagedObjectContext*   managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
+@property (nonatomic, strong) Jobs*                         selectedJob;
+@property (nonatomic, strong) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
 
-@property (nonatomic, retain) IBOutlet	UIImageView*    jobView;
-@property (nonatomic, retain) IBOutlet  UITextField*    jobCompany;
-@property (nonatomic, retain) IBOutlet  UITextField*    jobCompanyUrl;
-@property (nonatomic, retain) IBOutlet	UIButton*       jobCompanyUrlBtn;
-@property (nonatomic, retain) IBOutlet	UITextField*    jobCity;
-@property (nonatomic, retain) IBOutlet	UITextField*    jobState;
-@property (nonatomic, retain) IBOutlet	UITextField*    jobTitle;
-@property (nonatomic, retain) IBOutlet	UITextField*    jobStartDate;
-@property (nonatomic, retain) IBOutlet	UITextField*    jobEndDate;
-@property (nonatomic, retain) IBOutlet	UITextView*     jobResponsibilities;
+@property (nonatomic, strong) IBOutlet	UIImageView*        jobView;
+@property (nonatomic, strong) IBOutlet  UITextField*        jobCompany;
+@property (nonatomic, strong) IBOutlet  UITextField*        jobCompanyUrl;
+@property (nonatomic, strong) IBOutlet	UIButton*           jobCompanyUrlBtn;
+@property (nonatomic, strong) IBOutlet	UITextField*        jobCity;
+@property (nonatomic, strong) IBOutlet	UITextField*        jobState;
+@property (nonatomic, strong) IBOutlet	UITextField*        jobTitle;
+@property (nonatomic, strong) IBOutlet	UITextField*        jobStartDate;
+@property (nonatomic, strong) IBOutlet	UITextField*        jobEndDate;
+@property (nonatomic, strong) IBOutlet	UITextView*         jobResponsibilities;
 
-@property (nonatomic, strong) IBOutlet  UIDatePicker*   datePicker;
-@property (nonatomic, strong) IBOutlet  UITableView*    tblView;
+@property (nonatomic, strong) IBOutlet  UIDatePicker*       datePicker;
+@property (nonatomic, strong) IBOutlet  UITableView*        tblView;
 
 - (IBAction)companyTapped:(id)sender;
-
 
 @end

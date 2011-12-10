@@ -71,9 +71,7 @@
 @synthesize educationArray                  = _educationArray;
 @synthesize jobName                         = _jobName;
 
-#pragma mark -
-#pragma mark View lifecycle methods
-
+#pragma mark - View lifecycle methods
 
 - (void)viewDidLoad 
 {
@@ -155,6 +153,62 @@
     [self sortTables];
 }
 
+- (void)viewDidUnload 
+{
+    [super viewDidUnload];
+    
+	self.tblView        = nil;
+    self.mgmtJobsDict   = nil;
+    self.jobArray       = nil;
+    self.educationArray = nil;
+}
+
+
+- (void)dealloc 
+{
+	[_tblView release];
+	[_mgmtJobsDict release];
+    [_selectedResume release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+    [_jobArray release];
+    [_educationArray release];
+    [addJobBtn release];
+    [addEducationBtn release];
+	
+    [super dealloc];
+}
+
+- (void)didReceiveMemoryWarning 
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Relinquish ownership any cached data, images, etc that aren't in use.
+    ALog();
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if (![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+    }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
 - (void)sortTables
 {
     // Sort jobs in the order they should appear in the table  
@@ -180,6 +234,7 @@
     [addEducationBtn setHidden:YES];
 }
 
+// TODO delete after database default set up
 - (Jobs *)createJob:(NSDictionary *)jobDict
 {
     DLog();
@@ -238,22 +293,7 @@
     return newEdu;
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if (![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
-        }
-    } else {
-        ALog(@"managedObjectContext is null");
-    }
-}
-
-#pragma mark UI handlers
+#pragma mark - UI handlers
 
 - (void)editAction
 {
@@ -297,6 +337,26 @@
     [self.tblView reloadData];
 }
 
+- (void)cancelAction 
+{
+    DLog();
+    // Undo any changes the user has made
+    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] endUndoGrouping];
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        [[self.managedObjectContext undoManager] undoNestedGroup];
+    } else {
+        DLog(@"User cancelled, nothing to undo");
+    }
+    
+    // Cleanup the undoManager
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    // ...and reset the UI defaults
+    [self configureDefaultNavBar];
+    [self sortTables];
+    [self.tblView reloadData];
+}
+
 - (void)resequenceTables
 {
     // The job array is in the order (including deletes) the user wants
@@ -316,26 +376,6 @@
             [[self.educationArray objectAtIndex:i] setSequence_numberValue:i];
         }
     }
-}
-
-- (void)cancelAction 
-{
-    DLog();
-    // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
-    [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
-        [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
-        DLog(@"User cancelled, nothing to undo");
-    }
-    
-    // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
-    // ...and reset the UI defaults
-    [self configureDefaultNavBar];
-    [self sortTables];
-    [self.tblView reloadData];
 }
 
 - (void)addJob
@@ -438,15 +478,13 @@
     }
 }
 
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark - Table view data source
 
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     return 3;
 }
-
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
@@ -510,9 +548,7 @@
 
 }
 
-
-#pragma mark -
-#pragma mark Table view delegates
+#pragma mark - Table view delegates
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
@@ -608,7 +644,6 @@
     }
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     switch (indexPath.section) {
@@ -695,7 +730,6 @@
     }
 }
 
-
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
     switch(type) {
@@ -710,48 +744,9 @@
     }
 }
 
-
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
-}
-
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-    ALog();
-}
-
-- (void)viewDidUnload 
-{
-    [super viewDidUnload];
-	self.tblView        = nil;
-    self.mgmtJobsDict   = nil;
-    self.jobArray       = nil;
-    self.educationArray = nil;
-}
-
-
-- (void)dealloc 
-{
-	[_tblView release];
-	[_mgmtJobsDict release];
-    [_selectedResume release];
-    [__managedObjectContext release];
-    [__fetchedResultsController release];
-    [_jobArray release];
-    [_educationArray release];
-    [addJobBtn release];
-    [addEducationBtn release];
-	
-    [super dealloc];
 }
 
 @end

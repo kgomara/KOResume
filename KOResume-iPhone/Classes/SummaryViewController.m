@@ -22,6 +22,7 @@
     UIBarButtonItem* cancelBtn;
 
     NSString*       _phoneNumber;
+    UIView*         _activeFld;
 }
 
 @property (nonatomic, strong)	NSString*   phoneNumber;
@@ -39,6 +40,7 @@
 @synthesize fetchedResultsController    = __fetchedResultsController;
 
 @synthesize scrollView                  = _scrollView;
+@synthesize contentPaneBackground       = _contentPaneBackground;
 @synthesize phoneNumber                 = _phoneNumber;
 @synthesize nameFld                     = _nameFld;
 @synthesize street1Fld                  = _street1Fld;
@@ -49,6 +51,8 @@
 @synthesize mobilePhoneFld              = _mobilePhoneFld;
 @synthesize emailFld                    = _emailFld;
 @synthesize summaryFld                  = _summaryFld;
+
+#pragma mark - Life Cycle methods
 
 - (void)viewDidLoad 
 {
@@ -81,6 +85,19 @@
     self.emailFld.text       = self.selectedResume.email;
     self.summaryFld.text     = self.selectedResume.summary;
     
+    _activeFld = nil;
+    
+	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
+                                                                                                               topCapHeight:44];
+    
+    // Register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self     
+                                             selector:@selector(keyboardWillBeHidden:)     
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
@@ -96,6 +113,46 @@
     [self configureDefaultNavBar];
 }
 
+- (void)viewDidUnload 
+{
+    [super viewDidUnload];
+
+    self.scrollView             = nil;
+    self.contentPaneBackground  = nil;
+    self.nameFld                = nil;
+    self.street1Fld             = nil;
+    self.cityFld                = nil;
+    self.stateFld               = nil;
+    self.zipFld                 = nil;
+	self.homePhoneFld           = nil;
+	self.mobilePhoneFld         = nil;
+    self.emailFld               = nil;
+	self.summaryFld             = nil;
+}
+
+
+- (void)dealloc {
+    // Remove the keyboard observer
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Apple recommends calling release on the ivar...
+    [_scrollView release];
+    [_nameFld release];
+    [_street1Fld release];
+    [_cityFld release];
+    [_stateFld release];
+    [_zipFld release];
+	[_homePhoneFld release];
+	[_mobilePhoneFld release];
+    [_emailFld release];
+	[_summaryFld release];
+    
+    [_selectedResume release];
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+	
+    [super dealloc];
+}
 
 - (void)didReceiveMemoryWarning 
 {
@@ -106,40 +163,26 @@
     ALog();
 }
 
-- (void)viewDidUnload 
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidUnload];
-
-    self.scrollView         = nil;
-    self.nameFld            = nil;
-    self.street1Fld         = nil;
-    self.cityFld            = nil;
-    self.stateFld           = nil;
-    self.zipFld             = nil;
-	self.homePhoneFld       = nil;
-	self.mobilePhoneFld     = nil;
-    self.emailFld           = nil;
-	self.summaryFld         = nil;
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+    }
 }
 
-
-- (void)dealloc {
-    self.scrollView         = nil;
-    self.nameFld            = nil;
-    self.street1Fld         = nil;
-    self.cityFld            = nil;
-    self.stateFld           = nil;
-    self.zipFld             = nil;
-	self.homePhoneFld       = nil;
-	self.mobilePhoneFld     = nil;
-    self.emailFld           = nil;
-	self.summaryFld         = nil;
-    
-    self.selectedResume             = nil;
-    self.managedObjectContext       = nil;
-    self.fetchedResultsController   = nil;
-	
-    [super dealloc];
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)configureDefaultNavBar
@@ -160,30 +203,13 @@
     [self.summaryFld setEditable:NO];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    // Save any changes
-    DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
-        }
-    } else {
-        ALog(@"managedObjectContext is null");
-    }
-}
-
-#pragma mark UI handlers
+#pragma mark - UI handlers
 
 - (void)editAction
 {
     DLog();
     
     // Set up the navigation item and save button
-    
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
@@ -255,8 +281,6 @@
     [self resetView];
 }
 
-#pragma mark User event methods
-
 - (IBAction)phoneTapped:(id)sender 
 {
     DLog();
@@ -280,6 +304,7 @@
     if(buttonIndex != alertView.cancelButtonIndex)
     {
         DLog(@"Calling %@", self.phoneNumber);
+        // Loop through the phoneNumber and remove non-numeric characters
         NSMutableString* strippedString = [NSMutableString stringWithCapacity:10];
         for (int i = 0; i < [self.phoneNumber length]; i++) {
             if (isdigit([self.phoneNumber characterAtIndex:i])) {
@@ -287,6 +312,7 @@
             }
         }
         
+        // Ask the system to make a call
         NSURL* phoneURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"tel:%@", @"tel:%@"), strippedString]];
         [[UIApplication sharedApplication] openURL:phoneURL];
     }
@@ -296,15 +322,58 @@
 - (IBAction)emailTapped:(id)sender
 {
     DLog();
-    // TODO get email from selectedResume
+    // Ask the system to send an email
     NSURL* emailURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"mailto:%@", @"mailto:%@"), self.selectedResume.email]];
     [[UIApplication sharedApplication] openURL:emailURL];
+}
+
+#pragma mark - Keyboard handlers
+
+- (void)keyboardWillShow:(NSNotification*)aNotification
+{
+    // Get the size of the keyboard
+    NSDictionary* info = [aNotification userInfo];    
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible    
+    CGRect aRect = self.view.frame;    
+    aRect.size.height -= kbSize.height;
+    DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) ) {
+        // calculate the contentOffset for the scroller
+        // ...to get the middle of the active field into the middle of the available view area
+        CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
+        [self.scrollView setContentOffset:scrollPoint animated:YES];        
+    }
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{    
+
+}
+
+#pragma mark - UITextView delegate methods
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    _activeFld = textView;
+    
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    _activeFld = nil;
+    
+    DLog();;
 }
 
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    _activeFld = textField;
+    
     return YES;
 }
 
@@ -315,6 +384,7 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
 {
+    _activeFld = nil;
 	// Validate fields - nothing to do in this version
 	
 	return YES;

@@ -15,11 +15,11 @@
 
 }
 
-@property (nonatomic, retain) IBOutlet      UITableView*                tblView;
-@property (nonatomic, retain)               NSDictionary*               mgmtJobsDict;
+@property (nonatomic, strong) IBOutlet      UITableView*                tblView;
+@property (nonatomic, strong)               NSDictionary*               mgmtJobsDict;
 @property (nonatomic, strong)               Resumes*                    selectedResume;
 
-@property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
-@property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
+@property (nonatomic, strong)               NSManagedObjectContext*     managedObjectContext;
+@property (nonatomic, strong)               NSFetchedResultsController* fetchedResultsController;
 
 @end

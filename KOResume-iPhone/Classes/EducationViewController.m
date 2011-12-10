@@ -44,6 +44,8 @@
 
 @synthesize datePicker                  = _datePicker;
 
+#pragma mark - Life Cycle methods
+
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
@@ -78,15 +80,6 @@
     [self configureDefaultNavBar];
 }
 
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-    ALog();
-}
-
 - (void)viewDidUnload 
 {
     [super viewDidUnload];
@@ -116,18 +109,13 @@
     [super dealloc];
 }
 
-- (void)configureDefaultNavBar
+- (void)didReceiveMemoryWarning 
 {
-    DLog();
-    // Set the buttons.    
-    self.navigationItem.rightBarButtonItem = editBtn;
-    self.navigationItem.leftBarButtonItem  = backBtn;
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
     
-    [self.nameFld setEnabled:NO];
-    [self.degreeDateFld setEnabled:NO];
-    [self.cityFld setEnabled:NO];
-    [self.stateFld setEnabled:NO];
-    [self.titleFld setEnabled:NO];
+    // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -146,14 +134,33 @@
     }
 }
 
-#pragma mark UI handlers
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)configureDefaultNavBar
+{
+    DLog();
+    // Set the buttons.    
+    self.navigationItem.rightBarButtonItem = editBtn;
+    self.navigationItem.leftBarButtonItem  = backBtn;
+    
+    [self.nameFld setEnabled:NO];
+    [self.degreeDateFld setEnabled:NO];
+    [self.cityFld setEnabled:NO];
+    [self.stateFld setEnabled:NO];
+    [self.titleFld setEnabled:NO];
+}
+
+#pragma mark - UI handlers
 
 - (void)editAction
 {
     DLog();
     
     // Set up the navigation item and save button
-    
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
 
@@ -234,13 +241,17 @@
                      }];
     
     // Reset the UI
+    [KOExtensions dismissKeyboard];
     self.navigationItem.rightBarButtonItem = saveBtn;
     self.navigationItem.leftBarButtonItem  = cancelBtn;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations.
-    return YES;
+- (IBAction)getEarnedDate:(id)sender
+{
+    // Update the database
+    self.selectedEducation.earned_date  = [self.datePicker date];
+    // ...and the textField
+	self.degreeDateFld.text             = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -254,6 +265,10 @@
         [self.datePicker setDate:self.selectedEducation.earned_date];
         [self animateDatePickerOn];
         return NO;
+    } else {
+        if (self.datePicker) {
+            [self.datePicker setHidden:YES];
+        }
     }
     return YES;
 }
@@ -325,14 +340,5 @@
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
 }
-
-- (IBAction)getEarnedDate:(id)sender
-{
-    // Update the database
-    self.selectedEducation.earned_date  = [self.datePicker date];
-    // ...and the textField
-	self.degreeDateFld.text             = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
-}
-
 
 @end

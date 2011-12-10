@@ -10,9 +10,12 @@
 #import "Resumes.h"
 #import <CoreData/CoreData.h>
 
-@interface SummaryViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
+@interface SummaryViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate,
+                                                     UIScrollViewDelegate>
 {
-
+    Resumes*                    _selectedResume;
+    NSManagedObjectContext*     __managedObjectContext;
+    NSFetchedResultsController* __fetchedResultsController;
 }
 
 @property (nonatomic, strong)          Resumes*                     selectedResume;
@@ -20,6 +23,7 @@
 @property (nonatomic, strong)          NSFetchedResultsController*  fetchedResultsController;
 
 @property (nonatomic, strong) IBOutlet UIScrollView*                scrollView;
+@property (nonatomic, strong) IBOutlet UIImageView*                 contentPaneBackground;
 @property (nonatomic, strong) IBOutlet UITextField*                 nameFld;
 @property (nonatomic, strong) IBOutlet UITextField*                 street1Fld;
 @property (nonatomic, strong) IBOutlet UITextField*                 cityFld;

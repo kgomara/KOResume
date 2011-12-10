@@ -23,7 +23,6 @@
     NSMutableArray*     _jobAccomplishmentsArray;
     NSString*           _accomplishmentSummary;
 
-    // These ivars are singletons and do not have properties
     UIBarButtonItem* backBtn;
     UIBarButtonItem* doneBtn;
     UIBarButtonItem* editBtn;
@@ -33,6 +32,7 @@
     
     UIButton*        addAccompBtn;
     int              activeDateFld;
+    UIView*         _activeFld;
 }
 
 @property (nonatomic, strong) NSMutableArray*   jobAccomplishmentsArray;
@@ -51,24 +51,23 @@
 
 @implementation JobsDetailViewController
 
-@synthesize	jobView;
-@synthesize	jobCompany;
-@synthesize jobCompanyUrl;
-@synthesize	jobCompanyUrlBtn;
-@synthesize	jobCity;
-@synthesize jobState;
-@synthesize	jobTitle;
-@synthesize	jobStartDate;
-@synthesize	jobEndDate;
-@synthesize	jobResponsibilities;
+@synthesize	selectedJob                 = _selectedJob;
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
+
+@synthesize	jobView                     = _jobView;
+@synthesize	jobCompany                  = _jobCompany;
+@synthesize jobCompanyUrl               = _jobCompanyUrl;
+@synthesize	jobCompanyUrlBtn            = _jobCompanyUrlBtn;
+@synthesize	jobCity                     = _jobCity;
+@synthesize jobState                    = _jobState;
+@synthesize	jobTitle                    = _jobTitle;
+@synthesize	jobStartDate                = _jobStartDate;
+@synthesize	jobEndDate                  = _jobEndDate;
+@synthesize	jobResponsibilities         = _jobResponsibilities;
 
 @synthesize tblView                     = _tblView;
 @synthesize datePicker                  = _datePicker;
-
-@synthesize	selectedJob                 = _selectedJob;
-
-@synthesize managedObjectContext        = __managedObjectContext;
-@synthesize fetchedResultsController    = __fetchedResultsController;
 
 @synthesize jobAccomplishmentsArray     = _jobAccomplishmentsArray;
 @synthesize accomplishmentSummary       = _accomplishmentSummary;
@@ -101,6 +100,16 @@
     self.jobEndDate.text                = [dateFormatter stringFromDate:self.selectedJob.end_date];
 	self.jobResponsibilities.text       = self.selectedJob.summary;
 	
+    _activeFld = nil;
+
+    // Register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self     
+                                             selector:@selector(keyboardWillBeHidden:)     
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    
     // Set up button items
 	[self.jobCompanyUrlBtn setTitle:self.selectedJob.name 
 						   forState:UIControlStateNormal];
@@ -130,13 +139,95 @@
     
     [self configureDefaultNavBar];
 
-		// Loop through the accomplishment adding accomplishment items to the view
-        NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
-                                                                        ascending:YES] autorelease];
-        NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-        self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
+//    // Loop through the accomplishment adding accomplishment items to the view
+//    NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
+//                                                                    ascending:YES] autorelease];
+//    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+//    self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
 	
     [self sortTables];
+}
+
+- (void)viewDidUnload 
+{
+    [super viewDidUnload];
+
+	self.jobView					= nil;
+	self.jobCompany					= nil;
+	self.jobCompanyUrl				= nil;
+	self.jobCompanyUrlBtn			= nil;
+	self.jobCity                    = nil;
+    self.jobState                   = nil;
+	self.jobTitle					= nil;
+	self.jobStartDate				= nil;
+	self.jobEndDate					= nil;
+	self.jobResponsibilities		= nil;
+    
+    self.tblView                    = nil;
+    
+	self.jobAccomplishmentsArray	= nil;
+}
+
+
+- (void)dealloc 
+{
+    // Remove the keyboard observer
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Apple recommends calling release on the ivar...
+	[_jobView release];
+	[_jobCompany release];
+	[_jobCompanyUrl	release];
+	[_jobCompanyUrlBtn release];
+	[_jobCity release];
+    [_jobState release];
+	[_jobTitle release];
+	[_jobStartDate release];
+	[_jobEndDate release];
+	[_jobResponsibilities release];
+    
+    [_tblView release];
+    
+	[_jobAccomplishmentsArray release];
+	[_selectedJob release];
+	
+    [super dealloc];
+}
+
+- (void)didReceiveMemoryWarning 
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc. that aren't in use.
+    ALog();
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.tblView reloadData];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)sortTables
@@ -147,7 +238,6 @@
     NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
     self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
 }
-
 
 - (void)configureDefaultNavBar
 {
@@ -173,28 +263,7 @@
     [self.datePicker setHidden:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    // Save any changes
-    DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
-        }
-    } else {
-        ALog(@"managedObjectContext is null");
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.tblView reloadData];
-}
-
-#pragma mark UI handlers
+#pragma mark - UI handlers
 
 - (void)editAction
 {
@@ -312,9 +381,175 @@
                      }];
     
     // Reset the UI
+    [KOExtensions dismissKeyboard];
     self.navigationItem.rightBarButtonItem = saveBtn;
     self.navigationItem.leftBarButtonItem  = cancelBtn;
 }
+
+- (IBAction)companyTapped:(id)sender 
+{
+	if (self.selectedJob.uri == NULL || [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound) {
+		return;
+	}
+    
+	// Open the Url in Safari
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.selectedJob.uri]];
+}
+
+- (IBAction)getEndDate:(id)sender
+{
+    if (activeDateFld == k_startDateTextFld) {
+        // Update the database
+        self.selectedJob.start_date = [self.datePicker date];
+        // ...and the textField
+        self.jobStartDate.text      = [dateFormatter stringFromDate:self.selectedJob.start_date];
+        
+    } else {
+        // Update the database
+        self.selectedJob.end_date   = [self.datePicker date];
+        // ...and the textField
+        self.jobEndDate.text        = [dateFormatter stringFromDate:self.selectedJob.end_date];
+    }
+}
+
+#pragma mark - Keyboard handlers
+
+- (void)keyboardWillShow:(NSNotification*)aNotification
+{
+    // Get the size of the keyboard
+    NSDictionary* info = [aNotification userInfo];    
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible    
+    CGRect aRect = self.view.frame;    
+    aRect.size.height -= kbSize.height;
+    DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) ) {
+        // calculate the contentOffset for the scroller
+        // ...to get the middle of the active field into the middle of the available view area
+        CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
+        [self.tblView setContentOffset:scrollPoint animated:YES];        
+    }
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{    
+
+}
+
+#pragma mark - UITextView delegate methods
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    _activeFld = textView;
+    
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    _activeFld = nil;
+    
+    DLog();;
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    _activeFld = textField;
+    if (textField.tag == k_startDateTextFld) {
+        // we are in the start date field, dismiss the keyboard and show the data picker
+        [textField resignFirstResponder];
+        [KOExtensions dismissKeyboard];
+        if (!self.selectedJob.start_date) {
+            self.selectedJob.start_date = [NSDate date];
+        }
+        [self.datePicker setDate:self.selectedJob.start_date];
+        [self animateDatePickerOn];
+        // remember which date field we're editing
+        activeDateFld = k_startDateTextFld;
+        return NO;
+    }
+    if (textField.tag == k_endDateTextFld) {
+        // we are in the end date field, dismiss the keyboard and show the data picker
+        [textField resignFirstResponder];
+        [KOExtensions dismissKeyboard];
+        if (!self.selectedJob.end_date) {
+            self.selectedJob.end_date = [NSDate date];
+        }
+        [self.datePicker setDate:self.selectedJob.end_date];
+        [self animateDatePickerOn];
+        // remember which date field we're editing
+        activeDateFld = k_endDateTextFld;
+        return NO;
+    }
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+	[self scrollToViewTextField:textField];
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
+{
+    _activeFld = nil;
+	// Validate fields - nothing to do in this version
+	
+	return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField 
+{
+	int nextTag = [textField tag] + 1;
+	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
+	
+	if (nextResponder) {
+        [nextResponder becomeFirstResponder];
+	} else {
+		[textField resignFirstResponder];
+        [self resetView];
+	}
+	
+	return NO;
+}
+
+- (void)animateDatePickerOn
+{
+    DLog();
+    [self.datePicker setHidden:NO];
+    [self.view bringSubviewToFront:self.datePicker];
+    // Size up the picker view to our screen and compute the start/end frame origin for our slide up animation
+    // ... compute the start frame        
+    CGRect screenRect = [self.view bounds];        
+    CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];        
+    CGRect startRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height, pickerSize.width, pickerSize.height);        
+    self.datePicker.frame = startRect;   
+    
+    // ... compute the end frame        
+    CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height, pickerSize.width, pickerSize.height);
+    
+    // Start the slide up animation        
+    [UIView animateWithDuration:0.3
+                     animations:^ {
+                         self.datePicker.frame = pickerRect;
+                         [self.tblView setContentOffset:CGPointMake(0.0f, 80.f)];
+                     }];
+    // add the "Done" button to the nav bar
+    self.navigationItem.rightBarButtonItem = doneBtn;
+    // ...and clear the cancel button
+    self.navigationItem.leftBarButtonItem = nil;
+}
+
+- (void)scrollToViewTextField:(UITextField *)textField 
+{
+	float textFieldOriginY = textField.frame.origin.y;
+	[self.tblView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                          animated:YES];
+}
+
+#pragma mark - Accomplishment methods
 
 - (void)addAccomplishment
 {
@@ -369,8 +604,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark - Table view data source
 
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
@@ -415,9 +649,7 @@
     return cell;
 }
 
-
-#pragma mark -
-#pragma mark Table view delegates
+#pragma mark - Table view delegates
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 {
@@ -547,156 +779,11 @@
     [self.tblView endUpdates];
 }
 
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-    ALog();
-}
-
-- (void)viewDidUnload 
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-
-- (void)dealloc 
-{
-	self.jobView					= nil;
-	self.jobCompany					= nil;
-	self.jobCompanyUrl				= nil;
-	self.jobCompanyUrlBtn			= nil;
-	self.jobCity                    = nil;
-    self.jobState                   = nil;
-	self.jobTitle					= nil;
-	self.jobStartDate				= nil;
-	self.jobEndDate					= nil;
-	self.jobResponsibilities		= nil;
-    
-    self.tblView                    = nil;
-    
-	self.jobAccomplishmentsArray	= nil;
-	self.selectedJob				= nil;
-	
-    [super dealloc];
-}
-
-#pragma mark User generated events
-
-- (IBAction)companyTapped:(id)sender 
-{
-	if (self.selectedJob.uri == NULL || [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound) {
-		return;
-	}
-
-	// Open the Url in Safari
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.selectedJob.uri]];
-}
-
 #pragma mark UIScrollView delegate methods
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView 
 {
 	return self.jobView;
-}
-
-#pragma mark -
-#pragma mark UITextFieldDelegate methods
-
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-{
-    if (textField.tag == k_startDateTextFld) {
-        // we are in the start date field, dismiss the keyboard and show the data picker
-        [textField resignFirstResponder];
-        [KOExtensions dismissKeyboard];
-        if (!self.selectedJob.start_date) {
-            self.selectedJob.start_date = [NSDate date];
-        }
-        [self.datePicker setDate:self.selectedJob.start_date];
-        [self animateDatePickerOn];
-        // remember which date field we're editing
-        activeDateFld = k_startDateTextFld;
-        return NO;
-    }
-    if (textField.tag == k_endDateTextFld) {
-        // we are in the end date field, dismiss the keyboard and show the data picker
-        [textField resignFirstResponder];
-        [KOExtensions dismissKeyboard];
-        if (!self.selectedJob.end_date) {
-            self.selectedJob.end_date = [NSDate date];
-        }
-        [self.datePicker setDate:self.selectedJob.end_date];
-        [self animateDatePickerOn];
-        // remember which date field we're editing
-        activeDateFld = k_endDateTextFld;
-        return NO;
-    }
-    return YES;
-}
-
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-	[self scrollToViewTextField:textField];
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
-{
-	// Validate fields - nothing to do in this version
-	
-	return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField 
-{
-	int nextTag = [textField tag] + 1;
-	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
-	
-	if (nextResponder) {
-        [nextResponder becomeFirstResponder];
-	} else {
-		[textField resignFirstResponder];
-        [self resetView];
-	}
-	
-	return NO;
-}
-
-- (void)animateDatePickerOn
-{
-    DLog();
-    [self.datePicker setHidden:NO];
-    [self.view bringSubviewToFront:self.datePicker];
-    // Size up the picker view to our screen and compute the start/end frame origin for our slide up animation
-    // ... compute the start frame        
-    CGRect screenRect = [self.view bounds];        
-    CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];        
-    CGRect startRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height, pickerSize.width, pickerSize.height);        
-    self.datePicker.frame = startRect;   
-    
-    // ... compute the end frame        
-    CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height, pickerSize.width, pickerSize.height);
-    
-    // Start the slide up animation        
-    [UIView animateWithDuration:0.3
-                     animations:^ {
-                         self.datePicker.frame = pickerRect;
-                         [self.tblView setContentOffset:CGPointMake(0.0f, 80.f)];
-                     }];
-    // add the "Done" button to the nav bar
-    self.navigationItem.rightBarButtonItem = doneBtn;
-    // ...and clear the cancel button
-    self.navigationItem.leftBarButtonItem = nil;
-}
-
-- (void)scrollToViewTextField:(UITextField *)textField 
-{
-	float textFieldOriginY = textField.frame.origin.y;
-	[self.tblView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                          animated:YES];
 }
 
 - (void)resetView
@@ -705,22 +792,6 @@
     [self.tblView setContentOffset:CGPointZero
                           animated:YES];
     [KOExtensions dismissKeyboard];
-}
-
-- (IBAction)getEndDate:(id)sender
-{
-    if (activeDateFld == k_startDateTextFld) {
-        // Update the database
-        self.selectedJob.start_date = [self.datePicker date];
-        // ...and the textField
-        self.jobStartDate.text      = [dateFormatter stringFromDate:self.selectedJob.start_date];
-
-    } else {
-        // Update the database
-        self.selectedJob.end_date   = [self.datePicker date];
-        // ...and the textField
-        self.jobEndDate.text        = [dateFormatter stringFromDate:self.selectedJob.end_date];
-    }
 }
 
 @end

@@ -11,12 +11,14 @@
 
 @interface AccomplishmentViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
 {
-    
+    Accomplishments*                    _selectedAccomplishment;
+    NSManagedObjectContext*             __managedObjectContext;
+    NSFetchedResultsController*         __fetchedResultsController;
 }
 
-@property (nonatomic, strong)          Accomplishments*     selectedAccomplishment;
-@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, strong) Accomplishments*              selectedAccomplishment;
+@property (nonatomic, strong) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
 
 @property (nonatomic, strong) IBOutlet UIScrollView*        scrollView;
 @property (nonatomic, strong) IBOutlet UITextField*         accomplishmentName;

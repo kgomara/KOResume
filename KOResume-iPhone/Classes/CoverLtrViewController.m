@@ -27,14 +27,15 @@
 
 @implementation CoverLtrViewController
 
+@synthesize selectedPackage             = _selectedPackage;
+@synthesize managedObjectContext        = __managedObjectContext;
+@synthesize fetchedResultsController    = __fetchedResultsController;
+
 @synthesize contentPaneBackground       = _contentPaneBackground;
 @synthesize scrollView                  = _scrollView;
 @synthesize coverLtrFld                 = _coverLtrFld;
-@synthesize coverLtrView                = _coverLtrView;
-@synthesize selectedPackage             = _selectedPackage;
 
-@synthesize managedObjectContext        = __managedObjectContext;
-@synthesize fetchedResultsController    = __fetchedResultsController;
+#pragma mark - Life Cycle methods
 
 - (void)viewDidLoad 
 {
@@ -57,6 +58,7 @@
     }
     
 	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
+    
 	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
                                                                                                       topCapHeight:44];
 		
@@ -83,14 +85,39 @@
     [self configureDefaultNavBar];
 }
 
-- (void)configureDefaultNavBar
+- (void)viewDidUnload 
 {
-    DLog();
-    // Set the buttons.    
-    self.navigationItem.rightBarButtonItem = editBtn;
-    self.navigationItem.leftBarButtonItem  = backBtn;
+    [super viewDidUnload];
     
-    [self.coverLtrFld setEditable:NO];
+    self.contentPaneBackground  = nil;
+    self.scrollView             = nil;
+    self.coverLtrFld            = nil;
+}
+
+- (void)dealloc 
+{
+    // Remove the keyboard observer
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Apple recommends calling release on the ivar...
+    [_contentPaneBackground release];
+    [_scrollView release];
+	[_coverLtrFld release];
+    [_selectedPackage release];
+    
+    [__fetchedResultsController release];
+    [__managedObjectContext release];
+	
+    [super dealloc];
+}
+
+- (void)didReceiveMemoryWarning 
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc. that aren't in use.
+    ALog();
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -109,13 +136,23 @@
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    // Re-load the text in case we're coming back from editing
-	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;    
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark UI handlers
+- (void)configureDefaultNavBar
+{
+    DLog();
+    // Set the buttons.    
+    self.navigationItem.rightBarButtonItem = editBtn;
+    self.navigationItem.leftBarButtonItem  = backBtn;
+    
+    [self.coverLtrFld setEditable:NO];
+}
+
+#pragma mark - UI handlers
 
 - (void)editAction
 {
@@ -178,6 +215,8 @@
     [self resetView];
 }
 
+#pragma mark - Keyboard handlers
+
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     // Get the size of the keyboard
@@ -207,38 +246,16 @@
     self.coverLtrFld.scrollIndicatorInsets = contentInsets;
 }
 
+#pragma mark - UITextView delegate methods
+
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {    
     return YES;
 }
 
-
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     DLog();;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
-{
-    // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-    ALog();
-}
-
-- (void)viewDidUnload 
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)resetView
@@ -247,19 +264,5 @@
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
 }
-
-- (void)dealloc 
-{
-    // Apple recommends calling release on the ivar...
-	[_coverLtrFld release];
-	[_coverLtrView release];
-    [_selectedPackage release];
-
-    [__fetchedResultsController release];
-    [__managedObjectContext release];
-	
-    [super dealloc];
-}
-
 
 @end

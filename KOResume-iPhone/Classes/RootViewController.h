@@ -13,10 +13,10 @@
                                                   NSFetchedResultsControllerDelegate,
                                                   UIAlertViewDelegate> 
 {
-
+    NSManagedObjectContext*     __managedObjectContext;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView*         tblView;
-@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
+@property (nonatomic, strong) IBOutlet UITableView*         tblView;
+@property (nonatomic, strong) NSManagedObjectContext*       managedObjectContext;
 
 @end

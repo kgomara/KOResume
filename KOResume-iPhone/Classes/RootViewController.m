@@ -48,10 +48,7 @@
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize fetchedResultsController    = __fetchedResultsController;
 
-
-#pragma mark -
-#pragma mark View lifecycle
-
+#pragma mark - View lifecycle
 
 - (void)viewDidLoad 
 {
@@ -73,6 +70,54 @@
     [self configureDefaultNavBar];
     // ...and load the Packages
     [self loadPackages];
+}
+
+- (void)viewDidUnload 
+{
+    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+	self.tblView        = nil;    
+    self.packagesArray  = nil;
+}
+
+- (void)dealloc 
+{
+    // Apple recommends calling release on the ivar...
+	[_tblView release];
+    [_packagesArray release];
+    
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+    
+    [super dealloc];
+}
+
+- (void)didReceiveMemoryWarning 
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Relinquish ownership any cached data, images, etc that aren't in use.
+    ALog();
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save any changes
+    DLog();
+    NSError* error = nil;
+    NSManagedObjectContext* moc = self.managedObjectContext;
+    if (moc != nil) {
+        if ([moc hasChanges] && ![moc save:&error]) {
+            ELog(error, @"Failed to save");
+            abort();
+        }
+    }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)loadPackages
@@ -123,21 +168,7 @@
     [self.tblView setEditing:NO];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    // Save any changes
-    DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
-        }
-    }
-}
-
-#pragma mark UI handlers
+#pragma mark - UI handlers
 
 - (void)editAction
 {
@@ -272,9 +303,7 @@
     }
 }
 
-
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark - Table view data source
 
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
@@ -300,13 +329,19 @@
     }
     
 	// Configure the cell.
-    cell.textLabel.text = [[self.packagesArray objectAtIndex:indexPath.row] name];
-    
-	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
+    [self configureCell:cell
+            atIndexPath:indexPath];
 
     return cell;
 }
 
+- (void)configureCell:(UITableViewCell *)cell
+          atIndexPath:(NSIndexPath *)indexPath
+{
+    DLog();
+    cell.textLabel.text = [[self.packagesArray objectAtIndex:indexPath.row] name];
+	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
+}
 
 #pragma mark -
 #pragma mark Table view delegates
@@ -383,39 +418,6 @@
     // Clear the selected row
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
-}
-
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning 
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-    ALog();
-}
-
-- (void)viewDidUnload 
-{
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-	self.tblView        = nil;    
-    self.packagesArray  = nil;
-}
-
-
-- (void)dealloc 
-{
-    // Apple recommends calling release on the ivar...
-	[_tblView release];
-    [_packagesArray release];
-    
-    [__managedObjectContext release];
-    [__fetchedResultsController release];
-    
-    [super dealloc];
 }
 
 #pragma mark - Fetched results controller
@@ -518,14 +520,6 @@
 {
     DLog();
     [self.tblView endUpdates];
-}
-
-#pragma mark - tableView helpers
-
-- (void)configureCell:(UITableViewCell *)cell
-          atIndexPath:(NSIndexPath *)indexPath
-{
-    DLog();
 }
 
 @end

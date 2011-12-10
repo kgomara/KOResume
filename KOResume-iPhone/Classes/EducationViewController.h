@@ -12,12 +12,14 @@
 
 @interface EducationViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
 {
-
+    Education*                      _selectedEducation;
+    NSManagedObjectContext*         __managedObjectContext;
+    NSFetchedResultsController*     __fetchedResultsController;
 }
 
-@property (nonatomic, retain)               Education*                  selectedEducation;
-@property (nonatomic, retain)               NSManagedObjectContext*     managedObjectContext;
-@property (nonatomic, retain)               NSFetchedResultsController* fetchedResultsController;
+@property (nonatomic, strong)               Education*                  selectedEducation;
+@property (nonatomic, strong)               NSManagedObjectContext*     managedObjectContext;
+@property (nonatomic, strong)               NSFetchedResultsController* fetchedResultsController;
 
 @property (nonatomic, strong) IBOutlet      UIScrollView*               scrollView;
 @property (nonatomic, strong) IBOutlet      UITextField*                nameFld;
