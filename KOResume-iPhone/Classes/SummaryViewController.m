@@ -58,23 +58,6 @@
 {
     [super viewDidLoad];
 
-    // TODO delete after default database created
-    if (!self.selectedResume.summary) {
-        // get the summary into the view
-        NSBundle* bundle		= [NSBundle mainBundle];
-        NSString* summaryPath	= [bundle pathForResource:@"Summary" ofType:@"txt"];
-        NSError*  error         = nil;
-        NSString* summaryTxt	= [[NSString alloc] initWithContentsOfFile:summaryPath
-                                                                  encoding:NSUTF8StringEncoding
-                                                                     error:&error];
-        if (error) {
-            ELog(error, @"Failed to read Summary.txt");
-        }
-        
-        self.selectedResume.summary	= summaryTxt;
-        [summaryTxt release];
-    }
-    
     self.nameFld.text        = self.selectedResume.name;
     self.street1Fld.text     = self.selectedResume.street1;
     self.cityFld.text        = self.selectedResume.city;

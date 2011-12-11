@@ -42,14 +42,6 @@
 @property (nonatomic, strong) NSMutableArray*     educationArray;
 @property (nonatomic, strong) NSString*           jobName;
 
-- (Jobs *)createJob:(NSDictionary *)jobDict;
-- (Accomplishments *)createAccomplishment:(NSString *)accomp;
-- (Education *)createEducation:(NSString *)eduName 
-                    dateEarned:(NSString *)dateEarned 
-                        inCity:(NSString *)inCity 
-                       inState:(NSString *)inState 
-                 atInstitution:(NSString *)atInstitution 
-                  withSequence:(int)withSequence;
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *)indexPath;
 - (void)configureDefaultNavBar;
@@ -111,45 +103,6 @@
     
     self.fetchedResultsController.delegate = self;
 	
-    if ([self.selectedResume.job count] == 0) {
-        // Load the test database
-        // get the jobs.plist dictionary into mgmtJobsDict
-        NSBundle* bundle    = [NSBundle mainBundle];
-        NSString* plistPath = [bundle pathForResource:@"jobs" ofType:@"plist"];
-        NSDictionary* dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-        self.mgmtJobsDict = dictionary;
-        [dictionary release];
-        for (NSString* key in self.mgmtJobsDict) {
-            NSDictionary* jobDict = [self.mgmtJobsDict objectForKey:key];
-            [self.selectedResume addJobObject:[self createJob:jobDict]];
-        }
-    }
-    if ([self.selectedResume.education count] == 0) {
-        [self.selectedResume addEducationObject:[self createEducation:@"B.A. Business Administration" 
-                                                           dateEarned:@"Jun 1972" 
-                                                               inCity:@"Columbia" 
-                                                              inState:@"MO" 
-                                                        atInstitution:@"University of Missouri" 
-                                                         withSequence:1]];
-        [self.selectedResume addEducationObject:[self createEducation:@"MBA" 
-                                                           dateEarned:@"Jun 1978" 
-                                                               inCity:@"San Diego" 
-                                                              inState:@"CA" 
-                                                        atInstitution:@"San Diego State University" 
-                                                         withSequence:2]];
-        [self.selectedResume addEducationObject:[self createEducation:@"Certified Scrum Master" 
-                                                           dateEarned:@"Jan 2009" 
-                                                               inCity:@"San Francisco" 
-                                                              inState:@"CA" 
-                                                        atInstitution:@"Scrum Alliance" 
-                                                         withSequence:3]];
-        [self.selectedResume addEducationObject:[self createEducation:@"Sun Certified Java Programmer" 
-                                                           dateEarned:@"Apr 2009" 
-                                                               inCity:@"San Francisco" 
-                                                              inState:@"CA" 
-                                                        atInstitution:@"Sun" 
-                                                         withSequence:4]];
-    }
     [self sortTables];
 }
 
@@ -232,65 +185,6 @@
     // ...and hide the add buttons
     [addJobBtn setHidden:YES];
     [addEducationBtn setHidden:YES];
-}
-
-// TODO delete after database default set up
-- (Jobs *)createJob:(NSDictionary *)jobDict
-{
-    DLog();
-    Jobs *newJob = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName:@"Jobs"
-                                                         inManagedObjectContext:self.managedObjectContext];
-    newJob.created_date = [NSDate date];
-	newJob.name			= [jobDict objectForKey:@"Company"];
-	newJob.uri			= [jobDict objectForKey:@"CompanyUrl"];
-	newJob.city			= [jobDict objectForKey:@"Location"];
-	newJob.title		= [jobDict objectForKey:@"Title"];
-    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-    [dateFormatter setDateFormat:@"MMM yyyy"];
-	newJob.start_date   = [dateFormatter dateFromString:[jobDict objectForKey:@"StartDate"]];
-	newJob.end_date		= [dateFormatter dateFromString:[jobDict objectForKey:@"EndDate"]];
-	newJob.summary      = [jobDict objectForKey:@"Responsibilities"];
-    newJob.resume       = self.selectedResume;
-    NSArray* accomplishments = [jobDict objectForKey:@"Accomplishments"];
-    for (NSString* accomp in accomplishments) {
-        [newJob addAccomplishmentObject:[self createAccomplishment:accomp]];
-    }
-    
-    DLog(@"accomplishment count %d", [[newJob accomplishment] count]);
-    return newJob;
-}
-
-- (Accomplishments *)createAccomplishment:(NSString *)accomp
-{
-    Accomplishments* newAccomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName:@"Accomplishments"
-                                                                                  inManagedObjectContext:self.managedObjectContext];
-    newAccomp.created_date  = [NSDate date];
-    newAccomp.summary       = accomp;
-    
-    return newAccomp;
-}
-
-- (Education *)createEducation:(NSString *)eduName 
-                    dateEarned:(NSString *)dateEarned 
-                        inCity:(NSString *)inCity 
-                       inState:(NSString *)inState 
-                 atInstitution:(NSString *)atInstitution 
-                  withSequence:(int)withSequence
-{
-    DLog();
-    Education *newEdu = (Education *)[NSEntityDescription insertNewObjectForEntityForName:@"Education"
-                                                                   inManagedObjectContext:self.managedObjectContext];
-    newEdu.created_date             = [NSDate date];
-    newEdu.name                     = eduName;
-    NSDateFormatter *dateFormatter  = [[[NSDateFormatter alloc] init] autorelease];
-    [dateFormatter setDateFormat:@"MMM yyyy"];
-    newEdu.earned_date              = [dateFormatter dateFromString:dateEarned];
-    newEdu.city                     = inCity;
-    newEdu.state                    = inState;
-    newEdu.title                    = atInstitution;
-    newEdu.resume                   = self.selectedResume;
-
-    return newEdu;
 }
 
 #pragma mark - UI handlers

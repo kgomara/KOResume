@@ -16,10 +16,12 @@
     UIBarButtonItem* editBtn;
     UIBarButtonItem* saveBtn;
     UIBarButtonItem* cancelBtn;
+
+    UIView*         _activeFld;
 }
 
 - (void)configureDefaultNavBar;
-- (void)scrollToViewTextField:(UITextField *)textField;
+- (void)scrollToViewTextField:(UIView *)textField;
 - (void)resetView;
 
 @end
@@ -42,6 +44,16 @@
     
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
+    
+    _activeFld = nil;
+    
+    // Register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self     
+                                             selector:@selector(keyboardWillBeHidden:)     
+                                                 name:UIKeyboardWillHideNotification object:nil];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
@@ -70,6 +82,10 @@
 
 - (void)dealloc 
 {
+    // Remove the keyboard observer
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Apple recommends calling release on the ivar...
     [_accomplishmentName release];
     [_accomplishmentSummary release];
     [_scrollView release];
@@ -189,11 +205,55 @@
     [self resetView];
 }
 
+#pragma mark - Keyboard handlers
+
+- (void)keyboardWillShow:(NSNotification*)aNotification
+{
+    // Get the size of the keyboard
+    NSDictionary* info = [aNotification userInfo];    
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible    
+    CGRect aRect = self.view.frame;
+    CGRect viewRect = _activeFld.frame;
+    viewRect.origin.y += viewRect.size.height / 2;
+    aRect.size.height -= kbSize.height;
+    
+    // calculate the contentOffset for the scroller
+    // ...to get the middle of the active field into the middle of the available view area
+    CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
+    [self.scrollView setContentOffset:scrollPoint animated:YES];        
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{    
+    
+}
+
+#pragma mark - UITextView delegate methods
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    _activeFld = textView;
+    [self scrollToViewTextField:textView];
+    
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    _activeFld = nil;
+    
+    DLog();;
+}
+
 #pragma mark -
 #pragma mark UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    _activeFld = textField;
+    
     return YES;
 }
 
@@ -204,6 +264,7 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
 {
+    _activeFld = nil;
 	// Validate fields - nothing to do in this version
 	
 	return YES;
@@ -224,7 +285,7 @@
 	return NO;
 }
 
-- (void)scrollToViewTextField:(UITextField *)textField 
+- (void)scrollToViewTextField:(UIView *)textField 
 {
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 

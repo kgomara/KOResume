@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "Accomplishments.h"
 
-@interface AccomplishmentViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
+@interface AccomplishmentViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate,
+                                                            UIScrollViewDelegate>
 {
     Accomplishments*                    _selectedAccomplishment;
     NSManagedObjectContext*             __managedObjectContext;

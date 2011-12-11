@@ -9,7 +9,6 @@
 #import "KOResumeAppDelegate.h"
 #import "RootViewController.h"
 
-
 @implementation KOResumeAppDelegate
 
 @synthesize window                      = _window;
@@ -186,27 +185,27 @@
         return __persistentStoreCoordinator;
     }
     
-//    // Load default database pre-populated with Author's resume on first run of App
-//    NSString* docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-//    NSString* storePath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
-//    /*
-//     * Set up the Persistent Store
-//     *  Copy in the default database if one does not exist
-//     */
-//    NSFileManager* fileManager = [NSFileManager defaultManager];
-//    if (![fileManager fileExistsAtPath:storePath]) {
-//        // database does not exist, copy in default
-//        NSString* defaultStorePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
-//                                                                     ofType:@"sqlite"];
-//        DLog(@"defaultStorePath %@", defaultStorePath);
-//        if (defaultStorePath) {
-//            [fileManager copyItemAtPath:defaultStorePath
-//                                 toPath:storePath
-//                                  error:NULL];
-//        } else {
-//            ALog(@"Could not load default database");
-//        }
-//    }
+    // Load default database pre-populated with Author's resume on first run of App
+    NSString* docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* storePath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
+    /*
+     * Set up the Persistent Store
+     *  Copy in the default database if one does not exist
+     */
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:storePath]) {
+        // database does not exist, copy in default
+        NSString* defaultStorePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
+                                                                     ofType:@"sqlite"];
+        DLog(@"defaultStorePath %@", defaultStorePath);
+        if (defaultStorePath) {
+            [fileManager copyItemAtPath:defaultStorePath
+                                 toPath:storePath
+                                  error:NULL];
+        } else {
+            ALog(@"Could not load default database");
+        }
+    }
     
     NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
     DLog(@"Core Data store path = \"%@\"", [storeURL path]); 

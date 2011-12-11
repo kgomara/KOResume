@@ -21,10 +21,11 @@
     
 @private
     NSMutableArray*     _jobAccomplishmentsArray;
-    NSString*           _accomplishmentSummary;
+    NSString*           _accomplishmentName;
 
     UIBarButtonItem* backBtn;
     UIBarButtonItem* doneBtn;
+    UIBarButtonItem* clearBtn;
     UIBarButtonItem* editBtn;
     UIBarButtonItem* saveBtn;
     UIBarButtonItem* cancelBtn;
@@ -36,7 +37,7 @@
 }
 
 @property (nonatomic, strong) NSMutableArray*   jobAccomplishmentsArray;
-@property (nonatomic, strong) NSString*         accomplishmentSummary;
+@property (nonatomic, strong) NSString*         accomplishmentName;
 
 - (void)sortTables;
 - (void)configureDefaultNavBar;
@@ -70,7 +71,7 @@
 @synthesize datePicker                  = _datePicker;
 
 @synthesize jobAccomplishmentsArray     = _jobAccomplishmentsArray;
-@synthesize accomplishmentSummary       = _accomplishmentSummary;
+@synthesize accomplishmentName          = _accomplishmentName;
 
 
 #pragma mark Application lifecycle methods
@@ -120,7 +121,7 @@
                             forState:UIControlStateNormal];
     [addAccompBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
     [addAccompBtn addTarget:self 
-                     action:@selector(getAccomplishmentSummary) 
+                     action:@selector(getAccomplishmentName) 
            forControlEvents:UIControlEventTouchUpInside];
 
     backBtn     = self.navigationItem.leftBarButtonItem;    
@@ -136,15 +137,12 @@
     doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                 target:self
                                                                 action:@selector(doneAction)];
+    clearBtn    = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo
+                                                                target:self
+                                                                action:@selector(clearAction)];
     
     [self configureDefaultNavBar];
 
-//    // Loop through the accomplishment adding accomplishment items to the view
-//    NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
-//                                                                    ascending:YES] autorelease];
-//    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-//    self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
-	
     [self sortTables];
 }
 
@@ -386,6 +384,19 @@
     self.navigationItem.leftBarButtonItem  = cancelBtn;
 }
 
+- (void)clearAction
+{
+    DLog();
+
+    if (activeDateFld == k_startDateTextFld) {
+        self.selectedJob.start_date = NULL;
+        self.jobStartDate.text = @"";
+    } else {
+        self.selectedJob.end_date = NULL;
+        self.jobEndDate.text = @"";
+    }
+}
+
 - (IBAction)companyTapped:(id)sender 
 {
 	if (self.selectedJob.uri == NULL || [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound) {
@@ -539,7 +550,7 @@
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
     // ...and clear the cancel button
-    self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.leftBarButtonItem = clearBtn;
 }
 
 - (void)scrollToViewTextField:(UITextField *)textField 
@@ -556,7 +567,8 @@
     DLog();
     Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName:@"Accomplishments"
                                                                                inManagedObjectContext:self.managedObjectContext];
-    accomp.summary      = self.accomplishmentSummary;
+    accomp.name         = self.accomplishmentName;
+    accomp.summary      = self.accomplishmentName;
     accomp.created_date = [NSDate date];
     accomp.job          = self.selectedJob;
     
@@ -580,7 +592,7 @@
                                 animated:YES];
 }
 
-- (void)getAccomplishmentSummary 
+- (void)getAccomplishmentName 
 {
     UIAlertView* accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment") 
                                                                   message:nil
@@ -596,7 +608,7 @@
 {
     if (buttonIndex == 1) {
         // OK
-        self.accomplishmentSummary = [[alertView textFieldAtIndex:0] text];
+        self.accomplishmentName = [[alertView textFieldAtIndex:0] text];
         [self addAccomplishment];
     } else {
         // cancel

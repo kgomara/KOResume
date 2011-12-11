@@ -9,7 +9,6 @@
 #import "CoverLtrViewController.h"
 #import	"KOExtensions.h"
 #import <CoreData/CoreData.h>
-#import "EditCoverLtrViewController.h"
 
 @interface CoverLtrViewController()
 {
@@ -42,21 +41,6 @@
     [super viewDidLoad];
 	
 	// get the cover letter into the view
-    // TODO clean up database initialization
-    if ([self.selectedPackage.cover_ltr length] == 0) {
-        NSBundle* bundle		= [NSBundle mainBundle];
-        NSString* coverLtrPath	= [bundle pathForResource:@"CoverLtrStandard" ofType:@"txt"];
-        NSError*  error         = nil;
-        NSString* coverLtr		= [[NSString alloc] initWithContentsOfFile:coverLtrPath 
-                                                              encoding:NSUTF8StringEncoding
-                                                                 error:&error];
-        if (error) {
-            ELog(error, @"Failed to read CoverLtrStandard.txt");
-        }
-        self.selectedPackage.cover_ltr = coverLtr;
-        [coverLtr release];
-    }
-    
 	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
     
 	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
