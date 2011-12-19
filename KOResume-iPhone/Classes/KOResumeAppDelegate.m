@@ -38,8 +38,17 @@
     // Add the navigation controller's view to the window and display.
     [self.window addSubview:self.navigationController.view];
     [self.window makeKeyAndVisible];
-    DLog(@"RootViewController = %@", self.navigationController);
 
+    // Check for availability of iCloud (user may not have it configured)
+    // ...we only have one container, passing nil returns the first (and only) one
+    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
+    if (ubiq) {
+        DLog(@"iCloud access at %@", ubiq);
+        // TODO Load document... 
+    } else {
+        DLog(@"No iCloud access");
+    }
+    
     return YES;
 }
 
@@ -51,6 +60,8 @@
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
     DLog();
+    
+    [self saveContext];
 }
 
 
@@ -61,6 +72,8 @@
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
     DLog();
+    
+    [self saveContext];
 }
 
 
@@ -70,6 +83,8 @@
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
     DLog();
+    
+    [self saveContext];
 }
 
 
@@ -89,6 +104,7 @@
      See also applicationDidEnterBackground:.
      */
     DLog();
+    
     // Save changes to application's managed object context before application terminates
     [self saveContext];
 }
@@ -153,8 +169,17 @@
     
     NSPersistentStoreCoordinator* coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        __managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [__managedObjectContext setPersistentStoreCoordinator:coordinator];
+        NSManagedObjectContext* moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        
+        [moc performBlockAndWait:^{
+            [moc setPersistentStoreCoordinator: coordinator];
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(mergeChangesFrom_iCloud:) 
+                                                         name:NSPersistentStoreDidImportUbiquitousContentChangesNotification 
+                                                       object:coordinator];
+        }];
+        __managedObjectContext = moc;
+
         // Instantiate an UndoManager
         NSUndoManager *undoManager = [[NSUndoManager alloc] init];
         [__managedObjectContext setUndoManager:undoManager];
@@ -185,22 +210,18 @@
         return __persistentStoreCoordinator;
     }
     
-    // Load default database pre-populated with Author's resume on first run of App
+    // Set up the path to the location of the database
     NSString* docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString* storePath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
-    /*
-     * Set up the Persistent Store
-     *  Copy in the default database if one does not exist
-     */
+    NSString* dbPath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
     NSFileManager* fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:storePath]) {
+    if (![fileManager fileExistsAtPath:dbPath]) {
         // database does not exist, copy in default
-        NSString* defaultStorePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
-                                                                     ofType:@"sqlite"];
-        DLog(@"defaultStorePath %@", defaultStorePath);
-        if (defaultStorePath) {
-            [fileManager copyItemAtPath:defaultStorePath
-                                 toPath:storePath
+        NSString* defaultDatabasePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
+                                                                        ofType:@"sqlite"];
+        DLog(@"defaultDatabasePath %@", defaultDatabasePath);
+        if (defaultDatabasePath) {
+            [fileManager copyItemAtPath:defaultDatabasePath
+                                 toPath:dbPath
                                   error:NULL];
         } else {
             ALog(@"Could not load default database");
@@ -210,18 +231,81 @@
     NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
     DLog(@"Core Data store path = \"%@\"", [storeURL path]); 
     
-    NSError* error = nil;
-    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
-    if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType 
-                                                    configuration:nil 
-                                                              URL:storeURL 
-                                                          options:nil 
-                                                            error:&error]) {
-        ELog(error, @"Failed to add Persistent Store");
-        abort();
-    }
+    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+
+    NSPersistentStoreCoordinator* psc = __persistentStoreCoordinator;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        // Migrate datamodel
+        NSDictionary *options = nil;
+        
+        NSURL *cloudURL = [fileManager URLForUbiquityContainerIdentifier:@"CVC369LW49.com.kevingomara.koresume"];
+        NSString* coreDataCloudContent = [[cloudURL path] stringByAppendingPathComponent:@"data"];
+        if ([coreDataCloudContent length] != 0) {
+            // iCloud is available
+            cloudURL = [NSURL fileURLWithPath:coreDataCloudContent];
+            
+            options = [NSDictionary dictionaryWithObjectsAndKeys:
+                       [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                       [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
+                       @"KOResume.store",             NSPersistentStoreUbiquitousContentNameKey,
+                       cloudURL,                      NSPersistentStoreUbiquitousContentURLKey,
+                       nil];
+        } else {
+            // iCloud is not available
+            options = [NSDictionary dictionaryWithObjectsAndKeys:
+                       [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                       [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
+                       nil];
+        }
+        
+        NSError *error = nil;
+        [psc lock];
+        if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
+            ELog(error, @"Could not add PersistentStore");
+            abort();
+        }
+        [psc unlock];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            DLog(@"asynchronously added persistent store!");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RefetchAllDatabaseData" 
+                                                                object:self 
+                                                              userInfo:nil];
+        });
+        
+    });
     
     return __persistentStoreCoordinator;
+}
+
+- (void)mergeiCloudChanges:(NSNotification*)note 
+                forContext:(NSManagedObjectContext*)moc 
+{
+    [moc mergeChangesFromContextDidSaveNotification:note]; 
+    
+    NSNotification* refreshNotification = [NSNotification notificationWithName:@"RefreshAllViews" 
+                                                                        object:self  
+                                                                      userInfo:[note userInfo]];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
+}
+
+// NSNotifications are posted synchronously on the caller's thread
+// make sure to vector this back to the thread we want, in this case
+// the main thread for our views & controller
+- (void)mergeChangesFrom_iCloud:(NSNotification *)notification 
+{
+    NSManagedObjectContext* moc = [self managedObjectContext];
+    
+    // this only works if you used NSMainQueueConcurrencyType
+    // otherwise use a dispatch_async back to the main thread yourself
+    [moc performBlock:^{
+        [self mergeiCloudChanges:notification 
+                      forContext:moc];
+    }];
 }
 
 #pragma mark - Application's Documents directory

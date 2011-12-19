@@ -20,9 +20,9 @@
 {
     @private
     NSString*                   _packageName;    
-    NSMutableArray*             _packagesArray;
     
-    NSFetchedResultsController* __fetchedResultsController;
+    NSFetchedResultsController* fetchedResultsController__;
+    NSManagedObjectContext*     managedObjectContext__;
 }
 
 - (void)getPackageName;
@@ -32,9 +32,8 @@
 - (void)configureDefaultNavBar;
 - (void)loadPackages;
 
-@property (nonatomic, retain) NSString*                     packageName;
-@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
-@property (nonatomic, retain) NSMutableArray*               packagesArray;
+@property (nonatomic, strong) NSString*                     packageName;
+@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
 
 @end
 
@@ -42,7 +41,6 @@
 
 @synthesize tblView                     = _tblView;
 
-@synthesize packagesArray               = _packagesArray;  
 @synthesize packageName                 = _packageName;
 
 @synthesize managedObjectContext        = __managedObjectContext;
@@ -70,20 +68,26 @@
     [self configureDefaultNavBar];
     // ...and load the Packages
     [self loadPackages];
+    
+    // observe the app delegate telling us when it's finished asynchronously setting up the persistent store
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:@"RefetchAllDatabaseData" 
+                                               object:[[UIApplication sharedApplication] delegate]];
 }
 
 - (void)viewDidUnload 
 {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
 	self.tblView        = nil;    
-    self.packagesArray  = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)dealloc 
 {
     // Apple recommends calling release on the ivar...
 	[_tblView release];
-    [_packagesArray release];
     
     [__managedObjectContext release];
     [__fetchedResultsController release];
@@ -98,6 +102,11 @@
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
     ALog();
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.fetchedResultsController.delegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -140,14 +149,11 @@
     NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
                                                                    error:&error] mutableCopy] autorelease];
     if (mutableFetchResults == nil) {
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching the story %@", @"A fatal error occured fetching the story %@"), [error code]];
+        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching Packages %@", @"A fatal error occured fetching Packages %@"), [error code]];
         [KOExtensions showErrorWithMessage:msg];
         ELog(error, @"Failed to fetch Packages");
         abort();
     }
-    
-    // Update packagesArray and clean up
-    self.packagesArray = mutableFetchResults;
 }
 
 - (void)configureDefaultNavBar
@@ -193,16 +199,7 @@
 - (void)saveAction
 {
     DLog();
-    // The sorted package array is in the order (including deletes) the user wants
-    // ...loop through the array by index resetting the packages' sequence_number attribute
-    for (int i = 0; i < [self.packagesArray count]; i++) {
-        if ([[self.packagesArray objectAtIndex:i] isDeleted]) {
-            // skip it
-        } else {
-            [(Packages *)[self.packagesArray objectAtIndex:i] setSequence_numberValue:i];
-        }
-    }
-    
+
     // Save the changes
     [[self.managedObjectContext undoManager] endUndoGrouping];
     NSError* error = nil;
@@ -264,19 +261,8 @@
         ELog(error, @"Failed to save");
         abort();
     }
-    
-    [self.packagesArray insertObject:package 
-                             atIndex:0];
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
-                                                inSection:0];
-    
-    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                        withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:0] 
-                        atScrollPosition:UITableViewScrollPositionTop 
-                                animated:YES];
+
+    [self.tblView reloadData];
 }
 
 - (void)getPackageName 
@@ -308,14 +294,15 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    return 1;
+    return [[self.fetchedResultsController sections] count];
 }
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
-	return [self.packagesArray count];
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -339,7 +326,9 @@
           atIndexPath:(NSIndexPath *)indexPath
 {
     DLog();
-    cell.textLabel.text = [[self.packagesArray objectAtIndex:indexPath.row] name];
+    Packages* thePackage = (Packages *) [self.fetchedResultsController objectAtIndexPath:indexPath];
+
+    cell.textLabel.text = [thePackage name];
 	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 }
 
@@ -378,29 +367,36 @@
         // Delete the row from the data source
         [self editAction];
         // Delete the managed object at the given index path.
-        NSManagedObject *packageToDelete = [self.packagesArray objectAtIndex:indexPath.row];
+        NSManagedObject *packageToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [self.managedObjectContext deleteObject:packageToDelete];
-        [self.packagesArray removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                         withRowAnimation:UITableViewRowAnimationFade];
+
         [tableView reloadData];
     }   
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    // Get the from and to Rows of the table
-    NSUInteger fromRow  = [fromIndexPath row];
-    NSUInteger toRow    = [toIndexPath row];
+{    
+    NSMutableArray *packages = [[self.fetchedResultsController fetchedObjects] mutableCopy];
     
-    // Get the Scene at the fromRow 
-    Packages* movedPackage = [[self.packagesArray objectAtIndex:fromRow] retain];
-    // ...remove it from that "order"
-    [self.packagesArray removeObjectAtIndex:fromRow];
-    // ...and insert it where the user wants
-    [self.packagesArray insertObject:movedPackage
-                             atIndex:toRow];
-    [movedPackage release];
+    // Grab the item we're moving.
+    NSManagedObject *movedPackage = [[self fetchedResultsController] objectAtIndexPath:fromIndexPath];
+    
+    // Remove the object we're moving from the array.
+    [packages removeObject:movedPackage];
+    // Now re-insert it at the destination.
+    [packages insertObject:movedPackage
+                   atIndex:toIndexPath.row];
+    
+    // All of the objects are now in their correct order. Update each
+    // object's sequence_number field by iterating through the array.
+    int i = 0;
+    for (Packages *package in packages)
+    {
+        [package setSequence_numberValue:i++];
+    }
+    
+    [self.tblView reloadData];
+    [packages release];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -408,8 +404,8 @@
     PackagesViewController* packagesViewController = [[[PackagesViewController alloc] initWithNibName:@"PackagesViewController" 
                                                                                                bundle:nil] autorelease];
     // Pass the selected object to the new view controller.
-    packagesViewController.title                    = [[self.packagesArray objectAtIndex:indexPath.row] name];
-    packagesViewController.selectedPackage          = [self.packagesArray objectAtIndex:indexPath.row];
+    packagesViewController.title                    = [[self.fetchedResultsController objectAtIndexPath:indexPath] name];
+    packagesViewController.selectedPackage          = [self.fetchedResultsController objectAtIndexPath:indexPath];
     packagesViewController.managedObjectContext     = self.managedObjectContext;
     packagesViewController.fetchedResultsController = self.fetchedResultsController;
     [self.navigationController pushViewController:packagesViewController 
@@ -457,6 +453,21 @@
     [sortDescriptors release];
      
     return __fetchedResultsController;
+}
+
+// because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
+// we will see the NSManagedObjectContext set up before any persistent stores are registered
+// we will need to fetch again after the persistent store is loaded
+- (void)reloadFetchedResults:(NSNotification*)note {
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        [self.tblView reloadData];
+    }
 }
 
 #pragma mark - Fetched results controller delegate

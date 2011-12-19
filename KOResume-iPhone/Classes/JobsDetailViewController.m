@@ -200,6 +200,11 @@
     // Release any cached data, images, etc. that aren't in use.
     ALog();
 }
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.fetchedResultsController.delegate = self;
+    [self.tblView reloadData];
+}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -215,11 +220,6 @@
     } else {
         ALog(@"managedObjectContext is null");
     }
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.tblView reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
@@ -586,8 +586,7 @@
     
     [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                         withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:0] 
+    [self.tblView scrollToRowAtIndexPath:indexPath 
                         atScrollPosition:UITableViewScrollPositionTop 
                                 animated:YES];
 }
@@ -722,10 +721,10 @@
     DLog();
     AccomplishmentViewController* accomplishmentViewController = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController" 
                                                                                                                 bundle:nil];
-    accomplishmentViewController.selectedAccomplishment = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
-    accomplishmentViewController.managedObjectContext      = self.managedObjectContext;
-    accomplishmentViewController.fetchedResultsController  = self.fetchedResultsController;
-    accomplishmentViewController.title = accomplishmentViewController.selectedAccomplishment.name;
+    accomplishmentViewController.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
+    accomplishmentViewController.managedObjectContext       = self.managedObjectContext;
+    accomplishmentViewController.fetchedResultsController   = self.fetchedResultsController;
+    accomplishmentViewController.title                      = accomplishmentViewController.selectedAccomplishment.name;
     
     // Pass the selected object to the new view controller.
     [self.navigationController pushViewController:accomplishmentViewController 
@@ -751,21 +750,26 @@
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] 
+                    atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             // Reloading the section inserts a new row and ensures that titles are updated appropriately.
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] 
+                     withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
@@ -776,11 +780,13 @@
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }

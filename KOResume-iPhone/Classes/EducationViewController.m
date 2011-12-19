@@ -262,6 +262,9 @@
         // we are in the date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
+        if (!self.selectedEducation.earned_date) {
+            self.selectedEducation.earned_date = [NSDate date];
+        }
         [self.datePicker setDate:self.selectedEducation.earned_date];
         [self animateDatePickerOn];
         return NO;

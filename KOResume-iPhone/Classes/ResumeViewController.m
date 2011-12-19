@@ -29,7 +29,6 @@
     NSMutableArray*     _educationArray;
     NSString*           _jobName;
     
-    // These ivars are singletons and do not have properties
     UIBarButtonItem*    editBtn;
     UIBarButtonItem*    cancelBtn;
     UIBarButtonItem*    saveBtn;
@@ -53,7 +52,6 @@
 @implementation ResumeViewController
 
 @synthesize tblView                         = _tblView;
-@synthesize mgmtJobsDict                    = _mgmtJobsDict;
 @synthesize selectedResume                  = _selectedResume;
 
 @synthesize managedObjectContext            = __managedObjectContext;
@@ -111,7 +109,6 @@
     [super viewDidUnload];
     
 	self.tblView        = nil;
-    self.mgmtJobsDict   = nil;
     self.jobArray       = nil;
     self.educationArray = nil;
 }
@@ -120,7 +117,6 @@
 - (void)dealloc 
 {
 	[_tblView release];
-	[_mgmtJobsDict release];
     [_selectedResume release];
     [__managedObjectContext release];
     [__fetchedResultsController release];
@@ -139,6 +135,12 @@
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
     ALog();
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.fetchedResultsController.delegate = self;
+    [self.tblView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -295,8 +297,7 @@
     
     [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                         withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:k_JobsSection] 
+    [self.tblView scrollToRowAtIndexPath:indexPath 
                         atScrollPosition:UITableViewScrollPositionTop 
                                 animated:YES];
 }
@@ -337,8 +338,7 @@
     
     [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                         withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 
-                                                            inSection:k_EducationSection] 
+    [self.tblView scrollToRowAtIndexPath:indexPath 
                         atScrollPosition:UITableViewScrollPositionTop 
                                 animated:YES];
 }
@@ -598,42 +598,49 @@
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath 
+{
     UITableView *tableView = self.tblView;
     
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] 
+                    atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                             withRowAnimation:UITableViewRowAnimationFade];
             // Reloading the section inserts a new row and ensures that titles are updated appropriately.
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] 
+                     withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type 
+{
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
+                        withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }

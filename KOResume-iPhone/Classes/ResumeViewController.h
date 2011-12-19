@@ -16,7 +16,6 @@
 }
 
 @property (nonatomic, strong) IBOutlet      UITableView*                tblView;
-@property (nonatomic, strong)               NSDictionary*               mgmtJobsDict;
 @property (nonatomic, strong)               Resumes*                    selectedResume;
 
 @property (nonatomic, strong)               NSManagedObjectContext*     managedObjectContext;
