@@ -3,11 +3,15 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "KOResumeAppDelegate.h"
 #import "RootViewController.h"
+
+#define DB_NAME         @"KOResume"
+#define DB_TYPE         @"sqlite"
+#define UBIQUITY_ID     @"CVC369LW49.com.kevingomara.koresume"
 
 @implementation KOResumeAppDelegate
 
@@ -22,7 +26,8 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+- (BOOL)application:(UIApplication *)application 
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
     DLog();
     NSManagedObjectContext* context = self.managedObjectContext;    
@@ -185,6 +190,9 @@
         [__managedObjectContext setUndoManager:undoManager];
         [undoManager release];
     }
+    
+//    [__managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
+
     return __managedObjectContext;
 }
 
@@ -197,7 +205,7 @@
     if (__managedObjectModel != nil) {
         return __managedObjectModel;
     }
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"KOResume"
+    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:DB_NAME
                                               withExtension:@"momd"];
     __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
@@ -212,12 +220,13 @@
     
     // Set up the path to the location of the database
     NSString* docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString* dbPath = [docDir stringByAppendingPathComponent:@"KOResume.sqlite"];
+    NSString* dbFileName = [NSString stringWithFormat:@"%@.%@", DB_NAME, DB_TYPE];
+    NSString* dbPath = [docDir stringByAppendingPathComponent:dbFileName];
     NSFileManager* fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:dbPath]) {
         // database does not exist, copy in default
-        NSString* defaultDatabasePath = [[NSBundle mainBundle] pathForResource:@"KOResume"
-                                                                        ofType:@"sqlite"];
+        NSString* defaultDatabasePath = [[NSBundle mainBundle] pathForResource:DB_NAME
+                                                                        ofType:DB_TYPE];
         DLog(@"defaultDatabasePath %@", defaultDatabasePath);
         if (defaultDatabasePath) {
             [fileManager copyItemAtPath:defaultDatabasePath
@@ -228,7 +237,7 @@
         }
     }
     
-    NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KOResume.sqlite"];
+    NSURL* storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:dbFileName];
     DLog(@"Core Data store path = \"%@\"", [storeURL path]); 
     
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
@@ -236,21 +245,20 @@
     NSPersistentStoreCoordinator* psc = __persistentStoreCoordinator;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
         // Migrate datamodel
         NSDictionary *options = nil;
         
-        NSURL *cloudURL = [fileManager URLForUbiquityContainerIdentifier:@"CVC369LW49.com.kevingomara.koresume"];
+        NSURL *cloudURL = [fileManager URLForUbiquityContainerIdentifier:UBIQUITY_ID];
         NSString* coreDataCloudContent = [[cloudURL path] stringByAppendingPathComponent:@"data"];
         if ([coreDataCloudContent length] != 0) {
             // iCloud is available
             cloudURL = [NSURL fileURLWithPath:coreDataCloudContent];
             
+            NSString* storeName = [NSString stringWithFormat:@"%@.%@", DB_NAME, @"store"];
             options = [NSDictionary dictionaryWithObjectsAndKeys:
                        [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
                        [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
-                       @"KOResume.store",             NSPersistentStoreUbiquitousContentNameKey,
+                       storeName,                     NSPersistentStoreUbiquitousContentNameKey,
                        cloudURL,                      NSPersistentStoreUbiquitousContentURLKey,
                        nil];
         } else {
@@ -263,9 +271,16 @@
         
         NSError *error = nil;
         [psc lock];
-        if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
+        if (![psc addPersistentStoreWithType:NSSQLiteStoreType 
+                               configuration:nil 
+                                         URL:storeURL 
+                                     options:options 
+                                       error:&error]) {
             ELog(error, @"Could not add PersistentStore");
-            abort();
+            // TODO - PFUbiguity sometimes returns "error" if it cannot find log data on the device
+            //        commenting out the abort seems to work - but it does not feel right.
+            //        Research is needed to see if the error return could be parsed and handled better.
+//            abort();
         }
         [psc unlock];
         

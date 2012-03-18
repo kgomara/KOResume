@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by OMARA KEVIN on 12/4/11.
-//  Copyright (c) 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

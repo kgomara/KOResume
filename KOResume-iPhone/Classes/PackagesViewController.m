@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 6/5/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "PackagesViewController.h"
@@ -31,19 +31,43 @@
 	
 	self.navigationItem.title = self.selectedPackage.name;
 	self.view.backgroundColor = [UIColor clearColor];
+
+    // Set an observer for iCloud changes
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[self.managedObjectContext persistentStoreCoordinator]];
+}
+
+- (void)viewDidUnload 
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+	self.tblView = nil;
+}
+
+
+- (void)dealloc 
+{
+    // Apple recommends calling release on the ivar...
+	[_tblView release];
+    [_selectedPackage release];
+    
+    [__managedObjectContext release];
+    [__fetchedResultsController release];
+    
+    [super dealloc];
 }
 
 #pragma mark -
 #pragma mark Table view data source
 
-// Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     return 1;
 }
 
 
-// Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {	
 	return 2;
@@ -95,7 +119,8 @@
 #pragma mark -
 #pragma mark Table view delegates
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
+-  (UIView *)tableView:(UITableView *)tableView 
+viewForHeaderInSection:(NSInteger)section 
 {	
 	UILabel* sectionLabel = [[[UILabel alloc] init] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
@@ -107,12 +132,14 @@
 	return sectionLabel;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
+- (CGFloat)tableView:(UITableView *)tableView 
+heightForHeaderInSection:(NSInteger)section 
 {	
 	return 44;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {    
     switch (indexPath.row) {				// There is only 1 section, so ignore it.
 		case kSummaryTableCell: {
@@ -148,6 +175,19 @@
 							 animated:YES];
 }
 
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        [self.tblView reloadData];
+    }
+}
 
 #pragma mark -
 #pragma mark Memory management
@@ -159,26 +199,6 @@
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
     ALog();
-}
-
-- (void)viewDidUnload 
-{
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-	self.tblView = nil;
-}
-
-
-- (void)dealloc 
-{
-    // Apple recommends calling release on the ivar...
-	[_tblView release];
-    [_selectedPackage release];
-    
-    [__managedObjectContext release];
-    [__fetchedResultsController release];
-    
-    [super dealloc];
 }
 
 @end

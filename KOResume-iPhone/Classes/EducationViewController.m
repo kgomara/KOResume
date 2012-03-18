@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "EducationViewController.h"
@@ -22,6 +22,7 @@
     NSDateFormatter* dateFormatter;
 }
 
+- (void)loadData;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
@@ -53,14 +54,7 @@
     [self.datePicker setHidden:YES];
     [self.datePicker setDatePickerMode:UIDatePickerModeDate];
     
-    self.nameFld.text               = self.selectedEducation.name;
-    dateFormatter                   = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
-	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
-    self.cityFld.text               = self.selectedEducation.city;
-    self.stateFld.text              = self.selectedEducation.state;
-    self.titleFld.text              = self.selectedEducation.title;
+    [self loadData];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
@@ -78,10 +72,18 @@
                                                                 action:@selector(doneAction)];
 
     [self configureDefaultNavBar];
+
+    // Register for iCloud notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super viewDidUnload];
     
     self.nameFld        = nil;
@@ -138,6 +140,18 @@
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)loadData
+{
+    self.nameFld.text               = self.selectedEducation.name;
+    dateFormatter                   = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
+	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
+    self.cityFld.text               = self.selectedEducation.city;
+    self.stateFld.text              = self.selectedEducation.state;
+    self.titleFld.text              = self.selectedEducation.title;
 }
 
 - (void)configureDefaultNavBar
@@ -220,6 +234,7 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
+    [self loadData];
     [self configureDefaultNavBar];
     [self resetView];
 }
@@ -342,6 +357,23 @@
     DLog();
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
+}
+
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        // The notification is on an async thread, so block while the UI updates
+        [self.managedObjectContext performBlock:^{
+            [self loadData];
+        }];
+    }
 }
 
 @end

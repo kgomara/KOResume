@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "JobsDetailViewController.h"
@@ -39,6 +39,7 @@
 @property (nonatomic, strong) NSMutableArray*   jobAccomplishmentsArray;
 @property (nonatomic, strong) NSString*         accomplishmentName;
 
+- (void)loadData;
 - (void)sortTables;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
@@ -87,20 +88,9 @@
     
     activeDateFld                   = 0;
     [self.datePicker setDatePickerMode:UIDatePickerModeDate];
+    
+    [self loadData];
 
-	// Get the data and stuff it into the fields
-    self.jobCompany.text                = self.selectedJob.name;
-	self.jobCompanyUrl.text             = self.selectedJob.uri;
-	self.jobCity.text                   = self.selectedJob.city;
-    self.jobState.text                  = self.selectedJob.state;
-	self.jobTitle.text                  = self.selectedJob.title;
-    dateFormatter                       = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
-	self.jobStartDate.text              = [dateFormatter stringFromDate:self.selectedJob.start_date];
-    self.jobEndDate.text                = [dateFormatter stringFromDate:self.selectedJob.end_date];
-	self.jobResponsibilities.text       = self.selectedJob.summary;
-	
     _activeFld = nil;
 
     // Register for keyboard notifications
@@ -112,10 +102,6 @@
                                                  name:UIKeyboardWillHideNotification object:nil];
     
     // Set up button items
-	[self.jobCompanyUrlBtn setTitle:self.selectedJob.name 
-						   forState:UIControlStateNormal];
-    [self.jobCompanyUrlBtn setBackgroundImage:[UIImage imageNamed:@"companyBtn.png"]
-                                     forState:UIControlStateNormal];
     addAccompBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [addAccompBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
                             forState:UIControlStateNormal];
@@ -142,12 +128,40 @@
                                                                 action:@selector(clearAction)];
     
     [self configureDefaultNavBar];
+    
+    // Set an observer for iCloud changes
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[self.managedObjectContext persistentStoreCoordinator]];
+}
 
+- (void)loadData
+{
+    // Get the data and stuff it into the fields
+    self.jobCompany.text                = self.selectedJob.name;
+	self.jobCompanyUrl.text             = self.selectedJob.uri;
+	self.jobCity.text                   = self.selectedJob.city;
+    self.jobState.text                  = self.selectedJob.state;
+	self.jobTitle.text                  = self.selectedJob.title;
+    dateFormatter                       = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
+	self.jobStartDate.text              = [dateFormatter stringFromDate:self.selectedJob.start_date];
+    self.jobEndDate.text                = [dateFormatter stringFromDate:self.selectedJob.end_date];
+	self.jobResponsibilities.text       = self.selectedJob.summary;
+	
+	[self.jobCompanyUrlBtn setTitle:self.selectedJob.name 
+						   forState:UIControlStateNormal];
+    [self.jobCompanyUrlBtn setBackgroundImage:[UIImage imageNamed:@"companyBtn.png"]
+                                     forState:UIControlStateNormal];
+    
     [self sortTables];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super viewDidUnload];
 
 	self.jobView					= nil;
@@ -200,6 +214,7 @@
     // Release any cached data, images, etc. that aren't in use.
     ALog();
 }
+
 - (void)viewWillAppear:(BOOL)animated
 {
     self.fetchedResultsController.delegate = self;
@@ -356,6 +371,7 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
+    [self loadData];
     [self configureDefaultNavBar];
     [self resetView];
     [self sortTables];
@@ -617,20 +633,19 @@
 
 #pragma mark - Table view data source
 
-// Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     return 1;
 }
 
-
-// Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
+- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section 
 {	
     return [self.jobAccomplishmentsArray count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView 
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
     static NSString* CellIdentifier = @"Cell";
     
@@ -662,7 +677,8 @@
 
 #pragma mark - Table view delegates
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
+-  (UIView *)tableView:(UITableView *)tableView 
+viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
 	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, k_addBtnHeight)] autorelease];
@@ -679,12 +695,15 @@
     return sectionView;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
+- (CGFloat)tableView:(UITableView *)tableView 
+heightForHeaderInSection:(NSInteger)section 
 {	
 	return 44;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+-  (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the managed object at the given index path.
@@ -699,7 +718,9 @@
     }   
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+-  (void)tableView:(UITableView *)tableView 
+moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
+       toIndexPath:(NSIndexPath *)toIndexPath
 {
     // Get the from and to Rows of the table
     NSUInteger fromRow  = [fromIndexPath row];
@@ -716,7 +737,8 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
     AccomplishmentViewController* accomplishmentViewController = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController" 
@@ -737,13 +759,19 @@
 
 #pragma mark - Fetched Results Controller delegate methods
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
+{
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tblView beginUpdates];
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+- (void)controller:(NSFetchedResultsController *)controller 
+   didChangeObject:(id)anObject 
+       atIndexPath:(NSIndexPath *)indexPath 
+     forChangeType:(NSFetchedResultsChangeType)type 
+      newIndexPath:(NSIndexPath *)newIndexPath 
+{
     
     UITableView *tableView = self.tblView;
     
@@ -775,7 +803,11 @@
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+- (void)controller:(NSFetchedResultsController *)controller 
+  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo 
+           atIndex:(NSUInteger)sectionIndex 
+     forChangeType:(NSFetchedResultsChangeType)type 
+{
     
     switch(type) {
             
@@ -792,12 +824,31 @@
 }
 
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
+{
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
 }
 
-#pragma mark UIScrollView delegate methods
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        // The notification is on an async thread, so block while the UI updates
+        [self.managedObjectContext performBlock:^{
+            [self loadData];
+        }];
+        [self.tblView reloadData];
+    }
+}
+
+#pragma mark - UIScrollView delegate methods
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView 
 {

@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "ResumeViewController.h"
@@ -102,10 +102,18 @@
     self.fetchedResultsController.delegate = self;
 	
     [self sortTables];
+    
+    // Set an observer for iCloud changes
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[self.managedObjectContext persistentStoreCoordinator]];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super viewDidUnload];
     
 	self.tblView        = nil;
@@ -592,13 +600,18 @@
 
 #pragma mark - Fetched Results Controller delegate methods
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
+{
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tblView beginUpdates];
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath 
+- (void)controller:(NSFetchedResultsController *)controller 
+   didChangeObject:(id)anObject 
+       atIndexPath:(NSIndexPath *)indexPath 
+     forChangeType:(NSFetchedResultsChangeType)type 
+      newIndexPath:(NSIndexPath *)newIndexPath 
 {
     UITableView *tableView = self.tblView;
     
@@ -629,7 +642,10 @@
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type 
+- (void)controller:(NSFetchedResultsController *)controller 
+  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo 
+           atIndex:(NSUInteger)sectionIndex 
+     forChangeType:(NSFetchedResultsChangeType)type 
 {
     switch(type) {
             
@@ -645,9 +661,25 @@
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
+{
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
+}
+
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();    
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        [self sortTables];
+        [self.tblView reloadData];
+    }
 }
 
 @end

@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by OMARA KEVIN on 12/4/11.
-//  Copyright (c) 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "AccomplishmentViewController.h"
@@ -20,6 +20,7 @@
     UIView*         _activeFld;
 }
 
+- (void)loadData;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UIView *)textField;
 - (void)resetView;
@@ -42,10 +43,9 @@
 {
     [super viewDidLoad];
     
-    self.accomplishmentName.text    = self.selectedAccomplishment.name;
-    self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
-    
     _activeFld = nil;
+    
+    [self loadData];
     
     // Register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -68,10 +68,18 @@
                                                                 action:@selector(cancelAction)];
     
     [self configureDefaultNavBar];
+
+    // Register for iCloud notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super viewDidUnload];
     
     self.accomplishmentName     = nil;
@@ -126,6 +134,12 @@
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)loadData
+{
+    self.accomplishmentName.text    = self.selectedAccomplishment.name;
+    self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
 }
 
 - (void)configureDefaultNavBar
@@ -201,6 +215,7 @@
     // ...and reset the UI defaults
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
+    [self loadData];
     [self configureDefaultNavBar];
     [self resetView];
 }
@@ -297,6 +312,23 @@
     DLog();
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
+}
+
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        // The notification is on an async thread, so block while the UI updates
+        [self.managedObjectContext performBlock:^{
+            [self loadData];
+        }];
+    }
 }
 
 @end

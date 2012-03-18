@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011 KevinGOMara. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara. All rights reserved.
 //
 
 #import "SummaryViewController.h"
@@ -27,6 +27,7 @@
 
 @property (nonatomic, strong)	NSString*   phoneNumber;
 
+- (void)loadData;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
@@ -57,17 +58,9 @@
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
-
-    self.nameFld.text        = self.selectedResume.name;
-    self.street1Fld.text     = self.selectedResume.street1;
-    self.cityFld.text        = self.selectedResume.city;
-    self.stateFld.text       = self.selectedResume.state;
-    self.zipFld.text         = self.selectedResume.postal_code;
-    self.homePhoneFld.text   = self.selectedResume.home_phone;
-    self.mobilePhoneFld.text = self.selectedResume.mobile_phone;
-    self.emailFld.text       = self.selectedResume.email;
-    self.summaryFld.text     = self.selectedResume.summary;
     
+    [self loadData];
+
     _activeFld = nil;
     
 	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
@@ -94,10 +87,17 @@
                                                                 action:@selector(cancelAction)];
     
     [self configureDefaultNavBar];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super viewDidUnload];
 
     self.scrollView             = nil;
@@ -114,7 +114,8 @@
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -166,6 +167,19 @@
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)loadData
+{
+    self.nameFld.text        = self.selectedResume.name;
+    self.street1Fld.text     = self.selectedResume.street1;
+    self.cityFld.text        = self.selectedResume.city;
+    self.stateFld.text       = self.selectedResume.state;
+    self.zipFld.text         = self.selectedResume.postal_code;
+    self.homePhoneFld.text   = self.selectedResume.home_phone;
+    self.mobilePhoneFld.text = self.selectedResume.mobile_phone;
+    self.emailFld.text       = self.selectedResume.email;
+    self.summaryFld.text     = self.selectedResume.summary;
 }
 
 - (void)configureDefaultNavBar
@@ -260,6 +274,7 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
+    [self loadData];
     [self configureDefaultNavBar];
     [self resetView];
 }
@@ -282,7 +297,8 @@
     [alert show];
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex 
+- (void)alertView:(UIAlertView *)alertView 
+didDismissWithButtonIndex:(NSInteger)buttonIndex 
 {
     if(buttonIndex != alertView.cancelButtonIndex)
     {
@@ -400,6 +416,23 @@
     DLog();
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
+}
+
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        // The notification is on an async thread, so block while the UI updates
+        [self.managedObjectContext performBlock:^{
+            [self loadData];
+        }];
+    }
 }
 
 @end

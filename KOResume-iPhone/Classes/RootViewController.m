@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "RootViewController.h"
@@ -18,7 +18,7 @@
 
 @interface RootViewController()
 {
-    @private
+@private
     NSString*                   _packageName;    
     
     NSFetchedResultsController* fetchedResultsController__;
@@ -30,7 +30,7 @@
 - (void)configureCell:(UITableViewCell *)cell
           atIndexPath:(NSIndexPath *)indexPath;
 - (void)configureDefaultNavBar;
-- (void)loadPackages;
+//- (void)loadPackages;
 
 @property (nonatomic, strong) NSString*                     packageName;
 @property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
@@ -67,13 +67,17 @@
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
     // ...and load the Packages
-    [self loadPackages];
+//    [self loadPackages];
     
     // observe the app delegate telling us when it's finished asynchronously setting up the persistent store
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(reloadFetchedResults:) 
                                                  name:@"RefetchAllDatabaseData" 
                                                object:[[UIApplication sharedApplication] delegate]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
 - (void)viewDidUnload 
@@ -129,32 +133,32 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)loadPackages
-{
-    // Create a new instance of the entity managed by the fetched results controller.
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    NSFetchRequest* request         = [[[NSFetchRequest alloc] init] autorelease];
-    NSEntityDescription* entity     = [NSEntityDescription entityForName:@"Packages"
-                                                  inManagedObjectContext:context];
-    [request setEntity:entity];
-    
-    // Create a sort descriptor to sort the Packages by sequence_number
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number" 
-                                                                    ascending:YES] autorelease];
-    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];    
-    [request setSortDescriptors:sortDescriptors];
-    
-    // Execute the request
-    NSError *error = nil;    
-    NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
-                                                                   error:&error] mutableCopy] autorelease];
-    if (mutableFetchResults == nil) {
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching Packages %@", @"A fatal error occured fetching Packages %@"), [error code]];
-        [KOExtensions showErrorWithMessage:msg];
-        ELog(error, @"Failed to fetch Packages");
-        abort();
-    }
-}
+//- (void)loadPackages
+//{
+//    // Create a new instance of the entity managed by the fetched results controller.
+//    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
+//    NSFetchRequest* request         = [[[NSFetchRequest alloc] init] autorelease];
+//    NSEntityDescription* entity     = [NSEntityDescription entityForName:@"Packages"
+//                                                  inManagedObjectContext:context];
+//    [request setEntity:entity];
+//    
+//    // Create a sort descriptor to sort the Packages by sequence_number
+//    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number" 
+//                                                                    ascending:YES] autorelease];
+//    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];    
+//    [request setSortDescriptors:sortDescriptors];
+//    
+//    // Execute the request
+//    NSError *error = nil;    
+//    NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
+//                                                                   error:&error] mutableCopy] autorelease];
+//    if (mutableFetchResults == nil) {
+//        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching Packages %@", @"A fatal error occured fetching Packages %@"), [error code]];
+//        [KOExtensions showErrorWithMessage:msg];
+//        ELog(error, @"Failed to fetch Packages");
+//        abort();
+//    }
+//}
 
 - (void)configureDefaultNavBar
 {
@@ -236,7 +240,7 @@
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset Packages tableView
     [self configureDefaultNavBar];
-    [self loadPackages];
+//    [self loadPackages];
     [self.tblView reloadData];
 }
 
@@ -291,21 +295,21 @@
 
 #pragma mark - Table view data source
 
-// Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
     return [[self.fetchedResultsController sections] count];
 }
 
 
-// Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
+- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section 
 {	
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
+- (UITableViewCell *)tableView:(UITableView *)tableView 
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     static NSString* CellIdentifier = @"Cell";
     
@@ -327,7 +331,7 @@
 {
     DLog();
     Packages* thePackage = (Packages *) [self.fetchedResultsController objectAtIndexPath:indexPath];
-
+    
     cell.textLabel.text = [thePackage name];
 	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 }
@@ -335,7 +339,8 @@
 #pragma mark -
 #pragma mark Table view delegates
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
+-  (UIView *)tableView:(UITableView *)tableView 
+viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
     // TODO - this won't rotate well...
@@ -361,7 +366,9 @@
 	return 44;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+-  (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
@@ -374,7 +381,9 @@
     }   
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+-  (void)tableView:(UITableView *)tableView 
+moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
+       toIndexPath:(NSIndexPath *)toIndexPath
 {    
     NSMutableArray *packages = [[self.fetchedResultsController fetchedObjects] mutableCopy];
     
@@ -395,11 +404,13 @@
         [package setSequence_numberValue:i++];
     }
     
-    [self.tblView reloadData];
+//    [self.tblView reloadData];
     [packages release];
+    [self saveAction];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     PackagesViewController* packagesViewController = [[[PackagesViewController alloc] initWithNibName:@"PackagesViewController" 
                                                                                                bundle:nil] autorelease];
@@ -452,13 +463,22 @@
     [sortDescriptor release];
     [sortDescriptors release];
      
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error])
+    {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }
+    
     return __fetchedResultsController;
 }
 
 // because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
 // we will see the NSManagedObjectContext set up before any persistent stores are registered
 // we will need to fetch again after the persistent store is loaded
-- (void)reloadFetchedResults:(NSNotification*)note {
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
     NSError *error = nil;
     if (![[self fetchedResultsController] performFetch:&error]) {
         ELog(error, @"Fetch failed!");
@@ -478,8 +498,10 @@
     [self.tblView beginUpdates];
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo 
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+- (void)controller:(NSFetchedResultsController *)controller 
+  didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo 
+           atIndex:(NSUInteger)sectionIndex 
+     forChangeType:(NSFetchedResultsChangeType)type
 {
     DLog();
     switch (type) {
@@ -497,8 +519,11 @@
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject 
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+- (void)controller:(NSFetchedResultsController *)controller 
+   didChangeObject:(id)anObject 
+       atIndexPath:(NSIndexPath *)indexPath 
+     forChangeType:(NSFetchedResultsChangeType)type 
+      newIndexPath:(NSIndexPath *)newIndexPath
 {
     DLog();
     

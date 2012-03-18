@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011 KevinGOMara.com. All rights reserved.
+//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
 //
 
 #import "CoverLtrViewController.h"
@@ -19,6 +19,7 @@
     UIBarButtonItem* cancelBtn;
 }
 
+- (void)loadData;
 - (void)configureDefaultNavBar;
 - (void)resetView;
 
@@ -40,12 +41,10 @@
 {
     [super viewDidLoad];
 	
-	// get the cover letter into the view
-	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
-    
 	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
                                                                                                       topCapHeight:44];
-		
+    [self loadData];
+    
     // Register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -67,10 +66,17 @@
                                                                 action:@selector(cancelAction)];
     
     [self configureDefaultNavBar];
+
+    // Register for iCloud notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFetchedResults:) 
+                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
 - (void)viewDidUnload 
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super viewDidUnload];
     
     self.contentPaneBackground  = nil;
@@ -124,6 +130,12 @@
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)loadData
+{
+    // get the cover letter into the view
+	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
 }
 
 - (void)configureDefaultNavBar
@@ -195,6 +207,7 @@
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
     self.coverLtrFld.text    = self.selectedPackage.cover_ltr;
+    [self loadData];
     [self configureDefaultNavBar];
     [self resetView];
 }
@@ -247,6 +260,23 @@
     DLog();
     [self.scrollView setContentOffset:CGPointZero
                              animated:YES];
+}
+
+- (void)reloadFetchedResults:(NSNotification*)note 
+{
+    DLog();
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        ELog(error, @"Fetch failed!");
+        abort();
+    }             
+    
+    if (note) {
+        // The notification is on an async thread, so block while the UI updates
+        [self.managedObjectContext performBlock:^{
+            [self loadData];
+        }];
+    }
 }
 
 @end
