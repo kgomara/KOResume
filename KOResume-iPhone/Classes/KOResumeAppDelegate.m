@@ -11,7 +11,7 @@
 
 #define DB_NAME         @"KOResume"
 #define DB_TYPE         @"sqlite"
-#define UBIQUITY_ID     @"CVC369LW49.com.kevingomara.koresume"
+#define UBIQUITY_ID     @"<your icloud id here>"
 
 @implementation KOResumeAppDelegate
 
