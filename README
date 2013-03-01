@@ -1,0 +1,15 @@
+This repository contains the code the KOResume Example.
+
+There are versions for iOS and Android; the server folder is intentionaly empty.
+
+The project grew out of a job application where the company wanted to see an example of candidate's work. It evolved
+into a fully-featured iOS app, then an Android version, and then an upgrade to the iOS version that included
+iCloud integration.
+
+Build Instructions:
+
+The projects are standard iOS and Android applications developed in Xcode and Eclipse respectively. There is nothing 
+unusual about their build processes - of course the standard process of building an iOS app for distribution is 
+somewhat complex but is well document on developer.apple.com and elsewhere. Keep in mind that due to the iCloud 
+integration the app "bundle id" must be specific (cannot be the wildcard '*'), and the AppID must be configured for
+iCloud.
