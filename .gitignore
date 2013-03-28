@@ -10,8 +10,8 @@ Thumbs.db
 # XCode user data
 #################
 **.pbxuser
-**.pbxproj
-KOResume.xcodeproj/project.pbxproj
+#**.pbxproj
+#KOResume.xcodeproj/project.pbxproj
 **.xcworkspacedata
 **.mode?
 **.mode?v?

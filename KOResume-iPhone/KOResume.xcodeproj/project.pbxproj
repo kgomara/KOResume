@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D3623260D0F684500981E51 /* KOResumeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */; };
+		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
+		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
+		D64C011E132FB13D001DAFEC /* ResumeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C011D132FB13D001DAFEC /* ResumeViewController.m */; };
+		D64C0124132FB150001DAFEC /* ResumeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64C0123132FB150001DAFEC /* ResumeViewController.xib */; };
+		D64C0158132FE302001DAFEC /* CoverLtrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D64C0156132FE302001DAFEC /* CoverLtrViewController.m */; };
+		D64C0159132FE302001DAFEC /* CoverLtrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */; };
+		D650993B145CA6150031B2CB /* README.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D650993A145CA6150031B2CB /* README.rtf */; };
+		D6509950145CB5E40031B2CB /* _Accomplishments.m in Sources */ = {isa = PBXBuildFile; fileRef = D650993D145CB5E40031B2CB /* _Accomplishments.m */; };
+		D6509951145CB5E40031B2CB /* _Education.m in Sources */ = {isa = PBXBuildFile; fileRef = D650993F145CB5E40031B2CB /* _Education.m */; };
+		D6509952145CB5E40031B2CB /* _Jobs.m in Sources */ = {isa = PBXBuildFile; fileRef = D6509941145CB5E40031B2CB /* _Jobs.m */; };
+		D6509953145CB5E40031B2CB /* _Packages.m in Sources */ = {isa = PBXBuildFile; fileRef = D6509943145CB5E40031B2CB /* _Packages.m */; };
+		D6509954145CB5E40031B2CB /* _Resumes.m in Sources */ = {isa = PBXBuildFile; fileRef = D6509945145CB5E40031B2CB /* _Resumes.m */; };
+		D6509955145CB5E40031B2CB /* Accomplishments.m in Sources */ = {isa = PBXBuildFile; fileRef = D6509947145CB5E40031B2CB /* Accomplishments.m */; };
+		D6509956145CB5E40031B2CB /* Education.m in Sources */ = {isa = PBXBuildFile; fileRef = D6509949145CB5E40031B2CB /* Education.m */; };
+		D6509957145CB5E40031B2CB /* Jobs.m in Sources */ = {isa = PBXBuildFile; fileRef = D650994B145CB5E40031B2CB /* Jobs.m */; };
+		D6509958145CB5E40031B2CB /* Packages.m in Sources */ = {isa = PBXBuildFile; fileRef = D650994D145CB5E40031B2CB /* Packages.m */; };
+		D6509959145CB5E40031B2CB /* Resumes.m in Sources */ = {isa = PBXBuildFile; fileRef = D650994F145CB5E40031B2CB /* Resumes.m */; };
+		D674489C1329D3AF00527C9E /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489A1329D3AF00527C9E /* background.png */; };
+		D674489D1329D3AF00527C9E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D674489B1329D3AF00527C9E /* background@2x.png */; };
+		D68F37E0139AE6C000B7DDD2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D68F37DF139AE6C000B7DDD2 /* CoreData.framework */; };
+		D68F37E3139AFD6400B7DDD2 /* KOResume.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D68F37E1139AFD6400B7DDD2 /* KOResume.xcdatamodeld */; };
+		D68F37FF139C063100B7DDD2 /* PackagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D68F37FD139C063000B7DDD2 /* PackagesViewController.m */; };
+		D68F3800139C063100B7DDD2 /* PackagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D68F37FE139C063000B7DDD2 /* PackagesViewController.xib */; };
+		D699B4CE14818DB300B96BDD /* companyBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = D699B4CC14818DB300B96BDD /* companyBtn.png */; };
+		D699B4CF14818DB300B96BDD /* companyBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D699B4CD14818DB300B96BDD /* companyBtn@2x.png */; };
+		D69F8FF4148C766E00F2D483 /* AccomplishmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */; };
+		D69F8FF5148C766E00F2D483 /* AccomplishmentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */; };
+		D6A85F981494684300793E84 /* KOResume.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = D6A85F971494684300793E84 /* KOResume.sqlite */; };
+		D6A8E7A5145E02CC001B9895 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D6A8E7A4145E02CC001B9895 /* addButton.png */; };
+		D6B596F6148DFD8D00B6D7FC /* contentpane_button_call.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */; };
+		D6B596F7148DFD8D00B6D7FC /* contentpane_button_call@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */; };
+		D6B596FB148DFF2700B6D7FC /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F9148DFF2700B6D7FC /* arrow.png */; };
+		D6B596FC148DFF2700B6D7FC /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596FA148DFF2700B6D7FC /* arrow@2x.png */; };
+		D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */; };
+		D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */; };
+		D6C6F24513397F2300D05323 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F23E13397F2300D05323 /* Icon-72.png */; };
+		D6C6F24613397F2300D05323 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F23F13397F2300D05323 /* Icon-Small-50.png */; };
+		D6C6F24713397F2300D05323 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24013397F2300D05323 /* Icon-Small.png */; };
+		D6C6F24813397F2300D05323 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24113397F2300D05323 /* Icon-Small@2x.png */; };
+		D6C6F24913397F2300D05323 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24213397F2300D05323 /* Icon.png */; };
+		D6C6F24A13397F2300D05323 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24313397F2300D05323 /* Icon@2x.png */; };
+		D6C6F24B13397F2300D05323 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = D6C6F24413397F2300D05323 /* iTunesArtwork.png */; };
+		D6CB79BC160AAA3600820ED6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6CB79BB160AAA3600820ED6 /* Default-568h@2x.png */; };
+		D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */; };
+		D6CDB9FD132D35ED00A1E4BA /* JobsDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */; };
+		D6CDBA19132D437200A1E4BA /* contentpane_details.png in Resources */ = {isa = PBXBuildFile; fileRef = D6CDBA17132D437200A1E4BA /* contentpane_details.png */; };
+		D6CDBA1A132D437200A1E4BA /* contentpane_details@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */; };
+		D6CDBC37132DC31200A1E4BA /* KOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDBC36132DC31200A1E4BA /* KOExtensions.m */; };
+		D6CDBCAB132DCC5400A1E4BA /* SummaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */; };
+		D6CDBCAC132DCC5400A1E4BA /* SummaryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOResumeAppDelegate.h; sourceTree = "<group>"; };
+		1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KOResumeAppDelegate.m; sourceTree = "<group>"; };
+		1D6058910D05DD3D006BFB54 /* KOResume.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KOResume.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOResume_Prefix.pch; sourceTree = "<group>"; };
+		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28C286DF0D94DF7D0034E888 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = RootViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RootViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* KOResume-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KOResume-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D64C011C132FB13D001DAFEC /* ResumeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeViewController.h; sourceTree = "<group>"; };
+		D64C011D132FB13D001DAFEC /* ResumeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumeViewController.m; sourceTree = "<group>"; };
+		D64C0123132FB150001DAFEC /* ResumeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResumeViewController.xib; sourceTree = "<group>"; };
+		D64C0155132FE302001DAFEC /* CoverLtrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverLtrViewController.h; sourceTree = "<group>"; };
+		D64C0156132FE302001DAFEC /* CoverLtrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverLtrViewController.m; sourceTree = "<group>"; };
+		D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CoverLtrViewController.xib; path = Classes/CoverLtrViewController.xib; sourceTree = "<group>"; };
+		D6509939145C63830031B2CB /* GlobalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalMacros.h; path = Classes/GlobalMacros.h; sourceTree = "<group>"; };
+		D650993A145CA6150031B2CB /* README.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
+		D650993C145CB5E40031B2CB /* _Accomplishments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Accomplishments.h; sourceTree = "<group>"; };
+		D650993D145CB5E40031B2CB /* _Accomplishments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Accomplishments.m; sourceTree = "<group>"; };
+		D650993E145CB5E40031B2CB /* _Education.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Education.h; sourceTree = "<group>"; };
+		D650993F145CB5E40031B2CB /* _Education.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Education.m; sourceTree = "<group>"; };
+		D6509940145CB5E40031B2CB /* _Jobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Jobs.h; sourceTree = "<group>"; };
+		D6509941145CB5E40031B2CB /* _Jobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Jobs.m; sourceTree = "<group>"; };
+		D6509942145CB5E40031B2CB /* _Packages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Packages.h; sourceTree = "<group>"; };
+		D6509943145CB5E40031B2CB /* _Packages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Packages.m; sourceTree = "<group>"; };
+		D6509944145CB5E40031B2CB /* _Resumes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Resumes.h; sourceTree = "<group>"; };
+		D6509945145CB5E40031B2CB /* _Resumes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Resumes.m; sourceTree = "<group>"; };
+		D6509946145CB5E40031B2CB /* Accomplishments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Accomplishments.h; sourceTree = "<group>"; };
+		D6509947145CB5E40031B2CB /* Accomplishments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Accomplishments.m; sourceTree = "<group>"; };
+		D6509948145CB5E40031B2CB /* Education.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Education.h; sourceTree = "<group>"; };
+		D6509949145CB5E40031B2CB /* Education.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Education.m; sourceTree = "<group>"; };
+		D650994A145CB5E40031B2CB /* Jobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jobs.h; sourceTree = "<group>"; };
+		D650994B145CB5E40031B2CB /* Jobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Jobs.m; sourceTree = "<group>"; };
+		D650994C145CB5E40031B2CB /* Packages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packages.h; sourceTree = "<group>"; };
+		D650994D145CB5E40031B2CB /* Packages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packages.m; sourceTree = "<group>"; };
+		D650994E145CB5E40031B2CB /* Resumes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resumes.h; sourceTree = "<group>"; };
+		D650994F145CB5E40031B2CB /* Resumes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Resumes.m; sourceTree = "<group>"; };
+		D674489A1329D3AF00527C9E /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		D674489B1329D3AF00527C9E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
+		D68F37DF139AE6C000B7DDD2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		D68F37E2139AFD6400B7DDD2 /* KOResume.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = KOResume.xcdatamodel; sourceTree = "<group>"; };
+		D68F37FC139C062F00B7DDD2 /* PackagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackagesViewController.h; sourceTree = "<group>"; };
+		D68F37FD139C063000B7DDD2 /* PackagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackagesViewController.m; sourceTree = "<group>"; };
+		D68F37FE139C063000B7DDD2 /* PackagesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PackagesViewController.xib; path = Classes/PackagesViewController.xib; sourceTree = "<group>"; };
+		D699B4CC14818DB300B96BDD /* companyBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = companyBtn.png; sourceTree = "<group>"; };
+		D699B4CD14818DB300B96BDD /* companyBtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "companyBtn@2x.png"; sourceTree = "<group>"; };
+		D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccomplishmentViewController.h; sourceTree = "<group>"; };
+		D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccomplishmentViewController.m; sourceTree = "<group>"; };
+		D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccomplishmentViewController.xib; path = Classes/AccomplishmentViewController.xib; sourceTree = "<group>"; };
+		D6A85F971494684300793E84 /* KOResume.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = KOResume.sqlite; sourceTree = "<group>"; };
+		D6A8E7A4145E02CC001B9895 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
+		D6AAD23B149D367A004839A1 /* KOResume.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = KOResume.entitlements; sourceTree = "<group>"; };
+		D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contentpane_button_call.png; sourceTree = "<group>"; };
+		D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contentpane_button_call@2x.png"; sourceTree = "<group>"; };
+		D6B596F9148DFF2700B6D7FC /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		D6B596FA148DFF2700B6D7FC /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
+		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
+		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EducationViewController.m; sourceTree = "<group>"; };
+		D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EducationViewController.xib; path = Classes/EducationViewController.xib; sourceTree = "<group>"; };
+		D6C6F23E13397F2300D05323 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		D6C6F23F13397F2300D05323 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		D6C6F24013397F2300D05323 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		D6C6F24113397F2300D05323 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		D6C6F24213397F2300D05323 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		D6C6F24313397F2300D05323 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		D6C6F24413397F2300D05323 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
+		D6CB79BB160AAA3600820ED6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobsDetailViewController.h; sourceTree = "<group>"; };
+		D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JobsDetailViewController.m; sourceTree = "<group>"; };
+		D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = JobsDetailViewController.xib; path = Classes/JobsDetailViewController.xib; sourceTree = "<group>"; };
+		D6CDBA17132D437200A1E4BA /* contentpane_details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contentpane_details.png; sourceTree = "<group>"; };
+		D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contentpane_details@2x.png"; sourceTree = "<group>"; };
+		D6CDBC35132DC31200A1E4BA /* KOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOExtensions.h; sourceTree = "<group>"; };
+		D6CDBC36132DC31200A1E4BA /* KOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KOExtensions.m; sourceTree = "<group>"; };
+		D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SummaryViewController.h; sourceTree = "<group>"; };
+		D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SummaryViewController.m; sourceTree = "<group>"; };
+		D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SummaryViewController.xib; path = Classes/SummaryViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D68F37E0139AE6C000B7DDD2 /* CoreData.framework in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				D68F37DB139AA32C00B7DDD2 /* DataModel */,
+				D64C011C132FB13D001DAFEC /* ResumeViewController.h */,
+				D64C011D132FB13D001DAFEC /* ResumeViewController.m */,
+				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
+				28C286E00D94DF7D0034E888 /* RootViewController.m */,
+				1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */,
+				1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */,
+				D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */,
+				D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */,
+				D6CDBC35132DC31200A1E4BA /* KOExtensions.h */,
+				D6CDBC36132DC31200A1E4BA /* KOExtensions.m */,
+				D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */,
+				D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */,
+				D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */,
+				D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */,
+				D64C0155132FE302001DAFEC /* CoverLtrViewController.h */,
+				D64C0156132FE302001DAFEC /* CoverLtrViewController.m */,
+				D68F37FC139C062F00B7DDD2 /* PackagesViewController.h */,
+				D68F37FD139C063000B7DDD2 /* PackagesViewController.m */,
+				D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */,
+				D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D6058910D05DD3D006BFB54 /* KOResume.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+			isa = PBXGroup;
+			children = (
+				D6CB79BB160AAA3600820ED6 /* Default-568h@2x.png */,
+				D6AAD23B149D367A004839A1 /* KOResume.entitlements */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = CustomTemplate;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */,
+				D6509939145C63830031B2CB /* GlobalMacros.h */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D6A85F971494684300793E84 /* KOResume.sqlite */,
+				D650993A145CA6150031B2CB /* README.rtf */,
+				D68F37DD139AC3B400B7DDD2 /* Icons */,
+				D68F37DE139AC3D200B7DDD2 /* Images */,
+				8D1107310486CEB800E47090 /* KOResume-Info.plist */,
+				D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */,
+				D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */,
+				D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */,
+				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
+				D68F37FE139C063000B7DDD2 /* PackagesViewController.xib */,
+				D64C0123132FB150001DAFEC /* ResumeViewController.xib */,
+				28F335F01007B36200424DE2 /* RootViewController.xib */,
+				D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */,
+				D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D68F37DF139AE6C000B7DDD2 /* CoreData.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D68F37DB139AA32C00B7DDD2 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				D650993C145CB5E40031B2CB /* _Accomplishments.h */,
+				D650993D145CB5E40031B2CB /* _Accomplishments.m */,
+				D650993E145CB5E40031B2CB /* _Education.h */,
+				D650993F145CB5E40031B2CB /* _Education.m */,
+				D6509940145CB5E40031B2CB /* _Jobs.h */,
+				D6509941145CB5E40031B2CB /* _Jobs.m */,
+				D6509942145CB5E40031B2CB /* _Packages.h */,
+				D6509943145CB5E40031B2CB /* _Packages.m */,
+				D6509944145CB5E40031B2CB /* _Resumes.h */,
+				D6509945145CB5E40031B2CB /* _Resumes.m */,
+				D6509946145CB5E40031B2CB /* Accomplishments.h */,
+				D6509947145CB5E40031B2CB /* Accomplishments.m */,
+				D6509948145CB5E40031B2CB /* Education.h */,
+				D6509949145CB5E40031B2CB /* Education.m */,
+				D650994A145CB5E40031B2CB /* Jobs.h */,
+				D650994B145CB5E40031B2CB /* Jobs.m */,
+				D650994C145CB5E40031B2CB /* Packages.h */,
+				D650994D145CB5E40031B2CB /* Packages.m */,
+				D650994E145CB5E40031B2CB /* Resumes.h */,
+				D650994F145CB5E40031B2CB /* Resumes.m */,
+				D68F37E1139AFD6400B7DDD2 /* KOResume.xcdatamodeld */,
+			);
+			name = DataModel;
+			sourceTree = "<group>";
+		};
+		D68F37DD139AC3B400B7DDD2 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				D6C6F23E13397F2300D05323 /* Icon-72.png */,
+				D6C6F23F13397F2300D05323 /* Icon-Small-50.png */,
+				D6C6F24013397F2300D05323 /* Icon-Small.png */,
+				D6C6F24113397F2300D05323 /* Icon-Small@2x.png */,
+				D6C6F24213397F2300D05323 /* Icon.png */,
+				D6C6F24313397F2300D05323 /* Icon@2x.png */,
+				D6C6F24413397F2300D05323 /* iTunesArtwork.png */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		D68F37DE139AC3D200B7DDD2 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				D6B596F9148DFF2700B6D7FC /* arrow.png */,
+				D6B596FA148DFF2700B6D7FC /* arrow@2x.png */,
+				D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */,
+				D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */,
+				D699B4CC14818DB300B96BDD /* companyBtn.png */,
+				D699B4CD14818DB300B96BDD /* companyBtn@2x.png */,
+				D6A8E7A4145E02CC001B9895 /* addButton.png */,
+				D6CDBA17132D437200A1E4BA /* contentpane_details.png */,
+				D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */,
+				D674489A1329D3AF00527C9E /* background.png */,
+				D674489B1329D3AF00527C9E /* background@2x.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB54 /* KOResume */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "KOResume" */;
+			buildPhases = (
+				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1D60588E0D05DD3D006BFB54 /* Sources */,
+				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KOResume;
+			productName = KOResume;
+			productReference = 1D6058910D05DD3D006BFB54 /* KOResume.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = KevinGOMara.com;
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "KOResume" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				en,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB54 /* KOResume */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */,
+				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
+				D674489C1329D3AF00527C9E /* background.png in Resources */,
+				D674489D1329D3AF00527C9E /* background@2x.png in Resources */,
+				D6CDB9FD132D35ED00A1E4BA /* JobsDetailViewController.xib in Resources */,
+				D6CDBA19132D437200A1E4BA /* contentpane_details.png in Resources */,
+				D6CDBA1A132D437200A1E4BA /* contentpane_details@2x.png in Resources */,
+				D6CDBCAC132DCC5400A1E4BA /* SummaryViewController.xib in Resources */,
+				D6C2FD00132F489D00D7AA8F /* EducationViewController.xib in Resources */,
+				D64C0124132FB150001DAFEC /* ResumeViewController.xib in Resources */,
+				D64C0159132FE302001DAFEC /* CoverLtrViewController.xib in Resources */,
+				D6C6F24513397F2300D05323 /* Icon-72.png in Resources */,
+				D6C6F24613397F2300D05323 /* Icon-Small-50.png in Resources */,
+				D6C6F24713397F2300D05323 /* Icon-Small.png in Resources */,
+				D6C6F24813397F2300D05323 /* Icon-Small@2x.png in Resources */,
+				D6C6F24913397F2300D05323 /* Icon.png in Resources */,
+				D6C6F24A13397F2300D05323 /* Icon@2x.png in Resources */,
+				D6C6F24B13397F2300D05323 /* iTunesArtwork.png in Resources */,
+				D68F3800139C063100B7DDD2 /* PackagesViewController.xib in Resources */,
+				D650993B145CA6150031B2CB /* README.rtf in Resources */,
+				D6A8E7A5145E02CC001B9895 /* addButton.png in Resources */,
+				D699B4CE14818DB300B96BDD /* companyBtn.png in Resources */,
+				D699B4CF14818DB300B96BDD /* companyBtn@2x.png in Resources */,
+				D69F8FF5148C766E00F2D483 /* AccomplishmentViewController.xib in Resources */,
+				D6B596F6148DFD8D00B6D7FC /* contentpane_button_call.png in Resources */,
+				D6B596F7148DFD8D00B6D7FC /* contentpane_button_call@2x.png in Resources */,
+				D6B596FB148DFF2700B6D7FC /* arrow.png in Resources */,
+				D6B596FC148DFF2700B6D7FC /* arrow@2x.png in Resources */,
+				D6A85F981494684300793E84 /* KOResume.sqlite in Resources */,
+				D6CB79BC160AAA3600820ED6 /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				1D3623260D0F684500981E51 /* KOResumeAppDelegate.m in Sources */,
+				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
+				D6CDB9FC132D35ED00A1E4BA /* JobsDetailViewController.m in Sources */,
+				D6CDBC37132DC31200A1E4BA /* KOExtensions.m in Sources */,
+				D6CDBCAB132DCC5400A1E4BA /* SummaryViewController.m in Sources */,
+				D6C2FCFF132F489D00D7AA8F /* EducationViewController.m in Sources */,
+				D64C011E132FB13D001DAFEC /* ResumeViewController.m in Sources */,
+				D64C0158132FE302001DAFEC /* CoverLtrViewController.m in Sources */,
+				D68F37E3139AFD6400B7DDD2 /* KOResume.xcdatamodeld in Sources */,
+				D68F37FF139C063100B7DDD2 /* PackagesViewController.m in Sources */,
+				D6509950145CB5E40031B2CB /* _Accomplishments.m in Sources */,
+				D6509951145CB5E40031B2CB /* _Education.m in Sources */,
+				D6509952145CB5E40031B2CB /* _Jobs.m in Sources */,
+				D6509953145CB5E40031B2CB /* _Packages.m in Sources */,
+				D6509954145CB5E40031B2CB /* _Resumes.m in Sources */,
+				D6509955145CB5E40031B2CB /* Accomplishments.m in Sources */,
+				D6509956145CB5E40031B2CB /* Education.m in Sources */,
+				D6509957145CB5E40031B2CB /* Jobs.m in Sources */,
+				D6509958145CB5E40031B2CB /* Packages.m in Sources */,
+				D6509959145CB5E40031B2CB /* Resumes.m in Sources */,
+				D69F8FF4148C766E00F2D483 /* AccomplishmentViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1D6058940D05DD3E006BFB54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = KOResume.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin O'Mara (N476J27X52)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = KOResume_Prefix.pch;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = DEBUG;
+				INFOPLIST_FILE = "KOResume-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = KOResume;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C559FBD-2684-4721-B06A-7B6CF4B88C34";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		1D6058950D05DD3E006BFB54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = KOResume.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Kevin O'Mara";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = KOResume_Prefix.pch;
+				INFOPLIST_FILE = "KOResume-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = KOResume;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "126CD412-4CAC-472E-8D1A-8AA10D1A8B4F";
+				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin O'Mara (N476J27X52)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "C04FE0D6-8BAE-4EA9-B998-B0DDC82A568E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "KOResume" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058940D05DD3E006BFB54 /* Debug */,
+				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "KOResume" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D68F37E1139AFD6400B7DDD2 /* KOResume.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D68F37E2139AFD6400B7DDD2 /* KOResume.xcdatamodel */,
+			);
+			currentVersion = D68F37E2139AFD6400B7DDD2 /* KOResume.xcdatamodel */;
+			path = KOResume.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
