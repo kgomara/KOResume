@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 6/5/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -16,10 +16,10 @@
 
 }
 
-@property (nonatomic, retain) IBOutlet UITableView*         tblView;
-@property (nonatomic, retain) Packages*                     selectedPackage;
+@property (nonatomic, retain) IBOutlet UITableView          *tblView;
+@property (nonatomic, retain) Packages                      *selectedPackage;
 
-@property (nonatomic, retain) NSManagedObjectContext*       managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, retain) NSManagedObjectContext        *managedObjectContext;
+@property (nonatomic, retain) NSFetchedResultsController    *fetchedResultsController;
 
 @end

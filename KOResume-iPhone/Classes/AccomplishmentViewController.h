@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by OMARA KEVIN on 12/4/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,17 +12,17 @@
 @interface AccomplishmentViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate,
                                                             UIScrollViewDelegate>
 {
-    Accomplishments*                    _selectedAccomplishment;
-    NSManagedObjectContext*             __managedObjectContext;
-    NSFetchedResultsController*         __fetchedResultsController;
+    Accomplishments                 *_selectedAccomplishment;
+    NSManagedObjectContext          *__managedObjectContext;
+    NSFetchedResultsController      *__fetchedResultsController;
 }
 
-@property (nonatomic, strong) Accomplishments*              selectedAccomplishment;
-@property (nonatomic, strong) NSManagedObjectContext*       managedObjectContext;
-@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, strong) Accomplishments               *selectedAccomplishment;
+@property (nonatomic, strong) NSManagedObjectContext        *managedObjectContext;
+@property (nonatomic, strong) NSFetchedResultsController    *fetchedResultsController;
 
-@property (nonatomic, strong) IBOutlet UIScrollView*        scrollView;
-@property (nonatomic, strong) IBOutlet UITextField*         accomplishmentName;
-@property (nonatomic, strong) IBOutlet UITextView*          accomplishmentSummary;
+@property (nonatomic, strong) IBOutlet UIScrollView         *scrollView;
+@property (nonatomic, strong) IBOutlet UITextField          *accomplishmentName;
+@property (nonatomic, strong) IBOutlet UITextView           *accomplishmentSummary;
 
 @end

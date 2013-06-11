@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "EducationViewController.h"
@@ -14,12 +14,12 @@
 @interface EducationViewController()
 {
 @private
-    UIBarButtonItem* backBtn;
-    UIBarButtonItem* doneBtn;
-    UIBarButtonItem* editBtn;
-    UIBarButtonItem* saveBtn;
-    UIBarButtonItem* cancelBtn;
-    NSDateFormatter* dateFormatter;
+    UIBarButtonItem     *backBtn;
+    UIBarButtonItem     *doneBtn;
+    UIBarButtonItem     *editBtn;
+    UIBarButtonItem     *saveBtn;
+    UIBarButtonItem     *cancelBtn;
+    NSDateFormatter     *dateFormatter;
 }
 
 - (void)loadData;
@@ -47,7 +47,8 @@
 
 #pragma mark - Life Cycle methods
 
-- (void)viewDidLoad 
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     
@@ -80,7 +81,9 @@
                                                object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -95,7 +98,8 @@
 }
 
 
-- (void)dealloc 
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     [_nameFld release];
     [_degreeDateFld release];
@@ -111,7 +115,9 @@
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -120,28 +126,42 @@
     ALog();
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    NSError *error = nil;
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
-    } else {
+    }
+    else
+    {
         ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)loadData
 {
     self.nameFld.text               = self.selectedEducation.name;
@@ -154,6 +174,8 @@
     self.titleFld.text              = self.selectedEducation.title;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -170,6 +192,7 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
@@ -190,6 +213,8 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();    
@@ -201,17 +226,26 @@
     self.selectedEducation.title        = self.titleFld.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error])
+    
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (moc)
     {
-        // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-        [KOExtensions showErrorWithMessage:msg];
-        [msg release];
-        ELog(error, @"Failed to save to data store");
-        abort();
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
+        }
     }
+    else
+    {
+        ALog(@"managedObjectContext is null");
+    }
+
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
@@ -219,15 +253,21 @@
     [self resetView];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -239,6 +279,8 @@
     [self resetView];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)doneAction
 {
     DLog();
@@ -261,6 +303,8 @@
     self.navigationItem.leftBarButtonItem  = cancelBtn;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (IBAction)getEarnedDate:(id)sender
 {
     // Update the database
@@ -271,9 +315,11 @@
 
 #pragma mark - UITextFieldDelegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    if (textField.tag == k_degreeDateFldTag) {
+    if (textField.tag == k_degreeDateFldTag)
+    {
         // we are in the date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
@@ -283,34 +329,46 @@
         [self.datePicker setDate:self.selectedEducation.earned_date];
         [self animateDatePickerOn];
         return NO;
-    } else {
-        if (self.datePicker) {
+    }
+    else
+    {
+        if (self.datePicker)
+        {
             [self.datePicker setHidden:YES];
         }
     }
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	[self scrollToViewTextField:textField];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
 	// Validate fields - nothing to do in this version
 	
 	return YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
 	
-	if (nextResponder) {
+	if (nextResponder)
+    {
         [nextResponder becomeFirstResponder];
-	} else {
+	}
+    else
+    {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -318,6 +376,8 @@
 	return NO;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)animateDatePickerOn
 {
     DLog();
@@ -345,13 +405,17 @@
     self.navigationItem.leftBarButtonItem = nil;
 }
 
-- (void)scrollToViewTextField:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated:YES];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resetView
 {
     DLog();
@@ -359,16 +423,21 @@
                              animated:YES];
 }
 
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];

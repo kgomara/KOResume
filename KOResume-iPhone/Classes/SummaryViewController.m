@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011, 2012 KevinGOMara. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "SummaryViewController.h"
@@ -16,16 +16,16 @@
 @interface SummaryViewController()
 {
 @private
-    UIBarButtonItem* backBtn;
-    UIBarButtonItem* editBtn;
-    UIBarButtonItem* saveBtn;
-    UIBarButtonItem* cancelBtn;
+    UIBarButtonItem     *backBtn;
+    UIBarButtonItem     *editBtn;
+    UIBarButtonItem     *saveBtn;
+    UIBarButtonItem     *cancelBtn;
 
-    NSString*       _phoneNumber;
-    UIView*         _activeFld;
+    NSString            *phoneNumber;
+    UIView              *_activeFld;
 }
 
-@property (nonatomic, strong)	NSString*   phoneNumber;
+@property (nonatomic, strong)	NSString    *phoneNumber;
 
 - (void)loadData;
 - (void)configureDefaultNavBar;
@@ -55,7 +55,8 @@
 
 #pragma mark - Life Cycle methods
 
-- (void)viewDidLoad 
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     
@@ -94,7 +95,9 @@
                                                object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -114,7 +117,8 @@
 }
 
 
-- (void)dealloc 
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -138,7 +142,9 @@
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -147,28 +153,42 @@
     ALog();
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
+    NSError *error = nil;
     NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
-    } else {
+    }
+    else
+    {
         ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)loadData
 {
     self.nameFld.text        = self.selectedResume.name;
@@ -182,6 +202,8 @@
     self.summaryFld.text     = self.selectedResume.summary;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -202,6 +224,7 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
@@ -226,6 +249,8 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();    
@@ -241,17 +266,30 @@
     self.selectedResume.summary         = self.summaryFld.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error])
+    
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (moc)
     {
-        // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-        [KOExtensions showErrorWithMessage:msg];
-        [msg release];
-        ELog(error, @"Failed to save to data store");
-        abort();
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                // Fatal Error
+                NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
+                [KOExtensions showErrorWithMessage:msg];
+                [msg release];
+                ELog(error, @"Failed to save to data store");
+                abort();
+            }
+        }
     }
+    else
+    {
+        ALog(@"moc is null");
+    }
+    
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
@@ -259,15 +297,21 @@
     [self resetView];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -279,17 +323,22 @@
     [self resetView];
 }
 
-- (IBAction)phoneTapped:(id)sender 
+
+//----------------------------------------------------------------------------------------------------------
+- (IBAction)phoneTapped:(id)sender
 {
     DLog();
-	if ([sender tag] == 1) {
+	if ([sender tag] == 1)
+    {
         self.phoneNumber = self.selectedResume.home_phone;
-    } else {
+    }
+    else
+    {
         self.phoneNumber = self.selectedResume.mobile_phone;
     }
     
-    NSString* fmtString     = NSLocalizedString(@"Call %@?", @"Call %@?");
-    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Phone", @"Phone") 
+    NSString *fmtString     = NSLocalizedString(@"Call %@?", @"Call %@?");
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Phone", @"Phone")
                                                      message:[NSString stringWithFormat:fmtString, self.phoneNumber]
                                                     delegate:self 
                                            cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
@@ -297,48 +346,55 @@
     [alert show];
 }
 
-- (void)alertView:(UIAlertView *)alertView 
-didDismissWithButtonIndex:(NSInteger)buttonIndex 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex != alertView.cancelButtonIndex)
+    if (buttonIndex != alertView.cancelButtonIndex)
     {
         DLog(@"Calling %@", self.phoneNumber);
         // Loop through the phoneNumber and remove non-numeric characters
-        NSMutableString* strippedString = [NSMutableString stringWithCapacity:10];
-        for (int i = 0; i < [self.phoneNumber length]; i++) {
-            if (isdigit([self.phoneNumber characterAtIndex:i])) {
+        NSMutableString *strippedString = [NSMutableString stringWithCapacity:10];
+        for (int i = 0; i < [self.phoneNumber length]; i++)
+        {
+            if (isdigit([self.phoneNumber characterAtIndex:i]))
+            {
                 [strippedString appendFormat:@"%c", [self.phoneNumber characterAtIndex:i]];
             }
         }
         
         // Ask the system to make a call
-        NSURL* phoneURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"tel:%@", @"tel:%@"), strippedString]];
+        NSURL *phoneURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"tel:%@", @"tel:%@"), strippedString]];
         [[UIApplication sharedApplication] openURL:phoneURL];
     }
 	self.phoneNumber = nil;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (IBAction)emailTapped:(id)sender
 {
     DLog();
     // Ask the system to send an email
-    NSURL* emailURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"mailto:%@", @"mailto:%@"), self.selectedResume.email]];
+    NSURL *emailURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"mailto:%@", @"mailto:%@"), self.selectedResume.email]];
     [[UIApplication sharedApplication] openURL:emailURL];
 }
 
 #pragma mark - Keyboard handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     // Get the size of the keyboard
-    NSDictionary* info = [aNotification userInfo];    
+    NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
     CGRect aRect = self.view.frame;    
     aRect.size.height -= kbSize.height;
     DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
-    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) ) {
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin))
+    {
         // calculate the contentOffset for the scroller
         // ...to get the middle of the active field into the middle of the available view area
         CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
@@ -346,6 +402,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {    
 
@@ -353,6 +411,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 #pragma mark - UITextView delegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     _activeFld = textView;
@@ -360,6 +419,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     _activeFld = nil;
@@ -369,6 +430,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 #pragma mark - UITextFieldDelegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     _activeFld = textField;
@@ -376,12 +438,16 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	[self scrollToViewTextField:textField];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     _activeFld = nil;
 	// Validate fields - nothing to do in this version
@@ -389,14 +455,19 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 	return YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
 	
-	if (nextResponder) {
+	if (nextResponder)
+    {
         [nextResponder becomeFirstResponder];
-	} else {
+	}
+    else
+    {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -404,13 +475,17 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 	return NO;
 }
 
-- (void)scrollToViewTextField:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated:YES];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resetView
 {
     DLog();
@@ -418,16 +493,20 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                              animated:YES];
 }
 
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];

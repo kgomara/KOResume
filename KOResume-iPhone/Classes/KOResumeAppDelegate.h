@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -14,12 +14,12 @@
 
 }
 
-@property (nonatomic, strong) IBOutlet UIWindow*                        window;
-@property (nonatomic, strong) IBOutlet UINavigationController*          navigationController;
+@property (nonatomic, strong) IBOutlet UIWindow                         *window;
+@property (nonatomic, strong) IBOutlet UINavigationController           *navigationController;
 
-@property (nonatomic, strong, readonly) NSManagedObjectContext*         managedObjectContext;
-@property (nonatomic, strong, readonly) NSManagedObjectModel*           managedObjectModel;
-@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator*   persistentStoreCoordinator;
+@property (nonatomic, strong, readonly) NSManagedObjectContext          *managedObjectContext;
+@property (nonatomic, strong, readonly) NSManagedObjectModel            *managedObjectModel;
+@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator    *persistentStoreCoordinator;
 
 
 - (NSURL *)applicationDocumentsDirectory;

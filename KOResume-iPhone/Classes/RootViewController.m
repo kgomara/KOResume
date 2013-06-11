@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "RootViewController.h"
@@ -19,10 +19,10 @@
 @interface RootViewController()
 {
 @private
-    NSString*                   _packageName;    
+    NSString                    *_packageName;
     
-    NSFetchedResultsController* fetchedResultsController__;
-    NSManagedObjectContext*     managedObjectContext__;
+    NSFetchedResultsController  *fetchedResultsController__;
+    NSManagedObjectContext      *managedObjectContext__;
 }
 
 - (void)getPackageName;
@@ -30,10 +30,9 @@
 - (void)configureCell:(UITableViewCell *)cell
           atIndexPath:(NSIndexPath *)indexPath;
 - (void)configureDefaultNavBar;
-//- (void)loadPackages;
 
-@property (nonatomic, strong) NSString*                     packageName;
-@property (nonatomic, strong) NSFetchedResultsController*   fetchedResultsController;
+@property (nonatomic, strong) NSString                      *packageName;
+@property (nonatomic, strong) NSFetchedResultsController    *fetchedResultsController;
 
 @end
 
@@ -48,16 +47,17 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad 
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidLoad
 {
     DLog();
     [super viewDidLoad];
 	
     // Set the App name as the Title in the Navigation bar
-    NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 #ifdef DEBUG
     // Include the version in the title for debug builds
-    NSString* version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     self.navigationItem.title = [appName stringByAppendingString: version];
 #else
     self.navigationItem.title = appName;
@@ -66,9 +66,7 @@
     
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
-    // ...and load the Packages
-//    [self loadPackages];
-    
+   
     // observe the app delegate telling us when it's finished asynchronously setting up the persistent store
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(reloadFetchedResults:) 
@@ -80,15 +78,20 @@
                                                object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
+    [super viewDidUnload];
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
 	self.tblView        = nil;    
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)dealloc 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     // Apple recommends calling release on the ivar...
 	[_tblView release];
@@ -99,7 +102,9 @@
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -108,67 +113,58 @@
     ALog();
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
     self.fetchedResultsController.delegate = self;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
+    NSError *error = nil;
     NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
+    }
+    else
+    {
+        ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-//- (void)loadPackages
-//{
-//    // Create a new instance of the entity managed by the fetched results controller.
-//    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-//    NSFetchRequest* request         = [[[NSFetchRequest alloc] init] autorelease];
-//    NSEntityDescription* entity     = [NSEntityDescription entityForName:@"Packages"
-//                                                  inManagedObjectContext:context];
-//    [request setEntity:entity];
-//    
-//    // Create a sort descriptor to sort the Packages by sequence_number
-//    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number" 
-//                                                                    ascending:YES] autorelease];
-//    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];    
-//    [request setSortDescriptors:sortDescriptors];
-//    
-//    // Execute the request
-//    NSError *error = nil;    
-//    NSMutableArray *mutableFetchResults = [[[context executeFetchRequest:request
-//                                                                   error:&error] mutableCopy] autorelease];
-//    if (mutableFetchResults == nil) {
-//        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"A fatal error occured fetching Packages %@", @"A fatal error occured fetching Packages %@"), [error code]];
-//        [KOExtensions showErrorWithMessage:msg];
-//        ELog(error, @"Failed to fetch Packages");
-//        abort();
-//    }
-//}
 
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
     // Set up the buttons.
     // Initialize the buttons
-    UIBarButtonItem* editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+    UIBarButtonItem *editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                                  target:self 
                                                                                  action:@selector(editAction)] autorelease];
-    UIBarButtonItem* addButton  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+    UIBarButtonItem *addButton  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                  target:self 
                                                                                  action:@selector(getPackageName)] autorelease];
     
@@ -180,16 +176,17 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
     [self.tblView setEditing:YES];
     
     // Set up the navigation item and save button
-    UIBarButtonItem* saveBtn   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+    UIBarButtonItem *saveBtn   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
                                                                                 target:self
                                                                                 action:@selector(saveAction)] autorelease];
-    UIBarButtonItem* cancelBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+    UIBarButtonItem *cancelBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                 target:self
                                                                                 action:@selector(cancelAction)] autorelease];
     self.navigationItem.leftBarButtonItem  = cancelBtn;
@@ -200,23 +197,37 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();
 
     // Save the changes
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error])
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (moc)
     {
-        // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-        [KOExtensions showErrorWithMessage:msg];
-        [msg release];
-        ELog(error, @"Failed to save to data store");
-        abort();
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                // Fatal Error
+                NSString *msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
+                [KOExtensions showErrorWithMessage:msg];
+                [msg release];
+                ELog(error, @"Failed to save to data store");
+                abort();
+            }
+        }
     }
+    else
+    {
+        ALog(@"managedObjectContext is null");
+    }
+    
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the NavigationBar defaults
@@ -224,15 +235,21 @@
     [self.tblView reloadData];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -240,10 +257,11 @@
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset Packages tableView
     [self configureDefaultNavBar];
-//    [self loadPackages];
     [self.tblView reloadData];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)addPackage
 {
     DLog();
@@ -253,15 +271,16 @@
     package.created_date    = [NSDate date];
     
     //  Add a Resume for the package
-    Resumes* resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName:@"Resumes"
+    Resumes *resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName:@"Resumes"
                                                                 inManagedObjectContext:self.managedObjectContext];
     resume.name                 = NSLocalizedString(@"Resume", @"Resume");
     resume.created_date         = [NSDate date];
     resume.sequence_numberValue = 1;
     package.resume              = resume;
 
-    NSError* error = nil;
-    if (![self.managedObjectContext save:&error]) {
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error])
+    {
         ELog(error, @"Failed to save");
         abort();
     }
@@ -269,9 +288,11 @@
     [self.tblView reloadData];
 }
 
-- (void)getPackageName 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)getPackageName
 {
-    UIAlertView* packageNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Package Name", @"Enter Package Name") 
+    UIAlertView *packageNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Package Name", @"Enter Package Name")
                                                                 message:nil
                                                                delegate:self 
                                                       cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel") 
@@ -281,13 +302,18 @@
     [packageNameAlert show];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 1) {
+    if (buttonIndex == 1)
+    {
         // OK
         self.packageName = [[alertView textFieldAtIndex:0] text];            
         [self addPackage];
-    } else {
+    }
+    else
+    {
         // cancel
         [self configureDefaultNavBar];
     }
@@ -295,26 +321,31 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
+//----------------------------------------------------------------------------------------------------------
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
 }
 
 
-- (NSInteger)tableView:(UITableView *)tableView 
+//----------------------------------------------------------------------------------------------------------
+- (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section 
 {	
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+- (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    static NSString* CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil)
+    {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
                                        reuseIdentifier:CellIdentifier] autorelease];
     }
@@ -326,11 +357,13 @@
     return cell;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureCell:(UITableViewCell *)cell
           atIndexPath:(NSIndexPath *)indexPath
 {
     DLog();
-    Packages* thePackage = (Packages *) [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Packages *thePackage = (Packages *) [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = [thePackage name];
 	cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
@@ -339,16 +372,17 @@
 #pragma mark -
 #pragma mark Table view delegates
 
--  (UIView *)tableView:(UITableView *)tableView 
+//----------------------------------------------------------------------------------------------------------
+-  (UIView *)tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
     // TODO - this won't rotate well...
-    UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tblView.bounds.size.width, k_tblHdrHeight)] autorelease];
+    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tblView.bounds.size.width, k_tblHdrHeight)] autorelease];
     [sectionView setBackgroundColor:[UIColor clearColor]];
     
     // Create a label for the section
-	UILabel* sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0f, 10.0f, 170.0f, 24.0f)] autorelease];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0f, 10.0f, 170.0f, 24.0f)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
                                           size:16.0]];
 	[sectionLabel setTextColor:[UIColor whiteColor]];
@@ -361,16 +395,21 @@ viewForHeaderInSection:(NSInteger)section
 	return sectionView;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
+
+//----------------------------------------------------------------------------------------------------------
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {	
 	return 44;
 }
 
--  (void)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+-  (void)tableView:(UITableView *)tableView
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
         // Delete the row from the data source
         [self editAction];
         // Delete the managed object at the given index path.
@@ -381,7 +420,9 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
     }   
 }
 
--  (void)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+-  (void)tableView:(UITableView *)tableView
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
        toIndexPath:(NSIndexPath *)toIndexPath
 {    
@@ -404,15 +445,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [package setSequence_numberValue:i++];
     }
     
-//    [self.tblView reloadData];
     [packages release];
     [self saveAction];
 }
 
-- (void)tableView:(UITableView *)tableView 
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    PackagesViewController* packagesViewController = [[[PackagesViewController alloc] initWithNibName:@"PackagesViewController" 
+    PackagesViewController *packagesViewController = [[[PackagesViewController alloc] initWithNibName:@"PackagesViewController"
                                                                                                bundle:nil] autorelease];
     // Pass the selected object to the new view controller.
     packagesViewController.title                    = [[self.fetchedResultsController objectAtIndexPath:indexPath] name];
@@ -429,36 +470,38 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Fetched results controller
 
+//----------------------------------------------------------------------------------------------------------
 - (NSFetchedResultsController *)fetchedResultsController
 {
     DLog();
-    if (__fetchedResultsController != nil) {
+    if (__fetchedResultsController != nil)
+    {
         return __fetchedResultsController;
     }
     
     // Create the fetch request for the entity
-    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription* entity  = [NSEntityDescription entityForName:@"Packages"
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity  = [NSEntityDescription entityForName:@"Packages"
                                                inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number
     [fetchRequest setFetchBatchSize:5];
     // Sort by package sequence_number
-    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sequence_number"
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sequence_number"
                                                                    ascending:YES];
-    NSArray* sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Alloc and initialize the controller
-    NSFetchedResultsController* aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                 managedObjectContext:self.managedObjectContext
                                                                                                   sectionNameKeyPath:nil
                                                                                                            cacheName:@"Root"];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
+    fetchedResultsController.delegate = self;
+    self.fetchedResultsController = fetchedResultsController;
     
-    [aFetchedResultsController release];
+    [fetchedResultsController release];
     [fetchRequest release];
     [sortDescriptor release];
     [sortDescriptors release];
@@ -473,38 +516,46 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     return __fetchedResultsController;
 }
 
-// because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
-// we will see the NSManagedObjectContext set up before any persistent stores are registered
-// we will need to fetch again after the persistent store is loaded
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
+    // because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
+    // we will see the NSManagedObjectContext set up before any persistent stores are registered
+    // we will need to fetch again after the persistent store is loaded
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         [self.tblView reloadData];
     }
 }
 
 #pragma mark - Fetched results controller delegate
 
+//----------------------------------------------------------------------------------------------------------
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();
     [self.tblView beginUpdates];
 }
 
-- (void)controller:(NSFetchedResultsController *)controller 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)controller:(NSFetchedResultsController *)controller
   didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo 
            atIndex:(NSUInteger)sectionIndex 
      forChangeType:(NSFetchedResultsChangeType)type
 {
     DLog();
-    switch (type) {
+    switch (type)
+    {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                         withRowAnimation:UITableViewRowAnimationFade];
@@ -519,7 +570,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)controller:(NSFetchedResultsController *)controller
    didChangeObject:(id)anObject 
        atIndexPath:(NSIndexPath *)indexPath 
      forChangeType:(NSFetchedResultsChangeType)type 
@@ -527,7 +580,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DLog();
     
-    switch (type) {
+    switch (type)
+    {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                 withRowAnimation:UITableViewRowAnimationFade];
@@ -552,6 +606,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();

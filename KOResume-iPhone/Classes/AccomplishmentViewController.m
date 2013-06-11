@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by OMARA KEVIN on 12/4/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "AccomplishmentViewController.h"
@@ -12,12 +12,12 @@
 @interface AccomplishmentViewController()
 {
 @private
-    UIBarButtonItem* backBtn;
-    UIBarButtonItem* editBtn;
-    UIBarButtonItem* saveBtn;
-    UIBarButtonItem* cancelBtn;
+    UIBarButtonItem     *backBtn;
+    UIBarButtonItem     *editBtn;
+    UIBarButtonItem     *saveBtn;
+    UIBarButtonItem     *cancelBtn;
 
-    UIView*         _activeFld;
+    UIView              *_activeFld;
 }
 
 - (void)loadData;
@@ -39,6 +39,7 @@
 
 #pragma mark - View lifecycle
 
+//----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -76,7 +77,9 @@
                                                object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -88,7 +91,8 @@
 }
 
 
-- (void)dealloc 
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -105,6 +109,8 @@
     [super dealloc];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
     ALog();
@@ -114,34 +120,50 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    NSError *error = nil;
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
-    } else {
+    }
+    else
+    {
         ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)loadData
 {
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -155,6 +177,7 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
@@ -172,6 +195,8 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();    
@@ -180,9 +205,10 @@
     self.selectedAccomplishment.summary = self.accomplishmentSummary.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error])
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (![moc save:&error])
     {
         // Fatal Error
         NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
@@ -191,6 +217,7 @@
         ELog(error, @"Failed to save to data store");
         abort();
     }
+    
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
@@ -198,15 +225,21 @@
     [self resetView];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -222,17 +255,18 @@
 
 #pragma mark - Keyboard handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     // Get the size of the keyboard
-    NSDictionary* info = [aNotification userInfo];    
+    NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
-    CGRect aRect = self.view.frame;
-    CGRect viewRect = _activeFld.frame;
-    viewRect.origin.y += viewRect.size.height / 2;
-    aRect.size.height -= kbSize.height;
+    CGRect aRect         = self.view.frame;
+    CGRect viewRect      = _activeFld.frame;
+    viewRect.origin.y   += viewRect.size.height / 2;
+    aRect.size.height   -= kbSize.height;
     
     // calculate the contentOffset for the scroller
     // ...to get the middle of the active field into the middle of the available view area
@@ -240,6 +274,8 @@
     [self.scrollView setContentOffset:scrollPoint animated:YES];        
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {    
     
@@ -247,6 +283,7 @@
 
 #pragma mark - UITextView delegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     _activeFld = textView;
@@ -255,6 +292,8 @@
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     _activeFld = nil;
@@ -265,6 +304,7 @@
 #pragma mark -
 #pragma mark UITextFieldDelegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     _activeFld = textField;
@@ -272,12 +312,16 @@
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	[self scrollToViewTextField:textField];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     _activeFld = nil;
 	// Validate fields - nothing to do in this version
@@ -285,14 +329,19 @@
 	return YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
 	
-	if (nextResponder) {
+	if (nextResponder)
+    {
         [nextResponder becomeFirstResponder];
-	} else {
+	}
+    else
+    {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -300,13 +349,17 @@
 	return NO;
 }
 
-- (void)scrollToViewTextField:(UIView *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)scrollToViewTextField:(UIView *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated:YES];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resetView
 {
     DLog();
@@ -314,16 +367,20 @@
                              animated:YES];
 }
 
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];

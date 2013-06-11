@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/15/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "CoverLtrViewController.h"
@@ -13,10 +13,10 @@
 @interface CoverLtrViewController()
 {
 @private
-    UIBarButtonItem* backBtn;
-    UIBarButtonItem* editBtn;
-    UIBarButtonItem* saveBtn;
-    UIBarButtonItem* cancelBtn;
+    UIBarButtonItem     *backBtn;
+    UIBarButtonItem     *editBtn;
+    UIBarButtonItem     *saveBtn;
+    UIBarButtonItem     *cancelBtn;
 }
 
 - (void)loadData;
@@ -37,7 +37,8 @@
 
 #pragma mark - Life Cycle methods
 
-- (void)viewDidLoad 
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 	
@@ -74,7 +75,9 @@
                                                object:[NSUbiquitousKeyValueStore defaultStore]];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super viewDidUnload];
@@ -84,7 +87,9 @@
     self.coverLtrFld            = nil;
 }
 
-- (void)dealloc 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -101,7 +106,9 @@
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -110,34 +117,50 @@
     ALog();
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    NSError *error = nil;
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
-    } else {
+    }
+    else
+    {
         ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)loadData
 {
     // get the cover letter into the view
 	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -150,6 +173,7 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
@@ -166,6 +190,8 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();    
@@ -173,9 +199,10 @@
     self.selectedPackage.cover_ltr    = self.coverLtrFld.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error])
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (![moc save:&error])
     {
         // Fatal Error
         NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
@@ -184,6 +211,7 @@
         ELog(error, @"Failed to save to data store");
         abort();
     }
+    
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
@@ -191,15 +219,21 @@
     [self resetView];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -214,10 +248,12 @@
 
 #pragma mark - Keyboard handlers
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     // Get the size of the keyboard
-    NSDictionary* info = [aNotification userInfo];    
+    NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     // ...and adjust the contentInset for its height
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
@@ -228,13 +264,16 @@
     // If active text field is hidden by keyboard, scroll it so it's visible    
     CGRect aRect = self.view.frame;    
     aRect.size.height -= kbSize.height;    
-    if (!CGRectContainsPoint(aRect, self.coverLtrFld.frame.origin) ) {
+    if (!CGRectContainsPoint(aRect, self.coverLtrFld.frame.origin) )
+    {
         // calculate the contentOffset for the scroller
         CGPoint scrollPoint = CGPointMake(0.0, self.coverLtrFld.frame.origin.y - kbSize.height);        
         [self.coverLtrFld setContentOffset:scrollPoint animated:YES];        
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {    
     UIEdgeInsets contentInsets = UIEdgeInsetsZero;
@@ -245,16 +284,21 @@
 
 #pragma mark - UITextView delegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {    
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     DLog();;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resetView
 {
     DLog();
@@ -262,16 +306,21 @@
                              animated:YES];
 }
 
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];

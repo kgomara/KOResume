@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/9/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -15,10 +15,10 @@
 
 }
 
-@property (nonatomic, strong) IBOutlet      UITableView*                tblView;
-@property (nonatomic, strong)               Resumes*                    selectedResume;
+@property (nonatomic, strong) IBOutlet      UITableView                 *tblView;
+@property (nonatomic, strong)               Resumes                     *selectedResume;
 
-@property (nonatomic, strong)               NSManagedObjectContext*     managedObjectContext;
-@property (nonatomic, strong)               NSFetchedResultsController* fetchedResultsController;
+@property (nonatomic, strong)               NSManagedObjectContext      *managedObjectContext;
+@property (nonatomic, strong)               NSFetchedResultsController  *fetchedResultsController;
 
 @end

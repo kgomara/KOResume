@@ -3,7 +3,7 @@
 //  KOResume
 //
 //  Created by Kevin O'Mara on 3/13/11.
-//  Copyright 2011, 2012 KevinGOMara.com. All rights reserved.
+//  Copyright 2011-2013 O'Mara Consulting Associates. All rights reserved.
 //
 
 #import "JobsDetailViewController.h"
@@ -20,24 +20,24 @@
 {
     
 @private
-    NSMutableArray*     _jobAccomplishmentsArray;
-    NSString*           _accomplishmentName;
+    NSMutableArray      *_jobAccomplishmentsArray;
+    NSString            *_accomplishmentName;
 
-    UIBarButtonItem* backBtn;
-    UIBarButtonItem* doneBtn;
-    UIBarButtonItem* clearBtn;
-    UIBarButtonItem* editBtn;
-    UIBarButtonItem* saveBtn;
-    UIBarButtonItem* cancelBtn;
-    NSDateFormatter* dateFormatter;
+    UIBarButtonItem     *backBtn;
+    UIBarButtonItem     *doneBtn;
+    UIBarButtonItem     *clearBtn;
+    UIBarButtonItem     *editBtn;
+    UIBarButtonItem     *saveBtn;
+    UIBarButtonItem     *cancelBtn;
+    NSDateFormatter     *dateFormatter;
     
-    UIButton*        addAccompBtn;
-    int              activeDateFld;
-    UIView*         _activeFld;
+    UIButton            *addAccompBtn;
+    int                 activeDateFld;
+    UIView              *_activeFld;
 }
 
-@property (nonatomic, strong) NSMutableArray*   jobAccomplishmentsArray;
-@property (nonatomic, strong) NSString*         accomplishmentName;
+@property (nonatomic, strong) NSMutableArray    *jobAccomplishmentsArray;
+@property (nonatomic, strong) NSString          *accomplishmentName;
 
 - (void)loadData;
 - (void)sortTables;
@@ -77,7 +77,8 @@
 
 #pragma mark Application lifecycle methods
 
-- (void)viewDidLoad 
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 	
@@ -136,6 +137,8 @@
                                                object:[self.managedObjectContext persistentStoreCoordinator]];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)loadData
 {
     // Get the data and stuff it into the fields
@@ -159,7 +162,9 @@
     [self sortTables];
 }
 
-- (void)viewDidUnload 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super viewDidUnload];
@@ -181,7 +186,8 @@
 }
 
 
-- (void)dealloc 
+//----------------------------------------------------------------------------------------------------------
+- (void)dealloc
 {
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -206,7 +212,9 @@
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -215,43 +223,61 @@
     ALog();
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
     self.fetchedResultsController.delegate = self;
     [self.tblView reloadData];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
     // Save any changes
     DLog();
-    NSError* error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
-    if (moc != nil) {
-        if ([moc hasChanges] && ![moc save:&error]) {
-            ELog(error, @"Failed to save");
-            abort();
+    NSError *error = nil;
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                ELog(error, @"Failed to save");
+                abort();
+            }
         }
-    } else {
+    }
+    else
+    {
         ALog(@"managedObjectContext is null");
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)sortTables
 {
     // Sort accomplishments in the order they should appear in the table  
-    NSSortDescriptor* sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
+    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
                                                                     ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    self.jobAccomplishmentsArray = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
+    NSArray *sortDescriptors        = [NSArray arrayWithObject:sortDescriptor];
+    self.jobAccomplishmentsArray    = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -278,6 +304,7 @@
 
 #pragma mark - UI handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)editAction
 {
     DLog();
@@ -306,6 +333,8 @@
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)saveAction
 {
     DLog();    
@@ -325,15 +354,28 @@
     // TODO need to resequence the accomplishments
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError* error = nil;
-    NSManagedObjectContext* context = [self.fetchedResultsController managedObjectContext];
-    if (![context save:&error]) {
-        // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-        [KOExtensions showErrorWithMessage:msg];
-        [msg release];
-        ELog(error, @"Failed to save to data store");
-        abort();
+    
+    NSError *error = nil;
+    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    
+    if (moc)
+    {
+        if ([moc hasChanges])
+        {
+            if (![moc save:&error])
+            {
+                // Fatal Error
+                NSString *msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
+                [KOExtensions showErrorWithMessage:msg];
+                [msg release];
+                ELog(error, @"Failed to save to data store");
+                abort();
+            }
+        }
+    }
+    else
+    {
+        ALog(@"managedObjectContext is null");
     }
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
@@ -343,28 +385,40 @@
     [self.tblView reloadData];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resequenceTables
 {
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
-    for (int i = 0; i < [self.jobAccomplishmentsArray count]; i++) {
-        if ([[self.jobAccomplishmentsArray objectAtIndex:i] isDeleted]) {
+    for (int i = 0; i < [self.jobAccomplishmentsArray count]; i++)
+    {
+        if ([[self.jobAccomplishmentsArray objectAtIndex:i] isDeleted])
+        {
             // skip it
-        } else {
+        }
+        else
+        {
             [[self.jobAccomplishmentsArray objectAtIndex:i] setSequence_numberValue:i];
         }
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)cancelAction
 {
     DLog();
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    if ([[self.managedObjectContext undoManager] canUndo]) {
+    
+    if ([[self.managedObjectContext undoManager] canUndo])
+    {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    } else {
+    }
+    else
+    {
         DLog(@"User cancelled, nothing to undo");
     }
     
@@ -378,11 +432,13 @@
     [self.tblView reloadData];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)doneAction
 {
     DLog();
-    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];    
-    CGRect endFrame = self.datePicker.frame;
+    CGRect screenRect   = [[UIScreen mainScreen] applicationFrame];    
+    CGRect endFrame     = self.datePicker.frame;
     
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
@@ -400,22 +456,31 @@
     self.navigationItem.leftBarButtonItem  = cancelBtn;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)clearAction
 {
     DLog();
 
-    if (activeDateFld == k_startDateTextFld) {
+    if (activeDateFld == k_startDateTextFld)
+    {
         self.selectedJob.start_date = NULL;
         self.jobStartDate.text = @"";
-    } else {
+    }
+    else
+    {
         self.selectedJob.end_date = NULL;
         self.jobEndDate.text = @"";
     }
 }
 
-- (IBAction)companyTapped:(id)sender 
+
+//----------------------------------------------------------------------------------------------------------
+- (IBAction)companyTapped:(id)sender
 {
-	if (self.selectedJob.uri == NULL || [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound) {
+	if (self.selectedJob.uri == NULL ||
+       [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound)
+    {
 		return;
 	}
     
@@ -423,15 +488,19 @@
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.selectedJob.uri]];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (IBAction)getEndDate:(id)sender
 {
-    if (activeDateFld == k_startDateTextFld) {
+    if (activeDateFld == k_startDateTextFld)
+    {
         // Update the database
         self.selectedJob.start_date = [self.datePicker date];
         // ...and the textField
         self.jobStartDate.text      = [dateFormatter stringFromDate:self.selectedJob.start_date];
-        
-    } else {
+    }
+    else
+    {
         // Update the database
         self.selectedJob.end_date   = [self.datePicker date];
         // ...and the textField
@@ -441,17 +510,19 @@
 
 #pragma mark - Keyboard handlers
 
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     // Get the size of the keyboard
-    NSDictionary* info = [aNotification userInfo];    
+    NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
     CGRect aRect = self.view.frame;    
     aRect.size.height -= kbSize.height;
     DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
-    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) ) {
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) )
+    {
         // calculate the contentOffset for the scroller
         // ...to get the middle of the active field into the middle of the available view area
         CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
@@ -459,6 +530,8 @@
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {    
 
@@ -466,6 +539,7 @@
 
 #pragma mark - UITextView delegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     _activeFld = textView;
@@ -473,6 +547,8 @@
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     _activeFld = nil;
@@ -482,10 +558,12 @@
 
 #pragma mark - UITextFieldDelegate methods
 
+//----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     _activeFld = textField;
-    if (textField.tag == k_startDateTextFld) {
+    if (textField.tag == k_startDateTextFld)
+    {
         // we are in the start date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
@@ -498,7 +576,8 @@
         activeDateFld = k_startDateTextFld;
         return NO;
     }
-    if (textField.tag == k_endDateTextFld) {
+    else if (textField.tag == k_endDateTextFld)
+    {
         // we are in the end date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
@@ -511,15 +590,20 @@
         activeDateFld = k_endDateTextFld;
         return NO;
     }
+    
     return YES;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	[self scrollToViewTextField:textField];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     _activeFld = nil;
 	// Validate fields - nothing to do in this version
@@ -527,14 +611,19 @@
 	return YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
 	
-	if (nextResponder) {
+	if (nextResponder)
+    {
         [nextResponder becomeFirstResponder];
-	} else {
+	}
+    else
+    {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -542,6 +631,8 @@
 	return NO;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)animateDatePickerOn
 {
     DLog();
@@ -569,7 +660,9 @@
     self.navigationItem.leftBarButtonItem = clearBtn;
 }
 
-- (void)scrollToViewTextField:(UITextField *)textField 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.tblView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
@@ -578,6 +671,7 @@
 
 #pragma mark - Accomplishment methods
 
+//----------------------------------------------------------------------------------------------------------
 - (void)addAccomplishment
 {
     DLog();
@@ -588,8 +682,9 @@
     accomp.created_date = [NSDate date];
     accomp.job          = self.selectedJob;
     
-    NSError* error = nil;
-    if (![self.managedObjectContext save:&error]) {
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error])
+    {
         ELog(error, @"Failed to save");
         abort();
     }
@@ -607,9 +702,11 @@
                                 animated:YES];
 }
 
-- (void)getAccomplishmentName 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)getAccomplishmentName
 {
-    UIAlertView* accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment") 
+    UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
                                                                   message:nil
                                                                  delegate:self 
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
@@ -619,13 +716,18 @@
     [accompSummaryAlert show];
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 1) {
+    if (buttonIndex == 1)
+    {
         // OK
         self.accomplishmentName = [[alertView textFieldAtIndex:0] text];
         [self addAccomplishment];
-    } else {
+    }
+    else
+    {
         // cancel
         [self configureDefaultNavBar];
     }
@@ -633,24 +735,31 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+- (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section 
 {	
     return [self.jobAccomplishmentsArray count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+- (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
-    static NSString* CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil)
+    {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
                                        reuseIdentifier:CellIdentifier] autorelease];
     }
@@ -662,12 +771,17 @@
     return cell;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
-    if ([[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name]) {
+    if ([[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name])
+    {
         cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name];
-    } else {
+    }
+    else
+    {
         cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] summary];
     }
     cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
@@ -677,7 +791,8 @@
 
 #pragma mark - Table view delegates
 
--  (UIView *)tableView:(UITableView *)tableView 
+//----------------------------------------------------------------------------------------------------------
+-  (UIView *)tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
@@ -688,24 +803,28 @@ viewForHeaderInSection:(NSInteger)section
 	[sectionLabel setBackgroundColor:[UIColor clearColor]];
     
     sectionLabel.text = NSLocalizedString(@"Accomplishments", @"Accomplishments");
-    UIView* sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
+    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
     [sectionView addSubview:sectionLabel];
     [sectionView addSubview:addAccompBtn];
     
     return sectionView;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView 
-heightForHeaderInSection:(NSInteger)section 
+
+//----------------------------------------------------------------------------------------------------------
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section 
 {	
 	return 44;
 }
 
--  (void)tableView:(UITableView *)tableView 
+
+//----------------------------------------------------------------------------------------------------------
+-  (void)tableView:(UITableView *)tableView
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
         // Delete the managed object at the given index path.
         NSManagedObject *accompToDelete = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
         [self.managedObjectContext deleteObject:accompToDelete];
@@ -718,7 +837,8 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
     }   
 }
 
--  (void)tableView:(UITableView *)tableView 
+//----------------------------------------------------------------------------------------------------------
+-  (void)tableView:(UITableView *)tableView
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
        toIndexPath:(NSIndexPath *)toIndexPath
 {
@@ -726,32 +846,31 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSUInteger fromRow  = [fromIndexPath row];
     NSUInteger toRow    = [toIndexPath row];
     
-        // Get the Accomplishment at the fromRow 
-        Jobs* movedAccomp = [[self.jobAccomplishmentsArray objectAtIndex:fromRow] retain];
-        // ...remove it from that "order"
-        [self.jobAccomplishmentsArray removeObjectAtIndex:fromRow];
-        // ...and insert it where the user wants
-        [self.jobAccomplishmentsArray insertObject:movedAccomp
-                                           atIndex:toRow];
-        [movedAccomp release];
+    // Get the Accomplishment at the fromRow 
+    Jobs *movedAccomp = [[self.jobAccomplishmentsArray objectAtIndex:fromRow] retain];
+    // ...remove it from that "order"
+    [self.jobAccomplishmentsArray removeObjectAtIndex:fromRow];
+    // ...and insert it where the user wants
+    [self.jobAccomplishmentsArray insertObject:movedAccomp
+                                       atIndex:toRow];
+    [movedAccomp release];
 }
 
 
-- (void)tableView:(UITableView *)tableView 
-didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+//----------------------------------------------------------------------------------------------------------
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
-    AccomplishmentViewController* accomplishmentViewController = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController" 
+    AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController"
                                                                                                                 bundle:nil];
-    accomplishmentViewController.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
-    accomplishmentViewController.managedObjectContext       = self.managedObjectContext;
-    accomplishmentViewController.fetchedResultsController   = self.fetchedResultsController;
-    accomplishmentViewController.title                      = accomplishmentViewController.selectedAccomplishment.name;
+    accomplishmentVC.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
+    accomplishmentVC.managedObjectContext       = self.managedObjectContext;
+    accomplishmentVC.fetchedResultsController   = self.fetchedResultsController;
+    accomplishmentVC.title                      = accomplishmentVC.selectedAccomplishment.name;
     
-    // Pass the selected object to the new view controller.
-    [self.navigationController pushViewController:accomplishmentViewController 
+    [self.navigationController pushViewController:accomplishmentVC 
                                          animated:YES];
-    [accomplishmentViewController release];
+    [accomplishmentVC release];
 
 	[tableView deselectRowAtIndexPath:indexPath
 							 animated:YES];
@@ -759,14 +878,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Fetched Results Controller delegate methods
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
+//----------------------------------------------------------------------------------------------------------
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tblView beginUpdates];
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller 
+//----------------------------------------------------------------------------------------------------------
+- (void)controller:(NSFetchedResultsController *)controller
    didChangeObject:(id)anObject 
        atIndexPath:(NSIndexPath *)indexPath 
      forChangeType:(NSFetchedResultsChangeType)type 
@@ -775,8 +896,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     
     UITableView *tableView = self.tblView;
     
-    switch(type) {
-            
+    switch(type)
+    {
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] 
                              withRowAnimation:UITableViewRowAnimationFade];
@@ -803,14 +924,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller 
+//----------------------------------------------------------------------------------------------------------
+- (void)controller:(NSFetchedResultsController *)controller
   didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo 
            atIndex:(NSUInteger)sectionIndex 
      forChangeType:(NSFetchedResultsChangeType)type 
 {
     
-    switch(type) {
-            
+    switch(type)
+    {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
                         withRowAnimation:UITableViewRowAnimationFade];
@@ -824,22 +946,28 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
+//----------------------------------------------------------------------------------------------------------
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
 }
 
-- (void)reloadFetchedResults:(NSNotification*)note 
+
+//----------------------------------------------------------------------------------------------------------
+- (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    
+    if (![[self fetchedResultsController] performFetch:&error])
+    {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note) {
+    if (note)
+    {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];
@@ -850,11 +978,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - UIScrollView delegate methods
 
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView 
+//----------------------------------------------------------------------------------------------------------
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
 	return self.jobView;
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 - (void)resetView
 {
     DLog();
