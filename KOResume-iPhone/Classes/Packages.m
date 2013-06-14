@@ -2,6 +2,6 @@
 
 @implementation Packages
 
-// Custom logic goes here.
+NSString *const kPackagesEntity         = @"Packages";
 
 @end

@@ -2,6 +2,6 @@
 
 @implementation Education
 
-// Custom logic goes here.
+NSString *const kEducationEntity        = @"Education";
 
 @end

@@ -1,5 +1,7 @@
 #import "_Packages.h"
 
 @interface Packages : _Packages {}
-// Custom logic goes here.
+
+FOUNDATION_EXPORT NSString *const kPackagesEntity;
+
 @end

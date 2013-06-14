@@ -2,6 +2,6 @@
 
 @implementation Accomplishments
 
-// Custom logic goes here.
+NSString *const kAccomplishmentsEntity      = @"Accomplishments";
 
 @end

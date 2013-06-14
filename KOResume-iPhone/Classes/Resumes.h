@@ -1,5 +1,7 @@
 #import "_Resumes.h"
 
 @interface Resumes : _Resumes {}
-// Custom logic goes here.
+
+FOUNDATION_EXPORT NSString *const kResumesEntity;
+
 @end

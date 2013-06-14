@@ -27,6 +27,7 @@
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
 - (void)animateDatePickerOn;
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc;
 
 @end
 
@@ -52,40 +53,40 @@
 {
     [super viewDidLoad];
     
-    [self.datePicker setHidden:YES];
-    [self.datePicker setDatePickerMode:UIDatePickerModeDate];
+    [self.datePicker setHidden: YES];
+    [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     
     [self loadData];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
-    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                target:self 
-                                                                action:@selector(editAction)];
-    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                target:self
-                                                                action:@selector(saveAction)];
-    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                target:self
-                                                                action:@selector(cancelAction)];
-    doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                target:self
-                                                                action:@selector(doneAction)];
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+                                                                target: self 
+                                                                action: @selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+                                                                target: self
+                                                                action: @selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
+                                                                target: self
+                                                                action: @selector(cancelAction)];
+    doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
+                                                                target: self
+                                                                action: @selector(doneAction)];
 
     [self configureDefaultNavBar];
 
     // Register for iCloud notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFetchedResults:) 
-                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object:[NSUbiquitousKeyValueStore defaultStore]];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:) 
+                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
     
@@ -132,24 +133,8 @@
 {
     // Save any changes
     DLog();
-    NSError *error = nil;
-    NSManagedObjectContext *moc = self.managedObjectContext;
-    
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
+
+    [self saveMoc: self.managedObjectContext];
 }
 
 
@@ -166,8 +151,8 @@
 {
     self.nameFld.text               = self.selectedEducation.name;
     dateFormatter                   = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
+    [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle: NSDateFormatterNoStyle];	//Not shown
 	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
     self.cityFld.text               = self.selectedEducation.city;
     self.stateFld.text              = self.selectedEducation.state;
@@ -183,11 +168,11 @@
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
     
-    [self.nameFld setEnabled:NO];
-    [self.degreeDateFld setEnabled:NO];
-    [self.cityFld setEnabled:NO];
-    [self.stateFld setEnabled:NO];
-    [self.titleFld setEnabled:NO];
+    [self.nameFld       setEnabled: NO];
+    [self.degreeDateFld setEnabled: NO];
+    [self.cityFld       setEnabled: NO];
+    [self.stateFld      setEnabled: NO];
+    [self.titleFld      setEnabled: NO];
 }
 
 #pragma mark - UI handlers
@@ -202,11 +187,11 @@
     self.navigationItem.rightBarButtonItem = saveBtn;
 
     // Enable the fields for editing
-    [self.nameFld setEnabled:YES];
-    [self.degreeDateFld setEnabled:YES];
-    [self.cityFld setEnabled:YES];
-    [self.stateFld setEnabled:YES];
-    [self.titleFld setEnabled:YES];
+    [self.nameFld       setEnabled: YES];
+    [self.degreeDateFld setEnabled: YES];
+    [self.cityFld       setEnabled: YES];
+    [self.stateFld      setEnabled: YES];
+    [self.titleFld      setEnabled: YES];
 
     // Start an undo group...it will either be commited in saveAction or 
     //    undone in cancelAction
@@ -220,32 +205,19 @@
     DLog();    
     // Save the changes
     self.selectedEducation.name         = self.nameFld.text;
-    self.selectedEducation.earned_date  = [dateFormatter dateFromString:self.degreeDateFld.text];
+    self.selectedEducation.earned_date  = [dateFormatter dateFromString: self.degreeDateFld.text];
     self.selectedEducation.city         = self.cityFld.text;
     self.selectedEducation.state        = self.stateFld.text;
     self.selectedEducation.title        = self.titleFld.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    NSError *error = nil;
-    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
     
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
-
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
     // ...and reset the UI defaults
@@ -259,20 +231,15 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] setActionName:kPackagesEditing];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    if ([[self.managedObjectContext undoManager] canUndo])
-    {
+    if ([[self.managedObjectContext undoManager] canUndo]) {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    }
-    else
-    {
-        DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self loadData];
     [self configureDefaultNavBar];
@@ -290,11 +257,11 @@
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
     // Start the slide down animation
-    [UIView animateWithDuration:0.3
-                     animations:^{
+    [UIView animateWithDuration: 0.3
+                     animations: ^{
                          self.datePicker.frame = endFrame;
-                         [self.scrollView setContentOffset:CGPointZero
-                                                  animated:NO];
+                         [self.scrollView setContentOffset: CGPointZero
+                                                  animated: NO];
                      }];
     
     // Reset the UI
@@ -310,7 +277,7 @@
     // Update the database
     self.selectedEducation.earned_date  = [self.datePicker date];
     // ...and the textField
-	self.degreeDateFld.text             = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
+	self.degreeDateFld.text             = [dateFormatter stringFromDate: self.selectedEducation.earned_date];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -318,25 +285,22 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    if (textField.tag == k_degreeDateFldTag)
-    {
+    if (textField.tag == k_degreeDateFldTag) {
         // we are in the date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
         if (!self.selectedEducation.earned_date) {
             self.selectedEducation.earned_date = [NSDate date];
         }
-        [self.datePicker setDate:self.selectedEducation.earned_date];
+        [self.datePicker setDate: self.selectedEducation.earned_date];
         [self animateDatePickerOn];
         return NO;
-    }
-    else
-    {
-        if (self.datePicker)
-        {
+    } else {
+        if (self.datePicker) {
             [self.datePicker setHidden:YES];
         }
     }
+    
     return YES;
 }
 
@@ -344,7 +308,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	[self scrollToViewTextField:textField];
+	[self scrollToViewTextField: textField];
 }
 
 
@@ -361,14 +325,11 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
-	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
+	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
-	if (nextResponder)
-    {
+	if (nextResponder) {
         [nextResponder becomeFirstResponder];
-	}
-    else
-    {
+	} else {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -381,12 +342,13 @@
 - (void)animateDatePickerOn
 {
     DLog();
-    [self.datePicker setHidden:NO];
-    [self.view bringSubviewToFront:self.datePicker];
+    [self.datePicker setHidden: NO];
+    [self.view bringSubviewToFront: self.datePicker];
+    
     // Size up the picker view to our screen and compute the start/end frame origin for our slide up animation
     // ... compute the start frame        
     CGRect screenRect = [[UIScreen mainScreen] applicationFrame];        
-    CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];        
+    CGSize pickerSize = [self.datePicker sizeThatFits: CGSizeZero];        
     CGRect startRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height, pickerSize.width, pickerSize.height);        
     self.datePicker.frame = startRect;   
     
@@ -394,10 +356,10 @@
     CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height, pickerSize.width, pickerSize.height);
     
     // Start the slide up animation        
-    [UIView animateWithDuration:0.3
-                     animations:^ {
+    [UIView animateWithDuration: 0.3
+                     animations: ^{
                          self.datePicker.frame = pickerRect;
-                         [self.scrollView setContentOffset:CGPointMake(0.0f, 100.0f)];
+                         [self.scrollView setContentOffset: CGPointMake(0.0f, 100.0f)];
                      }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
@@ -410,8 +372,8 @@
 - (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
-	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                             animated:YES];
+	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                             animated: YES];
 }
 
 
@@ -419,8 +381,8 @@
 - (void)resetView
 {
     DLog();
-    [self.scrollView setContentOffset:CGPointZero
-                             animated:YES];
+    [self.scrollView setContentOffset: CGPointZero
+                             animated: YES];
 }
 
 
@@ -430,19 +392,39 @@
     DLog();
     NSError *error = nil;
     
-    if (![[self fetchedResultsController] performFetch:&error])
-    {
+    if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        abort();
-    }             
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
     
-    if (note)
-    {
+    if (note) {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];
         }];
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc
+{
+    BOOL result = YES;
+    NSError *error = nil;
+    
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save:&error]) {
+                ELog(error, @"Failed to save");
+                result = NO;
+            }
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+        result = NO;
+    }
+    
+    return result;
 }
 
 @end

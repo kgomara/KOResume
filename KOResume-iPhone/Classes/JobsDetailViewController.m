@@ -11,8 +11,6 @@
 #import "Accomplishments.h"
 #import "AccomplishmentViewController.h"
 
-#define k_addBtnWidth       29.0f
-#define k_addBtnHeight      29.0f
 #define k_startDateTextFld  6
 #define k_endDateTextFld    7
 
@@ -48,6 +46,7 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *)indexPath;
 - (void)resequenceTables;
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc;
 
 @end
 
@@ -82,59 +81,61 @@
 {
     [super viewDidLoad];
 	
-	self.view.backgroundColor		= [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
-	self.jobView.image              = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:20 
-                                                                                                           topCapHeight:20];
+	self.view.backgroundColor		= [UIColor colorWithPatternImage: [UIImage imageNamed: @"background.png"]];
+	self.jobView.image              = [[UIImage imageNamed: @"contentpane_details.png"] stretchableImageWithLeftCapWidth: 20 
+                                                                                                            topCapHeight: 20];
     self.fetchedResultsController.delegate = self;
     
     activeDateFld                   = 0;
-    [self.datePicker setDatePickerMode:UIDatePickerModeDate];
+    [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     
     [self loadData];
 
     _activeFld = nil;
 
     // Register for keyboard notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self     
-                                             selector:@selector(keyboardWillBeHidden:)     
-                                                 name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(keyboardWillShow:)
+                                                 name: UIKeyboardWillShowNotification
+                                               object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self     
+                                             selector: @selector(keyboardWillBeHidden:)     
+                                                 name: UIKeyboardWillHideNotification
+                                               object: nil];
     
     // Set up button items
-    addAccompBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    [addAccompBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
-                            forState:UIControlStateNormal];
-    [addAccompBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
-    [addAccompBtn addTarget:self 
-                     action:@selector(getAccomplishmentName) 
-           forControlEvents:UIControlEventTouchUpInside];
+    addAccompBtn = [[UIButton buttonWithType: UIButtonTypeCustom] retain];
+    [addAccompBtn setBackgroundImage: [UIImage imageNamed: @"addButton.png"] 
+                            forState: UIControlStateNormal];
+    [addAccompBtn setFrame: CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addAccompBtn addTarget: self 
+                     action: @selector(getAccomplishmentName) 
+           forControlEvents: UIControlEventTouchUpInside];
 
     backBtn     = self.navigationItem.leftBarButtonItem;    
-    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                target:self 
-                                                                action:@selector(editAction)];
-    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                target:self
-                                                                action:@selector(saveAction)];
-    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                target:self
-                                                                action:@selector(cancelAction)];
-    doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                target:self
-                                                                action:@selector(doneAction)];
-    clearBtn    = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo
-                                                                target:self
-                                                                action:@selector(clearAction)];
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+                                                                target: self 
+                                                                action: @selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+                                                                target: self
+                                                                action: @selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
+                                                                target: self
+                                                                action: @selector(cancelAction)];
+    doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
+                                                                target: self
+                                                                action: @selector(doneAction)];
+    clearBtn    = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemUndo
+                                                                target: self
+                                                                action: @selector(clearAction)];
     
     [self configureDefaultNavBar];
     
     // Set an observer for iCloud changes
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFetchedResults:) 
-                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object:[self.managedObjectContext persistentStoreCoordinator]];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:) 
+                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object: [self.managedObjectContext persistentStoreCoordinator]];
 }
 
 
@@ -148,16 +149,16 @@
     self.jobState.text                  = self.selectedJob.state;
 	self.jobTitle.text                  = self.selectedJob.title;
     dateFormatter                       = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];	//Not shown
-	self.jobStartDate.text              = [dateFormatter stringFromDate:self.selectedJob.start_date];
-    self.jobEndDate.text                = [dateFormatter stringFromDate:self.selectedJob.end_date];
+    [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle: NSDateFormatterNoStyle];	//Not shown
+	self.jobStartDate.text              = [dateFormatter stringFromDate: self.selectedJob.start_date];
+    self.jobEndDate.text                = [dateFormatter stringFromDate: self.selectedJob.end_date];
 	self.jobResponsibilities.text       = self.selectedJob.summary;
 	
-	[self.jobCompanyUrlBtn setTitle:self.selectedJob.name 
-						   forState:UIControlStateNormal];
-    [self.jobCompanyUrlBtn setBackgroundImage:[UIImage imageNamed:@"companyBtn.png"]
-                                     forState:UIControlStateNormal];
+	[self.jobCompanyUrlBtn setTitle: self.selectedJob.name 
+						   forState: UIControlStateNormal];
+    [self.jobCompanyUrlBtn setBackgroundImage: [UIImage imageNamed: @"companyBtn.png"]
+                                     forState: UIControlStateNormal];
     
     [self sortTables];
 }
@@ -166,7 +167,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     [super viewDidUnload];
 
 	self.jobView					= nil;
@@ -181,7 +182,6 @@
 	self.jobResponsibilities		= nil;
     
     self.tblView                    = nil;
-    
 	self.jobAccomplishmentsArray	= nil;
 }
 
@@ -190,7 +190,7 @@
 - (void)dealloc
 {
     // Remove the keyboard observer
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     // Apple recommends calling release on the ivar...
 	[_jobView release];
@@ -237,24 +237,8 @@
 {
     // Save any changes
     DLog();
-    NSError *error = nil;
-    NSManagedObjectContext *moc = self.managedObjectContext;
-    
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
+
+    [self saveMoc: self.managedObjectContext];
 }
 
 
@@ -270,10 +254,10 @@
 - (void)sortTables
 {
     // Sort accomplishments in the order they should appear in the table  
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
-                                                                    ascending:YES] autorelease];
-    NSArray *sortDescriptors        = [NSArray arrayWithObject:sortDescriptor];
-    self.jobAccomplishmentsArray    = [NSMutableArray arrayWithArray:[self.selectedJob.accomplishment sortedArrayUsingDescriptors:sortDescriptors]];
+    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: kSequenceNumberAttr
+                                                                    ascending: YES] autorelease];
+    NSArray *sortDescriptors        = [NSArray arrayWithObject: sortDescriptor];
+    self.jobAccomplishmentsArray    = [NSMutableArray arrayWithArray: [self.selectedJob.accomplishment sortedArrayUsingDescriptors: sortDescriptors]];
 }
 
 
@@ -286,20 +270,20 @@
     self.navigationItem.leftBarButtonItem  = backBtn;
     
     // Set table editing off
-    [self.tblView setEditing:NO];
+    [self.tblView               setEditing: NO];
     // ...hide the add button
-    [addAccompBtn setHidden:YES];
+    [addAccompBtn               setHidden: YES];
     // ...and hide/disable the fields
-    [self.jobCompany setHidden:YES];
-    [self.jobCompanyUrl setHidden:YES];
-    [self.jobCompanyUrlBtn setHidden:NO];
-    [self.jobCity setEnabled:NO];
-    [self.jobState setEnabled:NO];
-    [self.jobTitle setEnabled:NO];
-    [self.jobStartDate setEnabled:NO];
-    [self.jobEndDate setEnabled:NO];
-    [self.jobResponsibilities setEditable:NO];
-    [self.datePicker setHidden:YES];
+    [self.jobCompany            setHidden: YES];
+    [self.jobCompanyUrl         setHidden: YES];
+    [self.jobCompanyUrlBtn      setHidden: NO];
+    [self.jobCity               setEnabled: NO];
+    [self.jobState              setEnabled: NO];
+    [self.jobTitle              setEnabled: NO];
+    [self.jobStartDate          setEnabled: NO];
+    [self.jobEndDate            setEnabled: NO];
+    [self.jobResponsibilities   setEditable: NO];
+    [self.datePicker            setHidden: YES];
 }
 
 #pragma mark - UI handlers
@@ -310,24 +294,24 @@
     DLog();
     
     // Enable table editing
-    [self.tblView setEditing:YES];
+    [self.tblView setEditing: YES];
 
     // Set up the cancel and save buttons
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     // ...show the add button
-    [addAccompBtn setHidden:NO];    
+    [addAccompBtn               setHidden: NO];    
     // ...and show/enable the fields
-    [self.jobCompany setHidden:NO];
-    [self.jobCompanyUrl setHidden:NO];
-    [self.jobCompanyUrlBtn setHidden:YES];
-    [self.jobCity setEnabled:YES];
-    [self.jobState setEnabled:YES];
-    [self.jobTitle setEnabled:YES];
-    [self.jobStartDate setEnabled:YES];
-    [self.jobEndDate setEnabled:YES];
-    [self.jobResponsibilities setEditable:YES];
-    [self.datePicker setHidden:NO];
+    [self.jobCompany            setHidden: NO];
+    [self.jobCompanyUrl         setHidden: NO];
+    [self.jobCompanyUrlBtn      setHidden: YES];
+    [self.jobCity               setEnabled: YES];
+    [self.jobState              setEnabled: YES];
+    [self.jobTitle              setEnabled: YES];
+    [self.jobStartDate          setEnabled: YES];
+    [self.jobEndDate            setEnabled: YES];
+    [self.jobResponsibilities   setEditable: YES];
+    [self.datePicker            setHidden: NO];
     
     // Start an undo group...it will either be commited in saveAction or undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
@@ -344,8 +328,8 @@
     // Save the changes
     self.selectedJob.name           = self.jobCompany.text;
     self.selectedJob.uri            = self.jobCompanyUrl.text;
-    self.selectedJob.end_date       = [dateFormatter dateFromString:self.jobEndDate.text];
-    self.selectedJob.start_date     = [dateFormatter dateFromString:self.jobStartDate.text];
+    self.selectedJob.end_date       = [dateFormatter dateFromString: self.jobEndDate.text];
+    self.selectedJob.start_date     = [dateFormatter dateFromString: self.jobStartDate.text];
     self.selectedJob.city           = self.jobCity.text;
     self.selectedJob.state          = self.jobState.text;
     self.selectedJob.title          = self.jobTitle.text;
@@ -355,30 +339,14 @@
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    NSError *error = nil;
-    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
+    if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
     
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                // Fatal Error
-                NSString *msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-                [KOExtensions showErrorWithMessage:msg];
-                [msg release];
-                ELog(error, @"Failed to save to data store");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self resetView];
@@ -391,15 +359,11 @@
 {
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
-    for (int i = 0; i < [self.jobAccomplishmentsArray count]; i++)
-    {
-        if ([[self.jobAccomplishmentsArray objectAtIndex:i] isDeleted])
-        {
-            // skip it
-        }
-        else
-        {
-            [[self.jobAccomplishmentsArray objectAtIndex:i] setSequence_numberValue:i];
+    for (int i = 0; i < [self.jobAccomplishmentsArray count]; i++) {
+        if ([[self.jobAccomplishmentsArray objectAtIndex: i] isDeleted]) {
+            // no need to update the sequence number of deleted objects
+        } else {
+            [[self.jobAccomplishmentsArray objectAtIndex: i] setSequence_numberValue:i];
         }
     }
 }
@@ -410,20 +374,16 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] setActionName: kPackagesEditing];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    if ([[self.managedObjectContext undoManager] canUndo])
-    {
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        // Changes were made - discard them
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    }
-    else
-    {
-        DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self loadData];
     [self configureDefaultNavBar];
@@ -443,11 +403,11 @@
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
     // Start the slide down animation
-    [UIView animateWithDuration:0.3
-                     animations:^{
+    [UIView animateWithDuration: 0.3
+                     animations: ^{
                          self.datePicker.frame = endFrame;
-                         [self.tblView setContentOffset:CGPointZero
-                                               animated:NO];
+                         [self.tblView setContentOffset: CGPointZero
+                                               animated: NO];
                      }];
     
     // Reset the UI
@@ -462,15 +422,12 @@
 {
     DLog();
 
-    if (activeDateFld == k_startDateTextFld)
-    {
+    if (activeDateFld == k_startDateTextFld) {
         self.selectedJob.start_date = NULL;
-        self.jobStartDate.text = @"";
-    }
-    else
-    {
-        self.selectedJob.end_date = NULL;
-        self.jobEndDate.text = @"";
+        self.jobStartDate.text      = @"";
+    } else {
+        self.selectedJob.end_date   = NULL;
+        self.jobEndDate.text        = @"";
     }
 }
 
@@ -479,32 +436,28 @@
 - (IBAction)companyTapped:(id)sender
 {
 	if (self.selectedJob.uri == NULL ||
-       [self.selectedJob.uri rangeOfString:@"://"].location == NSNotFound)
-    {
+       [self.selectedJob.uri rangeOfString: @"://"].location == NSNotFound) {
 		return;
 	}
     
 	// Open the Url in Safari
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.selectedJob.uri]];
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: self.selectedJob.uri]];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (IBAction)getEndDate:(id)sender
 {
-    if (activeDateFld == k_startDateTextFld)
-    {
+    if (activeDateFld == k_startDateTextFld) {
         // Update the database
         self.selectedJob.start_date = [self.datePicker date];
         // ...and the textField
-        self.jobStartDate.text      = [dateFormatter stringFromDate:self.selectedJob.start_date];
-    }
-    else
-    {
+        self.jobStartDate.text      = [dateFormatter stringFromDate: self.selectedJob.start_date];
+    } else {
         // Update the database
         self.selectedJob.end_date   = [self.datePicker date];
         // ...and the textField
-        self.jobEndDate.text        = [dateFormatter stringFromDate:self.selectedJob.end_date];
+        self.jobEndDate.text        = [dateFormatter stringFromDate: self.selectedJob.end_date];
     }
 }
 
@@ -515,18 +468,18 @@
 {
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
-    CGRect aRect = self.view.frame;    
+    CGRect aRect       = self.view.frame;    
     aRect.size.height -= kbSize.height;
     DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
-    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin) )
-    {
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin)) {
         // calculate the contentOffset for the scroller
         // ...to get the middle of the active field into the middle of the available view area
         CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
-        [self.tblView setContentOffset:scrollPoint animated:YES];        
+        [self.tblView setContentOffset: scrollPoint
+                              animated: YES];
     }
 }
 
@@ -562,29 +515,26 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     _activeFld = textField;
-    if (textField.tag == k_startDateTextFld)
-    {
+    if (textField.tag == k_startDateTextFld) {
         // we are in the start date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
         if (!self.selectedJob.start_date) {
             self.selectedJob.start_date = [NSDate date];
         }
-        [self.datePicker setDate:self.selectedJob.start_date];
+        [self.datePicker setDate: self.selectedJob.start_date];
         [self animateDatePickerOn];
         // remember which date field we're editing
         activeDateFld = k_startDateTextFld;
         return NO;
-    }
-    else if (textField.tag == k_endDateTextFld)
-    {
+    } else if (textField.tag == k_endDateTextFld) {
         // we are in the end date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
         [KOExtensions dismissKeyboard];
         if (!self.selectedJob.end_date) {
             self.selectedJob.end_date = [NSDate date];
         }
-        [self.datePicker setDate:self.selectedJob.end_date];
+        [self.datePicker setDate: self.selectedJob.end_date];
         [self animateDatePickerOn];
         // remember which date field we're editing
         activeDateFld = k_endDateTextFld;
@@ -616,15 +566,12 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
-	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
+	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
-	if (nextResponder)
-    {
+	if (nextResponder) {
         [nextResponder becomeFirstResponder];
-	}
-    else
-    {
-		[textField resignFirstResponder];
+	} else {
+		[textField resignFirstResponder];       // Dismisses the keyboard
         [self resetView];
 	}
 	
@@ -636,12 +583,13 @@
 - (void)animateDatePickerOn
 {
     DLog();
-    [self.datePicker setHidden:NO];
-    [self.view bringSubviewToFront:self.datePicker];
+    [self.datePicker setHidden: NO];
+    [self.view bringSubviewToFront: self.datePicker];
+    
     // Size up the picker view to our screen and compute the start/end frame origin for our slide up animation
     // ... compute the start frame        
     CGRect screenRect = [self.view bounds];        
-    CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];        
+    CGSize pickerSize = [self.datePicker sizeThatFits: CGSizeZero];        
     CGRect startRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height, pickerSize.width, pickerSize.height);        
     self.datePicker.frame = startRect;   
     
@@ -649,10 +597,10 @@
     CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height, pickerSize.width, pickerSize.height);
     
     // Start the slide up animation        
-    [UIView animateWithDuration:0.3
-                     animations:^ {
+    [UIView animateWithDuration: 0.3
+                     animations: ^ {
                          self.datePicker.frame = pickerRect;
-                         [self.tblView setContentOffset:CGPointMake(0.0f, 80.f)];
+                         [self.tblView setContentOffset: CGPointMake(0.0f, 80.f)];
                      }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
@@ -665,8 +613,8 @@
 - (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
-	[self.tblView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                          animated:YES];
+	[self.tblView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                          animated: YES];
 }
 
 #pragma mark - Accomplishment methods
@@ -675,42 +623,42 @@
 - (void)addAccomplishment
 {
     DLog();
-    Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName:@"Accomplishments"
-                                                                               inManagedObjectContext:self.managedObjectContext];
+    Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName: kAccomplishmentsEntity
+                                                                               inManagedObjectContext: self.managedObjectContext];
     accomp.name         = self.accomplishmentName;
     accomp.summary      = self.accomplishmentName;
     accomp.created_date = [NSDate date];
     accomp.job          = self.selectedJob;
     
     NSError *error = nil;
-    if (![self.managedObjectContext save:&error])
-    {
+    if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        abort();
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
-    [self.jobAccomplishmentsArray insertObject:accomp 
-                                       atIndex:0];
+    [self.jobAccomplishmentsArray insertObject: accomp 
+                                       atIndex: 0];
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
-                                                inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: 0 
+                                                inSection: 0];
     
-    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                        withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:indexPath 
-                        atScrollPosition:UITableViewScrollPositionTop 
-                                animated:YES];
+    [self.tblView insertRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+                        withRowAnimation: UITableViewRowAnimationFade];
+    [self.tblView scrollToRowAtIndexPath: indexPath 
+                        atScrollPosition: UITableViewScrollPositionTop 
+                                animated: YES];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)getAccomplishmentName
 {
-    UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
-                                                                  message:nil
-                                                                 delegate:self 
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
-                                                        otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+    UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
+                                                                  message: nil
+                                                                 delegate: self 
+                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
+                                                        otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     accompSummaryAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     
     [accompSummaryAlert show];
@@ -720,15 +668,12 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 1)
-    {
+    if (buttonIndex == 1) {
         // OK
-        self.accomplishmentName = [[alertView textFieldAtIndex:0] text];
+        self.accomplishmentName = [[alertView textFieldAtIndex: 0] text];
         [self addAccomplishment];
-    }
-    else
-    {
-        // cancel
+    } else {
+        // User cancelled
         [self configureDefaultNavBar];
     }
 }
@@ -754,19 +699,16 @@
 //----------------------------------------------------------------------------------------------------------
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{    
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
-    {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                       reuseIdentifier:CellIdentifier] autorelease];
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: kCellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
+                                       reuseIdentifier: kCellIdentifier] autorelease];
     }
     
 	// Configure the cell.
-    cell = [self configureCell:cell 
-                   atIndexPath:indexPath];
+    cell = [self configureCell: cell 
+                   atIndexPath: indexPath];
     
     return cell;
 }
@@ -776,13 +718,10 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
-    if ([[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name])
-    {
-        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] name];
-    }
-    else
-    {
-        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex:indexPath.row] summary];
+    if ([[self.jobAccomplishmentsArray objectAtIndex: indexPath.row] name]) {
+        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex: indexPath.row] name];
+    } else {
+        cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex: indexPath.row] summary];
     }
     cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
     
@@ -796,16 +735,16 @@
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
-	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, k_addBtnHeight)] autorelease];
-	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
-                                          size:18.0]];
-	[sectionLabel setTextColor:[UIColor whiteColor]];
-	[sectionLabel setBackgroundColor:[UIColor clearColor]];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, kAddBtnHeight)] autorelease];
+	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
+                                          size: 18.0]];
+	[sectionLabel setTextColor: [UIColor whiteColor]];
+	[sectionLabel setBackgroundColor: [UIColor clearColor]];
     
     sectionLabel.text = NSLocalizedString(@"Accomplishments", @"Accomplishments");
-    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
-    [sectionView addSubview:sectionLabel];
-    [sectionView addSubview:addAccompBtn];
+    UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+    [sectionView addSubview: sectionLabel];
+    [sectionView addSubview: addAccompBtn];
     
     return sectionView;
 }
@@ -823,15 +762,14 @@ viewForHeaderInSection:(NSInteger)section
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the managed object at the given index path.
-        NSManagedObject *accompToDelete = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
-        [self.managedObjectContext deleteObject:accompToDelete];
-        [self.jobAccomplishmentsArray removeObjectAtIndex:indexPath.row];
+        NSManagedObject *accompToDelete = [self.jobAccomplishmentsArray objectAtIndex: indexPath.row];
+        [self.managedObjectContext deleteObject: accompToDelete];
+        [self.jobAccomplishmentsArray removeObjectAtIndex: indexPath.row];
         // ...delete the object from the tableView
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                         withRowAnimation:UITableViewRowAnimationFade];
+        [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] 
+                         withRowAnimation: UITableViewRowAnimationFade];
         // ...and reload the table
         [tableView reloadData];
     }   
@@ -847,12 +785,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSUInteger toRow    = [toIndexPath row];
     
     // Get the Accomplishment at the fromRow 
-    Jobs *movedAccomp = [[self.jobAccomplishmentsArray objectAtIndex:fromRow] retain];
+    Jobs *movedAccomp = [[self.jobAccomplishmentsArray objectAtIndex: fromRow] retain];
     // ...remove it from that "order"
-    [self.jobAccomplishmentsArray removeObjectAtIndex:fromRow];
+    [self.jobAccomplishmentsArray removeObjectAtIndex: fromRow];
     // ...and insert it where the user wants
-    [self.jobAccomplishmentsArray insertObject:movedAccomp
-                                       atIndex:toRow];
+    [self.jobAccomplishmentsArray insertObject: movedAccomp
+                                       atIndex: toRow];
     [movedAccomp release];
 }
 
@@ -861,19 +799,19 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
-    AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName:@"AccomplishmentViewController"
-                                                                                                                bundle:nil];
-    accomplishmentVC.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex:indexPath.row];
+    AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName: kAccomplishmentViewController
+                                                                                                    bundle: nil];
+    accomplishmentVC.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex: indexPath.row];
     accomplishmentVC.managedObjectContext       = self.managedObjectContext;
     accomplishmentVC.fetchedResultsController   = self.fetchedResultsController;
     accomplishmentVC.title                      = accomplishmentVC.selectedAccomplishment.name;
     
-    [self.navigationController pushViewController:accomplishmentVC 
-                                         animated:YES];
+    [self.navigationController pushViewController: accomplishmentVC 
+                                         animated: YES];
     [accomplishmentVC release];
 
-	[tableView deselectRowAtIndexPath:indexPath
-							 animated:YES];
+	[tableView deselectRowAtIndexPath: indexPath
+							 animated: YES];
 }
 
 #pragma mark - Fetched Results Controller delegate methods
@@ -896,29 +834,28 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     
     UITableView *tableView = self.tblView;
     
-    switch(type)
-    {
+    switch(type) {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] 
-                    atIndexPath:indexPath];
+            [self configureCell: [tableView cellForRowAtIndexPath: indexPath] 
+                    atIndexPath: indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             // Reloading the section inserts a new row and ensures that titles are updated appropriately.
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] 
-                     withRowAnimation:UITableViewRowAnimationFade];
+            [tableView reloadSections: [NSIndexSet indexSetWithIndex: newIndexPath.section] 
+                     withRowAnimation: UITableViewRowAnimationFade];
             break;
     }
 }
@@ -931,16 +868,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
      forChangeType:(NSFetchedResultsChangeType)type 
 {
     
-    switch(type)
-    {
+    switch(type) {
         case NSFetchedResultsChangeInsert:
-            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
-                        withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
+                        withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
-                        withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
+                        withRowAnimation: UITableViewRowAnimationFade];
             break;
     }
 }
@@ -960,22 +896,41 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     DLog();
     NSError *error = nil;
     
-    if (![[self fetchedResultsController] performFetch:&error])
-    {
+    if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        abort();
-    }             
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
     
-    if (note)
-    {
+    if (note) {
         // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock:^{
+        [self.managedObjectContext performBlock: ^{
             [self loadData];
+            [self.tblView reloadData];
         }];
-        [self.tblView reloadData];
     }
 }
 
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc
+{
+    BOOL result = YES;
+    NSError *error = nil;
+    
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save:&error]) {
+                ELog(error, @"Failed to save");
+                result = NO;
+            }
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+        result = NO;
+    }
+    
+    return result;
+}
 #pragma mark - UIScrollView delegate methods
 
 //----------------------------------------------------------------------------------------------------------
@@ -989,8 +944,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)resetView
 {
     DLog();
-    [self.tblView setContentOffset:CGPointZero
-                          animated:YES];
+    [self.tblView setContentOffset: CGPointZero
+                          animated: YES];
     [KOExtensions dismissKeyboard];
 }
 

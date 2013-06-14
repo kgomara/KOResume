@@ -42,6 +42,7 @@
 		D69F8FF5148C766E00F2D483 /* AccomplishmentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */; };
 		D6A85F981494684300793E84 /* KOResume.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = D6A85F971494684300793E84 /* KOResume.sqlite */; };
 		D6A8E7A5145E02CC001B9895 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D6A8E7A4145E02CC001B9895 /* addButton.png */; };
+		D6B3829217682863003CE393 /* GlobalConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B3829117682863003CE393 /* GlobalConstants.m */; };
 		D6B596F6148DFD8D00B6D7FC /* contentpane_button_call.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */; };
 		D6B596F7148DFD8D00B6D7FC /* contentpane_button_call@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */; };
 		D6B596FB148DFF2700B6D7FC /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F9148DFF2700B6D7FC /* arrow.png */; };
@@ -68,7 +69,7 @@
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOResumeAppDelegate.h; sourceTree = "<group>"; };
-		1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KOResumeAppDelegate.m; sourceTree = "<group>"; };
+		1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KOResumeAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1D6058910D05DD3D006BFB54 /* KOResume.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KOResume.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -80,23 +81,23 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* KOResume-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KOResume-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D64C011C132FB13D001DAFEC /* ResumeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeViewController.h; sourceTree = "<group>"; };
-		D64C011D132FB13D001DAFEC /* ResumeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumeViewController.m; sourceTree = "<group>"; };
+		D64C011D132FB13D001DAFEC /* ResumeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ResumeViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D64C0123132FB150001DAFEC /* ResumeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResumeViewController.xib; sourceTree = "<group>"; };
 		D64C0155132FE302001DAFEC /* CoverLtrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverLtrViewController.h; sourceTree = "<group>"; };
-		D64C0156132FE302001DAFEC /* CoverLtrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverLtrViewController.m; sourceTree = "<group>"; };
+		D64C0156132FE302001DAFEC /* CoverLtrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CoverLtrViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CoverLtrViewController.xib; path = Classes/CoverLtrViewController.xib; sourceTree = "<group>"; };
 		D6509939145C63830031B2CB /* GlobalMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalMacros.h; path = Classes/GlobalMacros.h; sourceTree = "<group>"; };
 		D650993A145CA6150031B2CB /* README.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
 		D650993C145CB5E40031B2CB /* _Accomplishments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Accomplishments.h; sourceTree = "<group>"; };
-		D650993D145CB5E40031B2CB /* _Accomplishments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Accomplishments.m; sourceTree = "<group>"; };
+		D650993D145CB5E40031B2CB /* _Accomplishments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _Accomplishments.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D650993E145CB5E40031B2CB /* _Education.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Education.h; sourceTree = "<group>"; };
-		D650993F145CB5E40031B2CB /* _Education.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Education.m; sourceTree = "<group>"; };
+		D650993F145CB5E40031B2CB /* _Education.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _Education.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6509940145CB5E40031B2CB /* _Jobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Jobs.h; sourceTree = "<group>"; };
-		D6509941145CB5E40031B2CB /* _Jobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Jobs.m; sourceTree = "<group>"; };
+		D6509941145CB5E40031B2CB /* _Jobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _Jobs.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6509942145CB5E40031B2CB /* _Packages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Packages.h; sourceTree = "<group>"; };
-		D6509943145CB5E40031B2CB /* _Packages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Packages.m; sourceTree = "<group>"; };
+		D6509943145CB5E40031B2CB /* _Packages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _Packages.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6509944145CB5E40031B2CB /* _Resumes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Resumes.h; sourceTree = "<group>"; };
-		D6509945145CB5E40031B2CB /* _Resumes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Resumes.m; sourceTree = "<group>"; };
+		D6509945145CB5E40031B2CB /* _Resumes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = _Resumes.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6509946145CB5E40031B2CB /* Accomplishments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Accomplishments.h; sourceTree = "<group>"; };
 		D6509947145CB5E40031B2CB /* Accomplishments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Accomplishments.m; sourceTree = "<group>"; };
 		D6509948145CB5E40031B2CB /* Education.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Education.h; sourceTree = "<group>"; };
@@ -112,22 +113,24 @@
 		D68F37DF139AE6C000B7DDD2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		D68F37E2139AFD6400B7DDD2 /* KOResume.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = KOResume.xcdatamodel; sourceTree = "<group>"; };
 		D68F37FC139C062F00B7DDD2 /* PackagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackagesViewController.h; sourceTree = "<group>"; };
-		D68F37FD139C063000B7DDD2 /* PackagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PackagesViewController.m; sourceTree = "<group>"; };
+		D68F37FD139C063000B7DDD2 /* PackagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PackagesViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D68F37FE139C063000B7DDD2 /* PackagesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PackagesViewController.xib; path = Classes/PackagesViewController.xib; sourceTree = "<group>"; };
 		D699B4CC14818DB300B96BDD /* companyBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = companyBtn.png; sourceTree = "<group>"; };
 		D699B4CD14818DB300B96BDD /* companyBtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "companyBtn@2x.png"; sourceTree = "<group>"; };
 		D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccomplishmentViewController.h; sourceTree = "<group>"; };
-		D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccomplishmentViewController.m; sourceTree = "<group>"; };
+		D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AccomplishmentViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccomplishmentViewController.xib; path = Classes/AccomplishmentViewController.xib; sourceTree = "<group>"; };
 		D6A85F971494684300793E84 /* KOResume.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = KOResume.sqlite; sourceTree = "<group>"; };
 		D6A8E7A4145E02CC001B9895 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
 		D6AAD23B149D367A004839A1 /* KOResume.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = KOResume.entitlements; sourceTree = "<group>"; };
+		D6B3829017682863003CE393 /* GlobalConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = GlobalConstants.h; path = Classes/GlobalConstants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		D6B3829117682863003CE393 /* GlobalConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = GlobalConstants.m; path = Classes/GlobalConstants.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contentpane_button_call.png; sourceTree = "<group>"; };
 		D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contentpane_button_call@2x.png"; sourceTree = "<group>"; };
 		D6B596F9148DFF2700B6D7FC /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		D6B596FA148DFF2700B6D7FC /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
 		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
-		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EducationViewController.m; sourceTree = "<group>"; };
+		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EducationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EducationViewController.xib; path = Classes/EducationViewController.xib; sourceTree = "<group>"; };
 		D6C6F23E13397F2300D05323 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		D6C6F23F13397F2300D05323 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
@@ -138,14 +141,14 @@
 		D6C6F24413397F2300D05323 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		D6CB79BB160AAA3600820ED6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobsDetailViewController.h; sourceTree = "<group>"; };
-		D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JobsDetailViewController.m; sourceTree = "<group>"; };
+		D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = JobsDetailViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = JobsDetailViewController.xib; path = Classes/JobsDetailViewController.xib; sourceTree = "<group>"; };
 		D6CDBA17132D437200A1E4BA /* contentpane_details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contentpane_details.png; sourceTree = "<group>"; };
 		D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contentpane_details@2x.png"; sourceTree = "<group>"; };
 		D6CDBC35132DC31200A1E4BA /* KOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOExtensions.h; sourceTree = "<group>"; };
 		D6CDBC36132DC31200A1E4BA /* KOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KOExtensions.m; sourceTree = "<group>"; };
 		D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SummaryViewController.h; sourceTree = "<group>"; };
-		D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SummaryViewController.m; sourceTree = "<group>"; };
+		D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SummaryViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SummaryViewController.xib; path = Classes/SummaryViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,6 +208,7 @@
 			children = (
 				D6CB79BB160AAA3600820ED6 /* Default-568h@2x.png */,
 				D6AAD23B149D367A004839A1 /* KOResume.entitlements */,
+				D650993A145CA6150031B2CB /* README.rtf */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -220,6 +224,8 @@
 				28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */,
 				D6509939145C63830031B2CB /* GlobalMacros.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				D6B3829017682863003CE393 /* GlobalConstants.h */,
+				D6B3829117682863003CE393 /* GlobalConstants.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -228,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				D6A85F971494684300793E84 /* KOResume.sqlite */,
-				D650993A145CA6150031B2CB /* README.rtf */,
 				D68F37DD139AC3B400B7DDD2 /* Icons */,
 				D68F37DE139AC3D200B7DDD2 /* Images */,
 				8D1107310486CEB800E47090 /* KOResume-Info.plist */,
@@ -342,7 +347,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "O'Mara Consulting Associates";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "KOResume" */;
@@ -432,6 +437,7 @@
 				D6509958145CB5E40031B2CB /* Packages.m in Sources */,
 				D6509959145CB5E40031B2CB /* Resumes.m in Sources */,
 				D69F8FF4148C766E00F2D483 /* AccomplishmentViewController.m in Sources */,
+				D6B3829217682863003CE393 /* GlobalConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,7 +490,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin O'Mara (N476J27X52)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -492,6 +497,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "C04FE0D6-8BAE-4EA9-B998-B0DDC82A568E";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -501,7 +507,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";

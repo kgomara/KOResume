@@ -2,6 +2,6 @@
 
 @implementation Jobs
 
-// Custom logic goes here.
+NSString *const kJobsEntity         = @"Jobs";
 
 @end

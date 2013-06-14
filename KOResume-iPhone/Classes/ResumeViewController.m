@@ -19,9 +19,6 @@
 #define	k_JobsSection       1
 #define k_EducationSection	2
 
-#define k_addBtnWidth       29.0f
-#define k_addBtnHeight      29.0f
-
 @interface ResumeViewController ()
 {
 @private
@@ -46,6 +43,7 @@
 - (void)configureDefaultNavBar;
 - (void)sortTables;
 - (void)resequenceTables;
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc;
 
 @end
 
@@ -71,34 +69,34 @@
     DLog(@"job count %d", [self.selectedResume.job count]);
 
 	self.navigationItem.title = NSLocalizedString(@"Resume", @"Resume");	
-	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+	self.view.backgroundColor = [UIColor colorWithPatternImage: [UIImage imageNamed:@"background.png"]];
     
     // Set up button items
     backBtn     = self.navigationItem.leftBarButtonItem;    // remember where "back" is
-    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                target:self 
-                                                                action:@selector(editAction)];
-    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                target:self
-                                                                action:@selector(saveAction)];
-    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                target:self
-                                                                action:@selector(cancelAction)];
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+                                                                target: self 
+                                                                action: @selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+                                                                target: self
+                                                                action: @selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
+                                                                target: self
+                                                                action: @selector(cancelAction)];
     addJobBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    [addJobBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
-                         forState:UIControlStateNormal];
-    [addJobBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
-    [addJobBtn addTarget:self 
-                  action:@selector(getJobName) 
-        forControlEvents:UIControlEventTouchUpInside];
+    [addJobBtn setBackgroundImage: [UIImage imageNamed:@"addButton.png"] 
+                         forState: UIControlStateNormal];
+    [addJobBtn setFrame:CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addJobBtn addTarget: self 
+                  action: @selector(getJobName) 
+        forControlEvents: UIControlEventTouchUpInside];
     
-    addEducationBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-    [addEducationBtn setBackgroundImage:[UIImage imageNamed:@"addButton.png"] 
-                               forState:UIControlStateNormal];
-    [addEducationBtn setFrame:CGRectMake(280, 0, k_addBtnWidth, k_addBtnHeight)];
-    [addEducationBtn addTarget:self 
-                        action:@selector(getEducationName) 
-              forControlEvents:UIControlEventTouchUpInside];
+    addEducationBtn = [[UIButton buttonWithType: UIButtonTypeCustom] retain];
+    [addEducationBtn setBackgroundImage: [UIImage imageNamed:@"addButton.png"] 
+                               forState: UIControlStateNormal];
+    [addEducationBtn setFrame: CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addEducationBtn addTarget: self 
+                        action: @selector(getEducationName) 
+              forControlEvents: UIControlEventTouchUpInside];
     
     // ...and the NavBar
     [self configureDefaultNavBar];
@@ -108,10 +106,10 @@
     [self sortTables];
     
     // Set an observer for iCloud changes
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFetchedResults:) 
-                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object:[self.managedObjectContext persistentStoreCoordinator]];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:) 
+                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object: [self.managedObjectContext persistentStoreCoordinator]];
 }
 
 
@@ -167,24 +165,8 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     DLog();
-    NSError *error = nil;
-    NSManagedObjectContext *moc = self.managedObjectContext;
     
-    if (moc != nil)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
+    [self saveMoc: self.managedObjectContext];
 }
 
 
@@ -200,12 +182,12 @@
 - (void)sortTables
 {
     // Sort jobs in the order they should appear in the table  
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sequence_number"
-                                                                    ascending:YES] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    self.jobArray = [NSMutableArray arrayWithArray:[self.selectedResume.job sortedArrayUsingDescriptors:sortDescriptors]];
+    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: kSequenceNumberAttr
+                                                                    ascending: YES] autorelease];
+    NSArray *sortDescriptors = [NSArray arrayWithObject: sortDescriptor];
+    self.jobArray = [NSMutableArray arrayWithArray: [self.selectedResume.job sortedArrayUsingDescriptors: sortDescriptors]];
     // ...sort the Education and Certification array
-    self.educationArray = [NSMutableArray arrayWithArray:[self.selectedResume.education sortedArrayUsingDescriptors:sortDescriptors]];
+    self.educationArray = [NSMutableArray arrayWithArray: [self.selectedResume.education sortedArrayUsingDescriptors: sortDescriptors]];
 }
 
 
@@ -218,11 +200,11 @@
     self.navigationItem.leftBarButtonItem  = backBtn;
 
     // Set table editing off
-    [self.tblView setEditing:NO];
+    [self.tblView       setEditing: NO];
     
     // ...and hide the add buttons
-    [addJobBtn setHidden:YES];
-    [addEducationBtn setHidden:YES];
+    [addJobBtn          setHidden: YES];
+    [addEducationBtn    setHidden: YES];
 }
 
 #pragma mark - UI handlers
@@ -232,15 +214,15 @@
 {
     DLog();
     // Enable table editing
-    [self.tblView setEditing:YES];
+    [self.tblView setEditing: YES];
     
     // Set up the cancel and save buttons
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
     // ...and show the add buttons
-    [addJobBtn setHidden:NO];
-    [addEducationBtn setHidden:NO];
+    [addJobBtn          setHidden: NO];
+    [addEducationBtn    setHidden: NO];
     
     // Start an undo group...it will either be commited in saveAction or undone in cancelAction
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
@@ -257,32 +239,14 @@
     // Save the changes
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    
-    NSError *error = nil;
-    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
-    
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                // Fatal Error
-                NSString *msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-                [KOExtensions showErrorWithMessage:msg];
-                [msg release];
-                ELog(error, @"Failed to save to data store");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
+    if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self.tblView reloadData];
@@ -294,20 +258,16 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] setActionName:kPackagesEditing];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    if ([[self.managedObjectContext undoManager] canUndo])
-    {
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        // Changes were made - discard them
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    }
-    else
-    {
-        DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self sortTables];
@@ -320,26 +280,18 @@
 {
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
-    for (int i = 0; i < [self.jobArray count]; i++)
-    {
-        if ([[self.jobArray objectAtIndex:i] isDeleted])
-        {
-            // skip it
-        }
-        else
-        {
+    for (int i = 0; i < [self.jobArray count]; i++) {
+        if ([[self.jobArray objectAtIndex:i] isDeleted]) {
+            // no need to update the sequence number of deleted objects
+        } else {
             [[self.jobArray objectAtIndex:i] setSequence_numberValue:i];
         }
     }
     // ...same for the education array
-    for (int i = 0; i < [self.educationArray count]; i++)
-    {
-        if ([[self.educationArray objectAtIndex:i] isDeleted])
-        {
-            // skip it
-        }
-        else
-        {
+    for (int i = 0; i < [self.educationArray count]; i++) {
+        if ([[self.educationArray objectAtIndex:i] isDeleted]) {
+            // no need to update the sequence number of deleted objects
+        } else {
             [[self.educationArray objectAtIndex:i] setSequence_numberValue:i];
         }
     }
@@ -350,41 +302,41 @@
 - (void)addJob
 {
     DLog();
-    Jobs *job = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName:@"Jobs"
-                                                      inManagedObjectContext:self.managedObjectContext];
+    Jobs *job = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName: kJobsEntity
+                                                      inManagedObjectContext: self.managedObjectContext];
     job.name            = self.jobName;
     job.created_date    = [NSDate date];
     job.resume          = self.selectedResume;
         
     NSError *error = nil;
-    if (![self.managedObjectContext save:&error])
-    {
+    if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        abort();
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
-    [self.jobArray insertObject:job 
-                        atIndex:0];
+    [self.jobArray insertObject: job 
+                        atIndex: 0];
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
-                                                inSection:k_JobsSection];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: 0 
+                                                inSection: k_JobsSection];
     
-    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                        withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:indexPath 
-                        atScrollPosition:UITableViewScrollPositionTop 
-                                animated:YES];
+    [self.tblView insertRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+                        withRowAnimation: UITableViewRowAnimationFade];
+    [self.tblView scrollToRowAtIndexPath: indexPath 
+                        atScrollPosition: UITableViewScrollPositionTop 
+                                animated: YES];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)getJobName
 {
-    UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
-                                                            message:nil
-                                                           delegate:self 
-                                                  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
-                                                  otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+    UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
+                                                            message: nil
+                                                           delegate: self 
+                                                  cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
+                                                  otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     jobNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     jobNameAlert.tag            = k_JobsSection;
     
@@ -396,41 +348,41 @@
 - (void)addEducation
 {
     DLog();
-    Education *education = (Education *)[NSEntityDescription insertNewObjectForEntityForName:@"Education"
-                                                                      inManagedObjectContext:self.managedObjectContext];
+    Education *education = (Education *)[NSEntityDescription insertNewObjectForEntityForName: kEducationEntity
+                                                                      inManagedObjectContext: self.managedObjectContext];
     education.name            = self.jobName;
     education.created_date    = [NSDate date];
     education.resume          = self.selectedResume;
     
     NSError *error = nil;
-    if (![self.managedObjectContext save:&error])
-    {
+    if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        abort();
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
-    [self.educationArray insertObject:education 
-                              atIndex:0];
+    [self.educationArray insertObject: education 
+                              atIndex: 0];
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 
-                                                inSection:k_EducationSection];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: 0 
+                                                inSection: k_EducationSection];
     
-    [self.tblView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                        withRowAnimation:UITableViewRowAnimationFade];
-    [self.tblView scrollToRowAtIndexPath:indexPath 
-                        atScrollPosition:UITableViewScrollPositionTop 
-                                animated:YES];
+    [self.tblView insertRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+                        withRowAnimation: UITableViewRowAnimationFade];
+    [self.tblView scrollToRowAtIndexPath: indexPath 
+                        atScrollPosition: UITableViewScrollPositionTop 
+                                animated: YES];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)getEducationName
 {
-    UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name")
-                                                                  message:nil
-                                                                 delegate:self 
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
-                                                        otherButtonTitles:NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+    UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name")
+                                                                  message: nil
+                                                                 delegate: self 
+                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
+                                                        otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
     educationNameAlert.alertViewStyle   = UIAlertViewStylePlainTextInput;
     educationNameAlert.tag              = k_EducationSection;
     
@@ -441,22 +393,16 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 1)
-    {
-        // OK
-        self.jobName = [[alertView textFieldAtIndex:0] text];
-        if (alertView.tag == k_JobsSection)
-        {
+    if (buttonIndex == 1) {
+        // OK button was tapped
+        self.jobName = [[alertView textFieldAtIndex: 0] text];
+        if (alertView.tag == k_JobsSection) {
             [self addJob];
-        }
-        else
-        {
+        } else {
             [self addEducation];
         }
-    }
-    else
-    {
-        // cancel
+    } else {
+        // User cancelled
         [self configureDefaultNavBar];
     }
 }
@@ -477,8 +423,7 @@
 {
     NSInteger rowsInSection;
     
-	switch (section)
-    {
+	switch (section) {
 		case k_SummarySection:
 			rowsInSection = 1;
 			break;
@@ -502,18 +447,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell)
-    {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                       reuseIdentifier:CellIdentifier] autorelease];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
+    if (!cell) {
+        cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
+                                       reuseIdentifier: kCellIdentifier] autorelease];
     }
     
 	// Configure the cell.
-    cell = [self configureCell:cell 
-                   atIndexPath:indexPath];
+    cell = [self configureCell: cell 
+                   atIndexPath: indexPath];
 
     return cell;
 }
@@ -523,18 +465,17 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
-    switch (indexPath.section)
-    {
+    switch (indexPath.section) {
 		case k_SummarySection:
 			cell.textLabel.text = self.selectedResume.name;          // There is only 1 row in this section
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case k_JobsSection:
-			cell.textLabel.text = [[self.jobArray objectAtIndex:indexPath.row] name];
+			cell.textLabel.text = [[self.jobArray objectAtIndex: indexPath.row] name];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		case k_EducationSection:
-			cell.textLabel.text = [[self.educationArray objectAtIndex:indexPath.row] name];
+			cell.textLabel.text = [[self.educationArray objectAtIndex: indexPath.row] name];
 			cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
@@ -552,33 +493,29 @@
 //----------------------------------------------------------------------------------------------------------
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 260.0f, k_addBtnHeight)] autorelease];
-	[sectionLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" 
-                                          size:18.0]];
-	[sectionLabel setTextColor:[UIColor whiteColor]];
-	[sectionLabel setBackgroundColor:[UIColor clearColor]];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, kAddBtnHeight)] autorelease];
+	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
+                                          size: 18.0]];
+	[sectionLabel setTextColor: [UIColor whiteColor]];
+	[sectionLabel setBackgroundColor: [UIColor clearColor]];
 
-	switch (section)
-    {
-		case k_SummarySection:
-        {
+	switch (section) {
+		case k_SummarySection: {
 			sectionLabel.text = NSLocalizedString(@"Summary", @"Summary");
 			return sectionLabel;
 		}
-		case k_JobsSection:
-        {
+		case k_JobsSection: {
 			sectionLabel.text = NSLocalizedString(@"Professional History", @"Professional History");
-            UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
-            [sectionView addSubview:sectionLabel];
-            [sectionView addSubview:addJobBtn];
+            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+            [sectionView addSubview: sectionLabel];
+            [sectionView addSubview: addJobBtn];
 			return sectionView;
 		}
-		case k_EducationSection:
-        {
+		case k_EducationSection: {
 			sectionLabel.text = NSLocalizedString(@"Education & Certifications", @"Education & Certifications");
-            UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, k_addBtnHeight)] autorelease];
-            [sectionView addSubview:sectionLabel];
-            [sectionView addSubview:addEducationBtn];
+            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+            [sectionView addSubview: sectionLabel];
+            [sectionView addSubview: addEducationBtn];
 			return sectionView;
 		}
 		default:
@@ -600,24 +537,20 @@
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the managed object at the given index path.
-        if (indexPath.section == k_JobsSection)
-        {
-            NSManagedObject *jobToDelete = [self.jobArray objectAtIndex:indexPath.row];
-            [self.managedObjectContext deleteObject:jobToDelete];
-            [self.jobArray removeObjectAtIndex:indexPath.row];
-        }
-        else
-        {
-            NSManagedObject *jobToDelete = [self.educationArray objectAtIndex:indexPath.row];
-            [self.managedObjectContext deleteObject:jobToDelete];
-            [self.educationArray removeObjectAtIndex:indexPath.row];
+        if (indexPath.section == k_JobsSection) {
+            NSManagedObject *jobToDelete = [self.jobArray objectAtIndex: indexPath.row];
+            [self.managedObjectContext deleteObject: jobToDelete];
+            [self.jobArray removeObjectAtIndex: indexPath.row];
+        } else {
+            NSManagedObject *jobToDelete = [self.educationArray objectAtIndex: indexPath.row];
+            [self.managedObjectContext deleteObject: jobToDelete];
+            [self.educationArray removeObjectAtIndex: indexPath.row];
         }
         // ...delete the object from the tableView
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                         withRowAnimation:UITableViewRowAnimationFade];
+        [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] 
+                         withRowAnimation: UITableViewRowAnimationFade];
         // ...and reload the table
         [tableView reloadData];
     }   
@@ -629,11 +562,10 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
        toIndexPath:(NSIndexPath *)toIndexPath
 {
-    if (fromIndexPath.section != toIndexPath.section)
-    {
+    if (fromIndexPath.section != toIndexPath.section) {
         // Cannot move between sections
-        [KOExtensions showAlertWithMessageAndType:NSLocalizedString(@"Sorry, move not allowed", @"Sorry, move not allowed")
-                                        alertType:UIAlertViewStyleDefault];
+        [KOExtensions showAlertWithMessageAndType: NSLocalizedString(@"Sorry, move not allowed", @"Sorry, move not allowed")
+                                        alertType: UIAlertViewStyleDefault];
         [self.tblView reloadData];
         return;
     }
@@ -642,26 +574,23 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSUInteger fromRow  = [fromIndexPath row];
     NSUInteger toRow    = [toIndexPath row];
     
-    if (toIndexPath.section == k_JobsSection)
-    {
+    if (toIndexPath.section == k_JobsSection) {
         // Get the Job at the fromRow 
-        Jobs *movedJob = [[self.jobArray objectAtIndex:fromRow] retain];
+        Jobs *movedJob = [[self.jobArray objectAtIndex: fromRow] retain];
         // ...remove it from that "order"
-        [self.jobArray removeObjectAtIndex:fromRow];
+        [self.jobArray removeObjectAtIndex: fromRow];
         // ...and insert it where the user wants
-        [self.jobArray insertObject:movedJob
-                            atIndex:toRow];
+        [self.jobArray insertObject: movedJob
+                            atIndex: toRow];
         [movedJob release];
-    }
-    else
-    {
+    } else {
         // Get the Education at the fromRow 
-        Education *movedEducation = [[self.educationArray objectAtIndex:fromRow] retain];
+        Education *movedEducation = [[self.educationArray objectAtIndex: fromRow] retain];
         // ...remove it from that "order"
-        [self.educationArray removeObjectAtIndex:fromRow];
+        [self.educationArray removeObjectAtIndex: fromRow];
         // ...and insert it where the user wants
-        [self.educationArray insertObject:movedEducation
-                                  atIndex:toRow];
+        [self.educationArray insertObject: movedEducation
+                                  atIndex: toRow];
         [movedEducation release];
     }
 }
@@ -670,51 +599,47 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    switch (indexPath.section)
-    {
-		case k_SummarySection:
-        {
+    switch (indexPath.section) {
+		case k_SummarySection: {
             // There is only 1 row in this section, so ignore row.
-			SummaryViewController *summaryViewController = [[SummaryViewController alloc] initWithNibName:@"SummaryViewController"
-                                                                                                   bundle:nil];
-            summaryViewController.selectedResume            = self.selectedResume;
-            summaryViewController.managedObjectContext      = self.managedObjectContext;
-            summaryViewController.fetchedResultsController  = self.fetchedResultsController;
-			summaryViewController.title                     = NSLocalizedString(@"Summary", @"Summary");
+			SummaryViewController *summaryVC = [[SummaryViewController alloc] initWithNibName: kSummaryViewController
+                                                                                       bundle: nil];
+            summaryVC.selectedResume            = self.selectedResume;
+            summaryVC.managedObjectContext      = self.managedObjectContext;
+            summaryVC.fetchedResultsController  = self.fetchedResultsController;
+			summaryVC.title                     = NSLocalizedString(@"Summary", @"Summary");
 			
-			[self.navigationController pushViewController:summaryViewController 
-                                                 animated:YES];
-			[summaryViewController release];
+			[self.navigationController pushViewController: summaryVC 
+                                                 animated: YES];
+			[summaryVC release];
 			break;
 		}
-		case k_JobsSection:
-        {
-			JobsDetailViewController *detailViewController = [[JobsDetailViewController alloc] initWithNibName:@"JobsDetailViewController"
-                                                                                                        bundle:nil];
+		case k_JobsSection: {
+			JobsDetailViewController *detailVC = [[JobsDetailViewController alloc] initWithNibName: kJobsDetailViewController
+                                                                                            bundle: nil];
 			// Pass the selected object to the new view controller.
-			detailViewController.title                      = NSLocalizedString(@"Jobs", @"Jobs");
-			detailViewController.selectedJob                = [self.jobArray objectAtIndex:indexPath.row];
-            detailViewController.managedObjectContext       = self.managedObjectContext;
-            detailViewController.fetchedResultsController   = self.fetchedResultsController;
+			detailVC.title                      = NSLocalizedString(@"Jobs", @"Jobs");
+			detailVC.selectedJob                = [self.jobArray objectAtIndex: indexPath.row];
+            detailVC.managedObjectContext       = self.managedObjectContext;
+            detailVC.fetchedResultsController   = self.fetchedResultsController;
 			
-			[self.navigationController pushViewController:detailViewController 
-                                                 animated:YES];
-			[detailViewController release];
+			[self.navigationController pushViewController: detailVC 
+                                                 animated: YES];
+			[detailVC release];
 			break;
 		}
-		case k_EducationSection:
-        {
-			EducationViewController *educationViewController = [[EducationViewController alloc] initWithNibName:@"EducationViewController" 
-                                                                                                                 bundle:nil];
+		case k_EducationSection: {
+			EducationViewController *educationVC = [[EducationViewController alloc] initWithNibName: kEducationViewController
+                                                                                             bundle: nil];
 			// Pass the selected object to the new view controller.
-            educationViewController.selectedEducation           = [self.educationArray objectAtIndex:indexPath.row];
-            educationViewController.managedObjectContext        = self.managedObjectContext;
-            educationViewController.fetchedResultsController    = self.fetchedResultsController;
-			educationViewController.title                       = NSLocalizedString(@"Education", @"Education");
+            educationVC.selectedEducation           = [self.educationArray objectAtIndex: indexPath.row];
+            educationVC.managedObjectContext        = self.managedObjectContext;
+            educationVC.fetchedResultsController    = self.fetchedResultsController;
+			educationVC.title                       = NSLocalizedString(@"Education", @"Education");
 			
-			[self.navigationController pushViewController:educationViewController 
-                                                 animated:YES];
-			[educationViewController release];
+			[self.navigationController pushViewController: educationVC 
+                                                 animated: YES];
+			[educationVC release];
 			break;
 		}
 		default:
@@ -744,29 +669,28 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     UITableView *tableView = self.tblView;
     
-    switch(type)
-    {
+    switch(type) {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject:indexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] 
-                    atIndexPath:indexPath];
+            [self configureCell: [tableView cellForRowAtIndexPath: indexPath] 
+                    atIndexPath: indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
-                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] 
+                             withRowAnimation: UITableViewRowAnimationFade];
             // Reloading the section inserts a new row and ensures that titles are updated appropriately.
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] 
-                     withRowAnimation:UITableViewRowAnimationFade];
+            [tableView reloadSections: [NSIndexSet indexSetWithIndex: newIndexPath.section] 
+                     withRowAnimation: UITableViewRowAnimationFade];
             break;
     }
 }
@@ -778,16 +702,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
            atIndex:(NSUInteger)sectionIndex 
      forChangeType:(NSFetchedResultsChangeType)type 
 {
-    switch(type)
-    {
+    switch(type) {
         case NSFetchedResultsChangeInsert:
-            [self.tblView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
-                        withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
+                        withRowAnimation: UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tblView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] 
-                        withRowAnimation:UITableViewRowAnimationFade];
+            [self.tblView deleteSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
+                        withRowAnimation: UITableViewRowAnimationFade];
             break;
     }
 }
@@ -806,17 +729,36 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     DLog();    
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error])
-    {
+    if (![[self fetchedResultsController] performFetch:&error]) {
         ELog(error, @"Fetch failed!");
         abort();
     }             
     
-    if (note)
-    {
+    if (note) {
         [self sortTables];
         [self.tblView reloadData];
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc
+{
+    BOOL result = YES;
+    NSError *error = nil;
+    
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save:&error]) {
+                ELog(error, @"Failed to save");
+                result = NO;
+            }
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+        result = NO;
+    }
+    
+    return result;
 }
 
 @end

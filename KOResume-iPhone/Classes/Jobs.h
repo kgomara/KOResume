@@ -1,5 +1,7 @@
 #import "_Jobs.h"
 
 @interface Jobs : _Jobs {}
-// Custom logic goes here.
+
+FOUNDATION_EXPORT NSString *const kJobsEntity;
+
 @end

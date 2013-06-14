@@ -2,6 +2,6 @@
 
 @implementation Resumes
 
-// Custom logic goes here.
+NSString *const kResumesEntity      = @"Resumes";
 
 @end

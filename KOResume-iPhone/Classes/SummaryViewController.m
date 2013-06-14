@@ -10,8 +10,8 @@
 #import "KOExtensions.h"
 #import <CoreData/CoreData.h>
 
-#define kHomePhoneTag	0
-#define kMobilePhoneTag	1
+#define kHomePhoneTag	1
+#define kMobilePhoneTag	2
 
 @interface SummaryViewController()
 {
@@ -31,6 +31,7 @@
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc;
 
 @end
 
@@ -64,42 +65,45 @@
 
     _activeFld = nil;
     
-	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth:44 
-                                                                                                               topCapHeight:44];
+	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth: 44 
+                                                                                                               topCapHeight: 44];
     
     // Register for keyboard notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self     
-                                             selector:@selector(keyboardWillBeHidden:)     
-                                                 name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(keyboardWillShow:)
+                                                 name: UIKeyboardWillShowNotification
+                                               object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self     
+                                             selector: @selector(keyboardWillBeHidden:)     
+                                                 name: UIKeyboardWillHideNotification
+                                               object: nil];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
-    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                target:self 
-                                                                action:@selector(editAction)];
-    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                target:self
-                                                                action:@selector(saveAction)];
-    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                target:self
-                                                                action:@selector(cancelAction)];
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+                                                                target: self 
+                                                                action: @selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+                                                                target: self
+                                                                action: @selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
+                                                                target: self
+                                                                action: @selector(cancelAction)];
     
     [self configureDefaultNavBar];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFetchedResults:) 
-                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object:[NSUbiquitousKeyValueStore defaultStore]];
+    // Register for iCloud updates
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:) 
+                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
 
@@ -121,7 +125,7 @@
 - (void)dealloc
 {
     // Remove the keyboard observer
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     // Apple recommends calling release on the ivar...
     [_scrollView release];
@@ -159,24 +163,8 @@
 {
     // Save any changes
     DLog();
-    NSError *error = nil;
-    NSManagedObjectContext* moc = self.managedObjectContext;
     
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
+    [self saveMoc: self.managedObjectContext];
 }
 
 
@@ -211,15 +199,15 @@
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
     
-    [self.nameFld setEnabled:NO];
-    [self.street1Fld setEnabled:NO];
-    [self.cityFld setEnabled:NO];
-    [self.stateFld setEnabled:NO];
-    [self.zipFld setEnabled:NO];
-    [self.homePhoneFld setEnabled:NO];
-    [self.mobilePhoneFld setEnabled:NO];
-    [self.emailFld setEnabled:NO];
-    [self.summaryFld setEditable:NO];
+    [self.nameFld           setEnabled: NO];
+    [self.street1Fld        setEnabled: NO];
+    [self.cityFld           setEnabled: NO];
+    [self.stateFld          setEnabled: NO];
+    [self.zipFld            setEnabled: NO];
+    [self.homePhoneFld      setEnabled: NO];
+    [self.mobilePhoneFld    setEnabled: NO];
+    [self.emailFld          setEnabled: NO];
+    [self.summaryFld        setEditable: NO];
 }
 
 #pragma mark - UI handlers
@@ -234,15 +222,15 @@
     self.navigationItem.rightBarButtonItem = saveBtn;
     
     // Enable the fields for editing
-    [self.nameFld setEnabled:YES];
-    [self.street1Fld setEnabled:YES];
-    [self.cityFld setEnabled:YES];
-    [self.stateFld setEnabled:YES];
-    [self.zipFld setEnabled:YES];
-    [self.homePhoneFld setEnabled:YES];
-    [self.mobilePhoneFld setEnabled:YES];
-    [self.emailFld setEnabled:YES];
-    [self.summaryFld setEditable:YES];
+    [self.nameFld           setEnabled: YES];
+    [self.street1Fld        setEnabled: YES];
+    [self.cityFld           setEnabled: YES];
+    [self.stateFld          setEnabled: YES];
+    [self.zipFld            setEnabled: YES];
+    [self.homePhoneFld      setEnabled: YES];
+    [self.mobilePhoneFld    setEnabled: YES];
+    [self.emailFld          setEnabled: YES];
+    [self.summaryFld        setEditable: YES];
     
     // Start an undo group...it will either be commited in saveAction or 
     //    undone in cancelAction
@@ -267,31 +255,14 @@
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    NSError *error = nil;
-    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
-    
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                // Fatal Error
-                NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-                [KOExtensions showErrorWithMessage:msg];
-                [msg release];
-                ELog(error, @"Failed to save to data store");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"moc is null");
+    if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self resetView];
@@ -303,20 +274,16 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] setActionName: kPackagesEditing];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    if ([[self.managedObjectContext undoManager] canUndo])
-    {
+    if ([[self.managedObjectContext undoManager] canUndo]) {
+        // Changes were made - discard them
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    }
-    else
-    {
-        DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self loadData];
     [self configureDefaultNavBar];
@@ -328,21 +295,18 @@
 - (IBAction)phoneTapped:(id)sender
 {
     DLog();
-	if ([sender tag] == 1)
-    {
+	if ([sender tag] == kHomePhoneTag) {
         self.phoneNumber = self.selectedResume.home_phone;
-    }
-    else
-    {
+    } else {
         self.phoneNumber = self.selectedResume.mobile_phone;
     }
     
-    NSString *fmtString     = NSLocalizedString(@"Call %@?", @"Call %@?");
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Phone", @"Phone")
-                                                     message:[NSString stringWithFormat:fmtString, self.phoneNumber]
-                                                    delegate:self 
-                                           cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") 
-                                           otherButtonTitles:NSLocalizedString(@"Call", @"Call"), nil] autorelease];
+    NSString *fmtString = NSLocalizedString(@"Call %@?", @"Call %@?");
+    UIAlertView *alert  = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Phone", @"Phone")
+                                                      message: [NSString stringWithFormat:fmtString, self.phoneNumber]
+                                                     delegate: self 
+                                            cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
+                                            otherButtonTitles: NSLocalizedString(@"Call", @"Call"), nil] autorelease];
     [alert show];
 }
 
@@ -350,22 +314,19 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex != alertView.cancelButtonIndex)
-    {
+    if (buttonIndex != alertView.cancelButtonIndex) {
         DLog(@"Calling %@", self.phoneNumber);
         // Loop through the phoneNumber and remove non-numeric characters
-        NSMutableString *strippedString = [NSMutableString stringWithCapacity:10];
-        for (int i = 0; i < [self.phoneNumber length]; i++)
-        {
-            if (isdigit([self.phoneNumber characterAtIndex:i]))
-            {
-                [strippedString appendFormat:@"%c", [self.phoneNumber characterAtIndex:i]];
+        NSMutableString *strippedString = [NSMutableString stringWithCapacity: 10];
+        for (int i = 0; i < [self.phoneNumber length]; i++) {
+            if (isdigit([self.phoneNumber characterAtIndex:i])) {
+                [strippedString appendFormat:@"%c", [self.phoneNumber characterAtIndex: i]];
             }
         }
         
         // Ask the system to make a call
-        NSURL *phoneURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"tel:%@", @"tel:%@"), strippedString]];
-        [[UIApplication sharedApplication] openURL:phoneURL];
+        NSURL *phoneURL = [NSURL URLWithString: [NSString stringWithFormat: @"tel:%@", strippedString]];
+        [[UIApplication sharedApplication] openURL: phoneURL];
     }
 	self.phoneNumber = nil;
 }
@@ -376,8 +337,8 @@
 {
     DLog();
     // Ask the system to send an email
-    NSURL *emailURL = [NSURL URLWithString: [NSString stringWithFormat: NSLocalizedString(@"mailto:%@", @"mailto:%@"), self.selectedResume.email]];
-    [[UIApplication sharedApplication] openURL:emailURL];
+    NSURL *emailURL = [NSURL URLWithString: [NSString stringWithFormat: @"mailto:%@", self.selectedResume.email]];
+    [[UIApplication sharedApplication] openURL: emailURL];
 }
 
 #pragma mark - Keyboard handlers
@@ -387,18 +348,18 @@
 {
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
     CGRect aRect = self.view.frame;    
     aRect.size.height -= kbSize.height;
     DLog(@"point= %f, %f", _activeFld.frame.origin.x, _activeFld.frame.origin.y);
-    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin))
-    {
+    if (!CGRectContainsPoint(aRect, _activeFld.frame.origin)) {
         // calculate the contentOffset for the scroller
         // ...to get the middle of the active field into the middle of the available view area
         CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
-        [self.scrollView setContentOffset:scrollPoint animated:YES];        
+        [self.scrollView setContentOffset: scrollPoint
+                                 animated: YES];
     }
 }
 
@@ -460,14 +421,11 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
-	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
+	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
-	if (nextResponder)
-    {
+	if (nextResponder) {
         [nextResponder becomeFirstResponder];
-	}
-    else
-    {
+	} else {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -480,8 +438,8 @@
 - (void)scrollToViewTextField:(UITextField *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
-	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                             animated:YES];
+	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                             animated: YES];
 }
 
 
@@ -489,8 +447,8 @@
 - (void)resetView
 {
     DLog();
-    [self.scrollView setContentOffset:CGPointZero
-                             animated:YES];
+    [self.scrollView setContentOffset: CGPointZero
+                             animated: YES];
 }
 
 
@@ -499,19 +457,40 @@
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error])
-    {
-        ELog(error, @"Fetch failed!");
-        abort();
-    }             
     
-    if (note)
-    {
+    if (![[self fetchedResultsController] performFetch: &error]) {
+        ELog(error, @"Fetch failed!");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
+    
+    if (note) {
         // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock:^{
+        [self.managedObjectContext performBlock: ^{
             [self loadData];
         }];
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc
+{
+    BOOL result = YES;
+    NSError *error = nil;
+    
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save:&error]) {
+                ELog(error, @"Failed to save");
+                result = NO;
+            }
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+        result = NO;
+    }
+    
+    return result;
 }
 
 @end

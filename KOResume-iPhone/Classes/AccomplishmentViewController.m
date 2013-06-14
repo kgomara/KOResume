@@ -24,6 +24,7 @@
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UIView *)textField;
 - (void)resetView;
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc;
 
 @end
 
@@ -49,39 +50,41 @@
     [self loadData];
     
     // Register for keyboard notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self     
-                                             selector:@selector(keyboardWillBeHidden:)     
-                                                 name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(keyboardWillShow:)
+                                                 name: UIKeyboardWillShowNotification
+                                               object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self     
+                                             selector: @selector(keyboardWillBeHidden:)     
+                                                 name: UIKeyboardWillHideNotification
+                                               object: nil];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
-    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                target:self 
-                                                                action:@selector(editAction)];
-    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                target:self
-                                                                action:@selector(saveAction)];
-    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                target:self
-                                                                action:@selector(cancelAction)];
+    editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+                                                                target: self 
+                                                                action: @selector(editAction)];
+    saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+                                                                target: self
+                                                                action: @selector(saveAction)];
+    cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
+                                                                target: self
+                                                                action: @selector(cancelAction)];
     
     [self configureDefaultNavBar];
 
     // Register for iCloud notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFetchedResults:) 
-                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object:[NSUbiquitousKeyValueStore defaultStore]];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:) 
+                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                               object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
     
@@ -95,7 +98,7 @@
 - (void)dealloc
 {
     // Remove the keyboard observer
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     // Apple recommends calling release on the ivar...
     [_accomplishmentName release];
@@ -126,24 +129,8 @@
 {
     // Save any changes
     DLog();
-    NSError *error = nil;
-    NSManagedObjectContext *moc = self.managedObjectContext;
-    
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
-                ELog(error, @"Failed to save");
-                abort();
-            }
-        }
-    }
-    else
-    {
-        ALog(@"managedObjectContext is null");
-    }
+
+    [self saveMoc: self.managedObjectContext];
 }
 
 
@@ -171,8 +158,8 @@
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
     
-    [self.accomplishmentName setEnabled:NO];
-    [self.accomplishmentSummary setEditable:NO];
+    [self.accomplishmentName    setEnabled: NO];
+    [self.accomplishmentSummary setEditable: NO];
 }
 
 #pragma mark - UI handlers
@@ -187,8 +174,8 @@
     self.navigationItem.rightBarButtonItem = saveBtn;
     
     // Enable the fields for editing
-    [self.accomplishmentName setEnabled:YES];
-    [self.accomplishmentSummary setEditable:YES];
+    [self.accomplishmentName    setEnabled: YES];
+    [self.accomplishmentSummary setEditable: YES];
     
     // Start an undo group...it will either be commited in saveAction or 
     //    undone in cancelAction
@@ -205,21 +192,15 @@
     self.selectedAccomplishment.summary = self.accomplishmentSummary.text;
     
     [[self.managedObjectContext undoManager] endUndoGrouping];
-    NSError *error = nil;
-    NSManagedObjectContext *moc = [self.fetchedResultsController managedObjectContext];
     
-    if (![moc save:&error])
-    {
-        // Fatal Error
-        NSString* msg = [[NSString alloc] initWithFormat:NSLocalizedString(@"Unresolved error %@, %@", @"Unresolved error %@, %@"), error, [error userInfo]];
-        [KOExtensions showErrorWithMessage:msg];
-        [msg release];
-        ELog(error, @"Failed to save to data store");
-        abort();
+    if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     [self configureDefaultNavBar];
     [self resetView];
@@ -231,20 +212,15 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:@"Packages Editing"];
+    [[self.managedObjectContext undoManager] setActionName:kPackagesEditing];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
-    if ([[self.managedObjectContext undoManager] canUndo])
-    {
+    if ([[self.managedObjectContext undoManager] canUndo]) {
         [[self.managedObjectContext undoManager] undoNestedGroup];
-    }
-    else
-    {
-        DLog(@"User cancelled, nothing to undo");
     }
     
     // Cleanup the undoManager
-    [[self.managedObjectContext undoManager] removeAllActionsWithTarget:self];
+    [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
@@ -260,7 +236,7 @@
 {
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     // If active text field is hidden by keyboard, scroll it so it's visible    
     CGRect aRect         = self.view.frame;
@@ -271,7 +247,8 @@
     // calculate the contentOffset for the scroller
     // ...to get the middle of the active field into the middle of the available view area
     CGPoint scrollPoint = CGPointMake(0.0, (_activeFld.frame.origin.y + (_activeFld.frame.size.height / 2)) - (aRect.size.height /  2));        
-    [self.scrollView setContentOffset:scrollPoint animated:YES];        
+    [self.scrollView setContentOffset: scrollPoint
+                             animated: YES];
 }
 
 
@@ -287,7 +264,7 @@
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
     _activeFld = textView;
-    [self scrollToViewTextField:textView];
+    [self scrollToViewTextField: textView];
     
     return YES;
 }
@@ -316,7 +293,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	[self scrollToViewTextField:textField];
+	[self scrollToViewTextField: textField];
 }
 
 
@@ -334,14 +311,11 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	int nextTag = [textField tag] + 1;
-	UIResponder *nextResponder = [textField.superview viewWithTag:nextTag];
+	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
-	if (nextResponder)
-    {
+	if (nextResponder) {
         [nextResponder becomeFirstResponder];
-	}
-    else
-    {
+	} else {
 		[textField resignFirstResponder];
         [self resetView];
 	}
@@ -354,8 +328,8 @@
 - (void)scrollToViewTextField:(UIView *)textField
 {
 	float textFieldOriginY = textField.frame.origin.y;
-	[self.scrollView setContentOffset:CGPointMake(0.0f, textFieldOriginY - 20.0f) 
-                             animated:YES];
+	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
+                             animated: YES];
 }
 
 
@@ -363,8 +337,8 @@
 - (void)resetView
 {
     DLog();
-    [self.scrollView setContentOffset:CGPointZero
-                             animated:YES];
+    [self.scrollView setContentOffset: CGPointZero
+                             animated: YES];
 }
 
 
@@ -373,19 +347,40 @@
 {
     DLog();
     NSError *error = nil;
-    if (![[self fetchedResultsController] performFetch:&error])
-    {
-        ELog(error, @"Fetch failed!");
-        abort();
-    }             
     
-    if (note)
-    {
+    if (![[self fetchedResultsController] performFetch: &error]) {
+        ELog(error, @"Fetch failed!");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        [KOExtensions showErrorWithMessage: msg];
+    }
+    
+    if (note) {
         // The notification is on an async thread, so block while the UI updates
         [self.managedObjectContext performBlock:^{
             [self loadData];
         }];
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+- (BOOL)saveMoc:(NSManagedObjectContext *)moc
+{
+    BOOL result = YES;
+    NSError *error = nil;
+    
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save:&error]) {
+                ELog(error, @"Failed to save");
+                result = NO;
+            }
+        }
+    } else {
+        ALog(@"managedObjectContext is null");
+        result = NO;
+    }
+    
+    return result;
 }
 
 @end

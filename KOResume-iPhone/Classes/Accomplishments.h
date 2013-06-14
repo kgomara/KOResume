@@ -1,5 +1,7 @@
 #import "_Accomplishments.h"
 
 @interface Accomplishments : _Accomplishments {}
-// Custom logic goes here.
+
+FOUNDATION_EXPORT NSString *const kAccomplishmentsEntity;
+
 @end

@@ -7,11 +7,8 @@
 //
 
 #import "KOResumeAppDelegate.h"
+#import "KOExtensions.h"
 #import "RootViewController.h"
-
-#define DB_NAME         @"KOResume"
-#define DB_TYPE         @"sqlite"
-#define UBIQUITY_ID     @"<your iCloud ID goes here>"
 
 @implementation KOResumeAppDelegate
 
@@ -31,10 +28,11 @@
 {
     DLog();
     NSManagedObjectContext *moc = self.managedObjectContext;
-    if (!moc)
-    {
+    if (!moc) {
         ALog(@"Could not get managedObjectContext");
-        abort();
+        // Serious Error!
+        NSString* msg = NSLocalizedString(@"Failed to open database.", @"Failed to open database.");
+        [KOExtensions showErrorWithMessage: msg];
     }
     
     // Pass the managed object context to the view controller.
@@ -42,18 +40,15 @@
     rootViewController.managedObjectContext    = moc;
     
     // Add the navigation controller's view to the window and display.
-    [self.window addSubview:self.navigationController.view];
+    [self.window addSubview: self.navigationController.view];
     [self.window makeKeyAndVisible];
 
     // Check for availability of iCloud (user may not have it configured)
     // ...we only have one container, passing nil returns the first (and only) one
-    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
-    if (ubiq)
-    {
+    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier: nil];
+    if (ubiq) {
         DLog(@"iCloud access at %@", ubiq);
-    }
-    else
-    {
+    } else {
         DLog(@"No iCloud access");
     }
     
@@ -178,19 +173,14 @@
     NSError *error = nil;
     NSManagedObjectContext *moc = self.managedObjectContext;
     
-    if (moc)
-    {
-        if ([moc hasChanges])
-        {
-            if (![moc save:&error])
-            {
+    if (moc) {
+        if ([moc hasChanges]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 abort();
             }
         }
-    }
-    else
-    {
+    } else {
         ALog(@"managedObjectContext is null");
     }
 }
@@ -204,32 +194,30 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectContext *)managedObjectContext
 {
-    if (__managedObjectContext != nil)
-    {
+    if (__managedObjectContext != nil) {
         return __managedObjectContext;
     }
     
     NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
-    if (psc != nil)
-    {
-        NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    if (psc != nil) {
+        NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSMainQueueConcurrencyType];
         
-        [moc performBlockAndWait:^{
+        [moc performBlockAndWait: ^{
             [moc setPersistentStoreCoordinator: psc];
-            [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                     selector:@selector(mergeChangesFrom_iCloud:) 
-                                                         name:NSPersistentStoreDidImportUbiquitousContentChangesNotification 
-                                                       object:psc];
+            [[NSNotificationCenter defaultCenter] addObserver: self 
+                                                     selector: @selector(mergeChangesFrom_iCloud:) 
+                                                         name: NSPersistentStoreDidImportUbiquitousContentChangesNotification 
+                                                       object: psc];
         }];
         __managedObjectContext = moc;
 
         // Instantiate an UndoManager
         NSUndoManager *undoManager = [[NSUndoManager alloc] init];
-        [__managedObjectContext setUndoManager:undoManager];
+        [__managedObjectContext setUndoManager: undoManager];
         [undoManager release];
     }
     
-//    [__managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
+    [__managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
 
     return __managedObjectContext;
 }
@@ -242,14 +230,13 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectModel *)managedObjectModel
 {
-    if (__managedObjectModel != nil)
-    {
+    if (__managedObjectModel != nil) {
         return __managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:DB_NAME
-                                              withExtension:@"momd"];
-    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource: kDB_NAME
+                                              withExtension: @"momd"];
+    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: modelURL];
     
     return __managedObjectModel;
 }
@@ -258,39 +245,34 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
-    if (__persistentStoreCoordinator != nil)
-    {
+    if (__persistentStoreCoordinator != nil) {
         return __persistentStoreCoordinator;
     }
     
     // Set up the path to the location of the database
     NSString *docDir            = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *dbFileName        = [NSString stringWithFormat:@"%@.%@", DB_NAME, DB_TYPE];
-    NSString *dbPath            = [docDir stringByAppendingPathComponent:dbFileName];
+    NSString *dbFileName        = [NSString stringWithFormat: @"%@.%@", kDB_NAME, kDB_TYPE];
+    NSString *dbPath            = [docDir stringByAppendingPathComponent: dbFileName];
     NSFileManager *fileManager  = [NSFileManager defaultManager];
     
-    if (![fileManager fileExistsAtPath:dbPath])
-    {
+    if (![fileManager fileExistsAtPath: dbPath]) {
         // database does not exist, copy in default
-        NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource:DB_NAME
-                                                                        ofType:DB_TYPE];
+        NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource: kDB_NAME
+                                                                        ofType: kDB_TYPE];
         DLog(@"defaultDatabasePath %@", defaultDatabasePath);
-        if (defaultDatabasePath)
-        {
-            [fileManager copyItemAtPath:defaultDatabasePath
-                                 toPath:dbPath
-                                  error:NULL];
-        }
-        else
-        {
+        if (defaultDatabasePath) {
+            [fileManager copyItemAtPath: defaultDatabasePath
+                                 toPath: dbPath
+                                  error: NULL];
+        } else {
             ALog(@"Could not load default database");
         }
     }
     
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:dbFileName];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent: dbFileName];
     DLog(@"Core Data store path = \"%@\"", [storeURL path]); 
     
-    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
 
     NSPersistentStoreCoordinator *psc = __persistentStoreCoordinator;
 
@@ -298,36 +280,33 @@
         // Migrate datamodel
         NSDictionary *options = nil;
         
-        NSURL *cloudURL                 = [fileManager URLForUbiquityContainerIdentifier:UBIQUITY_ID];
-        NSString *coreDataCloudContent  = [[cloudURL path] stringByAppendingPathComponent:@"data"];
+        NSURL *cloudURL                 = [fileManager URLForUbiquityContainerIdentifier: kUBIQUITY_ID];
+        NSString *coreDataCloudContent  = [[cloudURL path] stringByAppendingPathComponent: @"data"];
         
-        if ([coreDataCloudContent length] != 0)
-        {
+        if ([coreDataCloudContent length] != 0) {
             // iCloud is available
-            cloudURL = [NSURL fileURLWithPath:coreDataCloudContent];
+            cloudURL = [NSURL fileURLWithPath: coreDataCloudContent];
             
-            NSString *storeName = [NSString stringWithFormat:@"%@.%@", DB_NAME, @"store"];
-            options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                                                                 [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
+            NSString *storeName = [NSString stringWithFormat: @"%@.%@", kDB_NAME, @"store"];
+            options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
+                                                                 [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
                                                                  storeName,                     NSPersistentStoreUbiquitousContentNameKey,
                                                                  cloudURL,                      NSPersistentStoreUbiquitousContentURLKey,
                                                                  nil];
-        }
-        else
-        {
+        } else {
             // iCloud is not available
-            options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                                                                 [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
+            options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
+                                                                 [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
                                                                  nil];
         }
         
         NSError *error = nil;
         [psc lock];
-        if (![psc addPersistentStoreWithType:NSSQLiteStoreType 
-                               configuration:nil 
-                                         URL:storeURL 
-                                     options:options 
-                                       error:&error])
+        if (![psc addPersistentStoreWithType: NSSQLiteStoreType 
+                               configuration: nil 
+                                         URL: storeURL 
+                                     options: options 
+                                       error: &error])
         {
             ELog(error, @"Could not add PersistentStore");
             // TODO - PFUbiguity sometimes returns "error" if it cannot find log data on the device
@@ -339,9 +318,9 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             DLog(@"asynchronously added persistent store!");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"RefetchAllDatabaseData" 
-                                                                object:self 
-                                                              userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName: kRefetchAllDatabaseData
+                                                                object: self 
+                                                              userInfo: nil];
         });
         
     });
@@ -356,11 +335,12 @@
 {
     [moc mergeChangesFromContextDidSaveNotification:note]; 
     
-    NSNotification *refreshNotification = [NSNotification notificationWithName:@"RefreshAllViews"
-                                                                        object:self  
-                                                                      userInfo:[note userInfo]];
+    // TODO - nobody is listening for RefreshAllViews...
+    NSNotification *refreshNotification = [NSNotification notificationWithName: kRefreshAllViews
+                                                                        object: self  
+                                                                      userInfo: [note userInfo]];
     
-    [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
+    [[NSNotificationCenter defaultCenter] postNotification: refreshNotification];
 }
 
 
@@ -375,8 +355,8 @@
     // this only works if you used NSMainQueueConcurrencyType
     // otherwise use a dispatch_async back to the main thread yourself
     [moc performBlock:^{
-        [self mergeiCloudChanges:notification 
-                      forContext:moc];
+        [self mergeiCloudChanges: notification 
+                      forContext: moc];
     }];
 }
 
@@ -390,8 +370,8 @@
 // the main thread for our views & controller
 - (NSURL *)applicationDocumentsDirectory
 {
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
-                                                   inDomains:NSUserDomainMask] lastObject];
+    return [[[NSFileManager defaultManager] URLsForDirectory: NSDocumentDirectory
+                                                   inDomains: NSUserDomainMask] lastObject];
 }
 
 @end
