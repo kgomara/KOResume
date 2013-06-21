@@ -68,14 +68,15 @@
     [self configureDefaultNavBar];
    
     // observe the app delegate telling us when it's finished asynchronously setting up the persistent store
+    // TODO - doubling doesn't seem right
     [[NSNotificationCenter defaultCenter] addObserver: self 
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: kRefetchAllDatabaseData
+                                                 name: KOApplicationDidLoadPersistentStoreCoordinatorNotification
                                                object: [[UIApplication sharedApplication] delegate]];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(reloadFetchedResults:) 
-                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                               object: [NSUbiquitousKeyValueStore defaultStore]];
+//    [[NSNotificationCenter defaultCenter] addObserver: self
+//                                             selector: @selector(reloadFetchedResults:) 
+//                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+//                                               object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
 
@@ -191,7 +192,7 @@
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
-        // Serious Error!
+        ALog(@"Failed to save data");
         NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
         [KOExtensions showErrorWithMessage: msg];
     }
@@ -209,7 +210,7 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName: kPackagesEditing];
+    [[self.managedObjectContext undoManager] setActionName: KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if ([[self.managedObjectContext undoManager] canUndo]) {
@@ -229,13 +230,13 @@
 - (void)addPackage
 {
     DLog();
-    Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName: kPackagesEntity
+    Packages *package = (Packages *)[NSEntityDescription insertNewObjectForEntityForName: KOPackagesEntity
                                                                   inManagedObjectContext: self.managedObjectContext];
     package.name            = self.packageName;
     package.created_date    = [NSDate date];
     
     //  Add a Resume for the package
-    Resumes *resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName: kResumesEntity
+    Resumes *resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName: KOResumesEntity
                                                                 inManagedObjectContext: self.managedObjectContext];
     resume.name                 = NSLocalizedString(@"Resume", @"Resume");
     resume.created_date         = [NSDate date];
@@ -302,10 +303,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: kCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
-                                       reuseIdentifier: kCellIdentifier] autorelease];
+                                       reuseIdentifier: KOCellID] autorelease];
     }
     
 	// Configure the cell.
@@ -409,7 +410,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    PackagesViewController *packagesViewController = [[[PackagesViewController alloc] initWithNibName: kPackagesViewController
+    PackagesViewController *packagesViewController = [[[PackagesViewController alloc] initWithNibName: KOPackagesViewController
                                                                                                bundle: nil] autorelease];
     // Pass the selected object to the new view controller.
     packagesViewController.title                    = [[self.fetchedResultsController objectAtIndexPath: indexPath] name];
@@ -436,14 +437,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     
     // Create the fetch request for the entity
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity  = [NSEntityDescription entityForName: kPackagesEntity
+    NSEntityDescription *entity  = [NSEntityDescription entityForName: KOPackagesEntity
                                                inManagedObjectContext: self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number
     [fetchRequest setFetchBatchSize:5];
     // Sort by package sequence_number
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: kSequenceNumberAttr
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: KOSequenceNumberAttributeName
                                                                    ascending: YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects: sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -487,12 +488,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [KOExtensions showErrorWithMessage: msg];
     }
     
-    if (note) {
-        // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock:^{
-            [self.tblView reloadData];
-        }];
-    }
+    [self.tblView reloadData];
+    
+//    if (note) {
+//        // The notification is on an async thread, so block while the UI updates
+//        [self.managedObjectContext performBlock:^{
+//            [self.tblView reloadData];
+//        }];
+//    }
 }
 
 #pragma mark - Fetched results controller delegate

@@ -2,6 +2,6 @@
 
 @interface Resumes : _Resumes {}
 
-FOUNDATION_EXPORT NSString *const kResumesEntity;
+FOUNDATION_EXPORT NSString *const KOResumesEntity;
 
 @end

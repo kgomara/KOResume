@@ -107,7 +107,7 @@
     addAccompBtn = [[UIButton buttonWithType: UIButtonTypeCustom] retain];
     [addAccompBtn setBackgroundImage: [UIImage imageNamed: @"addButton.png"] 
                             forState: UIControlStateNormal];
-    [addAccompBtn setFrame: CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addAccompBtn setFrame: CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addAccompBtn addTarget: self 
                      action: @selector(getAccomplishmentName) 
            forControlEvents: UIControlEventTouchUpInside];
@@ -134,7 +134,7 @@
     // Set an observer for iCloud changes
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                                 name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: [self.managedObjectContext persistentStoreCoordinator]];
 }
 
@@ -254,7 +254,7 @@
 - (void)sortTables
 {
     // Sort accomplishments in the order they should appear in the table  
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: kSequenceNumberAttr
+    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: KOSequenceNumberAttributeName
                                                                     ascending: YES] autorelease];
     NSArray *sortDescriptors        = [NSArray arrayWithObject: sortDescriptor];
     self.jobAccomplishmentsArray    = [NSMutableArray arrayWithArray: [self.selectedJob.accomplishment sortedArrayUsingDescriptors: sortDescriptors]];
@@ -374,7 +374,7 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName: kPackagesEditing];
+    [[self.managedObjectContext undoManager] setActionName: KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if ([[self.managedObjectContext undoManager] canUndo]) {
@@ -623,7 +623,7 @@
 - (void)addAccomplishment
 {
     DLog();
-    Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName: kAccomplishmentsEntity
+    Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName: KOAccomplishmentsEntity
                                                                                inManagedObjectContext: self.managedObjectContext];
     accomp.name         = self.accomplishmentName;
     accomp.summary      = self.accomplishmentName;
@@ -700,10 +700,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: kCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
-                                       reuseIdentifier: kCellIdentifier] autorelease];
+                                       reuseIdentifier: KOCellID] autorelease];
     }
     
 	// Configure the cell.
@@ -735,14 +735,14 @@
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
-	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, kAddBtnHeight)] autorelease];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, KOAddButtonHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
                                           size: 18.0]];
 	[sectionLabel setTextColor: [UIColor whiteColor]];
 	[sectionLabel setBackgroundColor: [UIColor clearColor]];
     
     sectionLabel.text = NSLocalizedString(@"Accomplishments", @"Accomplishments");
-    UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+    UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
     [sectionView addSubview: sectionLabel];
     [sectionView addSubview: addAccompBtn];
     
@@ -799,7 +799,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
-    AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName: kAccomplishmentViewController
+    AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName: KOAccomplishmentsViewController
                                                                                                     bundle: nil];
     accomplishmentVC.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex: indexPath.row];
     accomplishmentVC.managedObjectContext       = self.managedObjectContext;
@@ -902,13 +902,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [KOExtensions showErrorWithMessage: msg];
     }
     
-    if (note) {
-        // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock: ^{
-            [self loadData];
-            [self.tblView reloadData];
-        }];
-    }
+    [self.tblView reloadData];
+    
+//    if (note) {
+//        // The notification is on an async thread, so block while the UI updates
+//        [self.managedObjectContext performBlock: ^{
+//            [self loadData];
+//            [self.tblView reloadData];
+//        }];
+//    }
 }
 
 //----------------------------------------------------------------------------------------------------------

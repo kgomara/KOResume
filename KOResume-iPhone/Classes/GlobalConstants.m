@@ -11,32 +11,32 @@
 @implementation GlobalConstants
 
 // App constants
-NSString *const kDB_NAME                        = @"KOResume";
-NSString *const kDB_TYPE                        = @"sqlite";
-NSString *const kUBIQUITY_ID                    = @"<your iCloud ID goes here>";
+NSString *const KODatabaseName                                              = @"KOResume";
+NSString *const KODatabaseType                                              = @"sqlite";
+NSString *const KOUbiquityID                                                = @"CVC369LW49.com.kevingomara.koresume";
 
 
 // Notifications
-NSString *const kRefetchAllDatabaseData         = @"RefetchAllDatabaseData";
-NSString *const kRefreshAllViews                = @"RefreshAllViews";
+NSString *const KOApplicationDidLoadPersistentStoreCoordinatorNotification  = @"RefetchAllDatabaseData";
+NSString *const KOApplicationDidMergeChangesFrom_iCloudNotification         = @"RefreshAllViews";
 
 // Database Attribute names
-NSString *const kSequenceNumberAttr             = @"sequence_number";
+NSString *const KOSequenceNumberAttributeName                               = @"sequence_number";
 
 // View Controller XIBs
-NSString *const kSummaryViewController          = @"SummaryViewController";
-NSString *const kJobsDetailViewController       = @"JobsDetailViewController";
-NSString *const kEducationViewController        = @"EducationViewController";
-NSString *const kPackagesViewController         = @"PackagesViewController";
-NSString *const kAccomplishmentViewController   = @"AccomplishmentViewController";
-NSString *const kCoverLtrViewController         = @"CoverLtrViewController";
-NSString *const kResumeViewController           = @"ResumeViewController";
+NSString *const KOSummaryViewController                                     = @"SummaryViewController";
+NSString *const KOJobsDetailViewController                                  = @"JobsDetailViewController";
+NSString *const KOEducationViewController                                   = @"EducationViewController";
+NSString *const KOPackagesViewController                                    = @"PackagesViewController";
+NSString *const KOAccomplishmentsViewController                             = @"AccomplishmentViewController";
+NSString *const KOCoverLtrViewController                                    = @"CoverLtrViewController";
+NSString *const KOResumeViewController                                      = @"ResumeViewController";
 
 // Miscellaneous constants
-CGFloat const kAddBtnWidth                      = 29.0f;
-CGFloat const kAddBtnHeight                     = 29.0f;
-NSString *const kPackagesEditing                = @"Packages_Editing";
-NSString *const kCellIdentifier                 = @"Cell";
+CGFloat const KOAddButtonWidth                                              = 29.0f;
+CGFloat const KOAddButtonHeight                                             = 29.0f;
+NSString *const KOUndoActionName                                            = @"Packages_Editing";
+NSString *const KOCellID                                                    = @"Cell";
 
 
 @end

@@ -2,6 +2,6 @@
 
 @interface Accomplishments : _Accomplishments {}
 
-FOUNDATION_EXPORT NSString *const kAccomplishmentsEntity;
+FOUNDATION_EXPORT NSString *const KOAccomplishmentsEntity;
 
 @end

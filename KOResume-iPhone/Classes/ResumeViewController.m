@@ -72,7 +72,7 @@
 	self.view.backgroundColor = [UIColor colorWithPatternImage: [UIImage imageNamed:@"background.png"]];
     
     // Set up button items
-    backBtn     = self.navigationItem.leftBarButtonItem;    // remember where "back" is
+    backBtn     = self.navigationItem.leftBarButtonItem;    // keep track of where "back" is
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
                                                                 action: @selector(editAction)];
@@ -85,7 +85,7 @@
     addJobBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [addJobBtn setBackgroundImage: [UIImage imageNamed:@"addButton.png"] 
                          forState: UIControlStateNormal];
-    [addJobBtn setFrame:CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addJobBtn setFrame:CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addJobBtn addTarget: self 
                   action: @selector(getJobName) 
         forControlEvents: UIControlEventTouchUpInside];
@@ -93,7 +93,7 @@
     addEducationBtn = [[UIButton buttonWithType: UIButtonTypeCustom] retain];
     [addEducationBtn setBackgroundImage: [UIImage imageNamed:@"addButton.png"] 
                                forState: UIControlStateNormal];
-    [addEducationBtn setFrame: CGRectMake(280, 0, kAddBtnWidth, kAddBtnHeight)];
+    [addEducationBtn setFrame: CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addEducationBtn addTarget: self 
                         action: @selector(getEducationName) 
               forControlEvents: UIControlEventTouchUpInside];
@@ -182,7 +182,7 @@
 - (void)sortTables
 {
     // Sort jobs in the order they should appear in the table  
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: kSequenceNumberAttr
+    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: KOSequenceNumberAttributeName
                                                                     ascending: YES] autorelease];
     NSArray *sortDescriptors = [NSArray arrayWithObject: sortDescriptor];
     self.jobArray = [NSMutableArray arrayWithArray: [self.selectedResume.job sortedArrayUsingDescriptors: sortDescriptors]];
@@ -240,7 +240,7 @@
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
-        // Serious Error!
+        ALog(@"Failed to save data");
         NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
         [KOExtensions showErrorWithMessage: msg];
     }
@@ -258,7 +258,7 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:kPackagesEditing];
+    [[self.managedObjectContext undoManager] setActionName: KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if ([[self.managedObjectContext undoManager] canUndo]) {
@@ -281,18 +281,18 @@
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
     for (int i = 0; i < [self.jobArray count]; i++) {
-        if ([[self.jobArray objectAtIndex:i] isDeleted]) {
+        if ([[self.jobArray objectAtIndex: i] isDeleted]) {
             // no need to update the sequence number of deleted objects
         } else {
-            [[self.jobArray objectAtIndex:i] setSequence_numberValue:i];
+            [[self.jobArray objectAtIndex:i] setSequence_numberValue: i];
         }
     }
     // ...same for the education array
     for (int i = 0; i < [self.educationArray count]; i++) {
-        if ([[self.educationArray objectAtIndex:i] isDeleted]) {
+        if ([[self.educationArray objectAtIndex: i] isDeleted]) {
             // no need to update the sequence number of deleted objects
         } else {
-            [[self.educationArray objectAtIndex:i] setSequence_numberValue:i];
+            [[self.educationArray objectAtIndex:i] setSequence_numberValue: i];
         }
     }
 }
@@ -302,7 +302,7 @@
 - (void)addJob
 {
     DLog();
-    Jobs *job = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName: kJobsEntity
+    Jobs *job = (Jobs *)[NSEntityDescription insertNewObjectForEntityForName: KOJobsEntity
                                                       inManagedObjectContext: self.managedObjectContext];
     job.name            = self.jobName;
     job.created_date    = [NSDate date];
@@ -348,7 +348,7 @@
 - (void)addEducation
 {
     DLog();
-    Education *education = (Education *)[NSEntityDescription insertNewObjectForEntityForName: kEducationEntity
+    Education *education = (Education *)[NSEntityDescription insertNewObjectForEntityForName: KOEducationEntity
                                                                       inManagedObjectContext: self.managedObjectContext];
     education.name            = self.jobName;
     education.created_date    = [NSDate date];
@@ -447,10 +447,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (!cell) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
-                                       reuseIdentifier: kCellIdentifier] autorelease];
+                                       reuseIdentifier: KOCellID] autorelease];
     }
     
 	// Configure the cell.
@@ -493,7 +493,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, kAddBtnHeight)] autorelease];
+	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, KOAddButtonHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
                                           size: 18.0]];
 	[sectionLabel setTextColor: [UIColor whiteColor]];
@@ -506,14 +506,14 @@
 		}
 		case k_JobsSection: {
 			sectionLabel.text = NSLocalizedString(@"Professional History", @"Professional History");
-            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
             [sectionView addSubview: sectionLabel];
             [sectionView addSubview: addJobBtn];
 			return sectionView;
 		}
 		case k_EducationSection: {
 			sectionLabel.text = NSLocalizedString(@"Education & Certifications", @"Education & Certifications");
-            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, kAddBtnHeight)] autorelease];
+            UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
             [sectionView addSubview: sectionLabel];
             [sectionView addSubview: addEducationBtn];
 			return sectionView;
@@ -602,7 +602,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     switch (indexPath.section) {
 		case k_SummarySection: {
             // There is only 1 row in this section, so ignore row.
-			SummaryViewController *summaryVC = [[SummaryViewController alloc] initWithNibName: kSummaryViewController
+			SummaryViewController *summaryVC = [[SummaryViewController alloc] initWithNibName: KOSummaryViewController
                                                                                        bundle: nil];
             summaryVC.selectedResume            = self.selectedResume;
             summaryVC.managedObjectContext      = self.managedObjectContext;
@@ -615,7 +615,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 			break;
 		}
 		case k_JobsSection: {
-			JobsDetailViewController *detailVC = [[JobsDetailViewController alloc] initWithNibName: kJobsDetailViewController
+			JobsDetailViewController *detailVC = [[JobsDetailViewController alloc] initWithNibName: KOJobsDetailViewController
                                                                                             bundle: nil];
 			// Pass the selected object to the new view controller.
 			detailVC.title                      = NSLocalizedString(@"Jobs", @"Jobs");
@@ -629,7 +629,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 			break;
 		}
 		case k_EducationSection: {
-			EducationViewController *educationVC = [[EducationViewController alloc] initWithNibName: kEducationViewController
+			EducationViewController *educationVC = [[EducationViewController alloc] initWithNibName: KOEducationViewController
                                                                                              bundle: nil];
 			// Pass the selected object to the new view controller.
             educationVC.selectedEducation           = [self.educationArray objectAtIndex: indexPath.row];
@@ -734,10 +734,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         abort();
     }             
     
-    if (note) {
-        [self sortTables];
-        [self.tblView reloadData];
-    }
+    [self sortTables];
+    [self.tblView reloadData];
+
+//    if (note) {
+//        [self sortTables];
+//        [self.tblView reloadData];
+//    }
 }
 
 //----------------------------------------------------------------------------------------------------------

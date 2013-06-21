@@ -2,6 +2,6 @@
 
 @implementation Resumes
 
-NSString *const kResumesEntity      = @"Resumes";
+NSString *const KOResumesEntity      = @"Resumes";
 
 @end

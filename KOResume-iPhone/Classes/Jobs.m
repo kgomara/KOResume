@@ -2,6 +2,6 @@
 
 @implementation Jobs
 
-NSString *const kJobsEntity         = @"Jobs";
+NSString *const KOJobsEntity         = @"Jobs";
 
 @end

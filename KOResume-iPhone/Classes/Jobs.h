@@ -2,6 +2,6 @@
 
 @interface Jobs : _Jobs {}
 
-FOUNDATION_EXPORT NSString *const kJobsEntity;
+FOUNDATION_EXPORT NSString *const KOJobsEntity;
 
 @end

@@ -11,32 +11,33 @@
 @interface GlobalConstants : NSObject
 
 // App constants
-FOUNDATION_EXPORT NSString *const kDB_NAME;
-FOUNDATION_EXPORT NSString *const kDB_TYPE;
-FOUNDATION_EXPORT NSString *const kUBIQUITY_ID;
+FOUNDATION_EXPORT NSString *const KODatabaseName;
+FOUNDATION_EXPORT NSString *const KODatabaseType;
+FOUNDATION_EXPORT NSString *const KOUbiquityID;
 
 
 // Notifications
-FOUNDATION_EXPORT NSString *const kRefetchAllDatabaseData;
-FOUNDATION_EXPORT NSString *const kRefreshAllViews;
+FOUNDATION_EXPORT NSString *const KOApplicationDidLoadPersistentStoreCoordinatorNotification;
+FOUNDATION_EXPORT NSString *const KOApplicationDidMergeChangesFrom_iCloudNotification;
 
 // Database Attribute names
-FOUNDATION_EXPORT NSString *const kSequenceNumberAttr;
+FOUNDATION_EXPORT NSString *const KOSequenceNumberAttributeName;
 
 // View Controller XIBs
-FOUNDATION_EXPORT NSString *const kSummaryViewController;
-FOUNDATION_EXPORT NSString *const kJobsDetailViewController;
-FOUNDATION_EXPORT NSString *const kEducationViewController;
-FOUNDATION_EXPORT NSString *const kPackagesViewController;
-FOUNDATION_EXPORT NSString *const kAccomplishmentViewController;
-FOUNDATION_EXPORT NSString *const kCoverLtrViewController;
-FOUNDATION_EXPORT NSString *const kResumeViewController;
+FOUNDATION_EXPORT NSString *const KOSummaryViewController;
+FOUNDATION_EXPORT NSString *const KOJobsDetailViewController;
+FOUNDATION_EXPORT NSString *const KOEducationViewController;
+FOUNDATION_EXPORT NSString *const KOPackagesViewController;
+FOUNDATION_EXPORT NSString *const KOAccomplishmentsViewController;
+FOUNDATION_EXPORT NSString *const KOCoverLtrViewController;
+FOUNDATION_EXPORT NSString *const KOResumeViewController;
 
 // Miscellaneous constants
-extern CGFloat const kAddBtnWidth;
-extern CGFloat const kAddBtnHeight;
-FOUNDATION_EXPORT NSString *const kPackagesEditing;
-FOUNDATION_EXPORT NSString *const kCellIdentifier;
+extern CGFloat const KOAddButtonWidth;
+extern CGFloat const KOAddButtonHeight;
+
+FOUNDATION_EXPORT NSString *const KOUndoActionName;
+FOUNDATION_EXPORT NSString *const KOCellID;
 
 
 @end

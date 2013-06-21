@@ -2,6 +2,6 @@
 
 @interface Education : _Education {}
 
-FOUNDATION_EXPORT NSString *const kEducationEntity;
+FOUNDATION_EXPORT NSString *const KOEducationEntity;
 
 @end

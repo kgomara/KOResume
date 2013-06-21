@@ -27,11 +27,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
     DLog();
+    
     NSManagedObjectContext *moc = self.managedObjectContext;
     if (!moc) {
         ALog(@"Could not get managedObjectContext");
-        // Serious Error!
-        NSString* msg = NSLocalizedString(@"Failed to open database.", @"Failed to open database.");
+        NSString* msg = NSLocalizedString(@"Failed to open database.\nApplication will quit.", @"Failed to open database.\nApplication will quit.");
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -68,8 +68,6 @@
      should use this method to pause the game.
      */
     DLog();
-    
-    [self saveContext];
 }
 
 
@@ -98,8 +96,6 @@
      changes made on entering the background.
      */
     DLog();
-    
-    [self saveContext];
 }
 
 
@@ -146,6 +142,7 @@
 - (void)dealloc
 {
     DLog();
+    
 	[_navigationController release];
 	[_window release];
 
@@ -161,6 +158,7 @@
 - (void)awakeFromNib
 {
     DLog();
+    
     RootViewController *rootViewController = (RootViewController *)[self.navigationController topViewController];
     rootViewController.managedObjectContext = self.managedObjectContext;
 }
@@ -205,7 +203,7 @@
         [moc performBlockAndWait: ^{
             [moc setPersistentStoreCoordinator: psc];
             [[NSNotificationCenter defaultCenter] addObserver: self 
-                                                     selector: @selector(mergeChangesFrom_iCloud:) 
+                                                     selector: @selector( mergeChangesFrom_iCloud:) 
                                                          name: NSPersistentStoreDidImportUbiquitousContentChangesNotification 
                                                        object: psc];
         }];
@@ -234,7 +232,7 @@
         return __managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource: kDB_NAME
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource: KODatabaseName
                                               withExtension: @"momd"];
     __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: modelURL];
     
@@ -251,14 +249,14 @@
     
     // Set up the path to the location of the database
     NSString *docDir            = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *dbFileName        = [NSString stringWithFormat: @"%@.%@", kDB_NAME, kDB_TYPE];
+    NSString *dbFileName        = [NSString stringWithFormat: @"%@.%@", KODatabaseName, KODatabaseType];
     NSString *dbPath            = [docDir stringByAppendingPathComponent: dbFileName];
     NSFileManager *fileManager  = [NSFileManager defaultManager];
     
     if (![fileManager fileExistsAtPath: dbPath]) {
         // database does not exist, copy in default
-        NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource: kDB_NAME
-                                                                        ofType: kDB_TYPE];
+        NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource: KODatabaseName
+                                                                        ofType: KODatabaseType];
         DLog(@"defaultDatabasePath %@", defaultDatabasePath);
         if (defaultDatabasePath) {
             [fileManager copyItemAtPath: defaultDatabasePath
@@ -276,28 +274,28 @@
 
     NSPersistentStoreCoordinator *psc = __persistentStoreCoordinator;
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Migrate datamodel
         NSDictionary *options = nil;
         
-        NSURL *cloudURL                 = [fileManager URLForUbiquityContainerIdentifier: kUBIQUITY_ID];
+        NSURL *cloudURL                 = [fileManager URLForUbiquityContainerIdentifier: KOUbiquityID];
         NSString *coreDataCloudContent  = [[cloudURL path] stringByAppendingPathComponent: @"data"];
         
         if ([coreDataCloudContent length] != 0) {
             // iCloud is available
             cloudURL = [NSURL fileURLWithPath: coreDataCloudContent];
             
-            NSString *storeName = [NSString stringWithFormat: @"%@.%@", kDB_NAME, @"store"];
+            NSString *storeName = [NSString stringWithFormat: @"%@.%@", KODatabaseName, @"store"];
             options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
-                                                                 [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
-                                                                 storeName,                     NSPersistentStoreUbiquitousContentNameKey,
-                                                                 cloudURL,                      NSPersistentStoreUbiquitousContentURLKey,
-                                                                 nil];
+                                                                  [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
+                                                                   storeName,                     NSPersistentStoreUbiquitousContentNameKey,
+                                                                   cloudURL,                      NSPersistentStoreUbiquitousContentURLKey,
+                                                                   nil];
         } else {
             // iCloud is not available
             options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
-                                                                 [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
-                                                                 nil];
+                                                                  [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
+                                                                   nil];
         }
         
         NSError *error = nil;
@@ -316,9 +314,9 @@
         }
         [psc unlock];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async( dispatch_get_main_queue(), ^{
             DLog(@"asynchronously added persistent store!");
-            [[NSNotificationCenter defaultCenter] postNotificationName: kRefetchAllDatabaseData
+            [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidLoadPersistentStoreCoordinatorNotification
                                                                 object: self 
                                                               userInfo: nil];
         });
@@ -330,13 +328,12 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)mergeiCloudChanges:(NSNotification *)note
+- (void)merge_iCloudChanges:(NSNotification *)note
                 forContext:(NSManagedObjectContext *)moc 
 {
-    [moc mergeChangesFromContextDidSaveNotification:note]; 
+    [moc mergeChangesFromContextDidSaveNotification: note]; 
     
-    // TODO - nobody is listening for RefreshAllViews...
-    NSNotification *refreshNotification = [NSNotification notificationWithName: kRefreshAllViews
+    NSNotification *refreshNotification = [NSNotification notificationWithName: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                                         object: self  
                                                                       userInfo: [note userInfo]];
     
@@ -355,12 +352,12 @@
     // this only works if you used NSMainQueueConcurrencyType
     // otherwise use a dispatch_async back to the main thread yourself
     [moc performBlock:^{
-        [self mergeiCloudChanges: notification 
+        [self merge_iCloudChanges: notification 
                       forContext: moc];
     }];
 }
 
-#pragma mark - Application's Documents directory
+#pragma mark - Helper methods
 
 /**
  Returns the URL to the application's documents directory

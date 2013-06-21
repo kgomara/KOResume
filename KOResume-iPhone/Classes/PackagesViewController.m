@@ -43,7 +43,7 @@
     // Set an observer for iCloud changes
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                                 name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: [self.managedObjectContext persistentStoreCoordinator]];
 }
 
@@ -102,10 +102,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: kCellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
-                                       reuseIdentifier: kCellIdentifier] autorelease];
+                                       reuseIdentifier: KOCellID] autorelease];
     }
     
 	// Configure the cell.
@@ -170,7 +170,7 @@ viewForHeaderInSection:(NSInteger)section
     // There is only 1 section, so ignore it.
     switch (indexPath.row) {
 		case kSummaryTableCell: {
-			CoverLtrViewController *coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName: kCoverLtrViewController
+			CoverLtrViewController *coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName: KOCoverLtrViewController
                                                                                                       bundle: nil];
 			coverLtrViewController.title                    = NSLocalizedString(@"Cover Letter", @"Cover Letter");
             coverLtrViewController.selectedPackage          = self.selectedPackage;
@@ -183,7 +183,7 @@ viewForHeaderInSection:(NSInteger)section
 			break;
 		}
 		case kResumeTableCell: {
-			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName: kResumeViewController
+			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName: KOResumeViewController
                                                                                                 bundle: nil];
 			resumeViewController.title                      = NSLocalizedString(@"Resume", @"Resume");
             resumeViewController.selectedResume             = self.selectedPackage.resume;
@@ -213,12 +213,14 @@ viewForHeaderInSection:(NSInteger)section
         [KOExtensions showErrorWithMessage: msg];
     }
     
-    if (note) {
-        // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock:^{
-            [self.tblView reloadData];
-        }];
-    }
+    [self.tblView reloadData];
+    
+//    if (note) {
+//        // The notification is on an async thread, so block while the UI updates
+//        [self.managedObjectContext performBlock:^{
+//            [self.tblView reloadData];
+//        }];
+//    }
 }
 
 //----------------------------------------------------------------------------------------------------------

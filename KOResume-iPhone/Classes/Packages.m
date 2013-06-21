@@ -2,6 +2,6 @@
 
 @implementation Packages
 
-NSString *const kPackagesEntity         = @"Packages";
+NSString *const KOPackagesEntity         = @"Packages";
 
 @end

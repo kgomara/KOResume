@@ -2,6 +2,6 @@
 
 @interface Packages : _Packages {}
 
-FOUNDATION_EXPORT NSString *const kPackagesEntity;
+FOUNDATION_EXPORT NSString *const KOPackagesEntity;
 
 @end

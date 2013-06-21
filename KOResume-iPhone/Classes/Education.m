@@ -2,6 +2,6 @@
 
 @implementation Education
 
-NSString *const kEducationEntity        = @"Education";
+NSString *const KOEducationEntity        = @"Education";
 
 @end

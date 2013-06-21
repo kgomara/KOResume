@@ -2,6 +2,6 @@
 
 @implementation Accomplishments
 
-NSString *const kAccomplishmentsEntity      = @"Accomplishments";
+NSString *const KOAccomplishmentsEntity      = @"Accomplishments";
 
 @end

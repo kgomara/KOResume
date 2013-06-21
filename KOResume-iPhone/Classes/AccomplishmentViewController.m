@@ -76,7 +76,7 @@
     // Register for iCloud notifications
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                                 name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
@@ -194,7 +194,7 @@
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
-        // Serious Error!
+        ALog(@"Failed to save data");
         NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
         [KOExtensions showErrorWithMessage: msg];
     }
@@ -212,7 +212,7 @@
 {
     DLog();
     // Undo any changes the user has made
-    [[self.managedObjectContext undoManager] setActionName:kPackagesEditing];
+    [[self.managedObjectContext undoManager] setActionName:KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
     
     if ([[self.managedObjectContext undoManager] canUndo]) {
@@ -353,13 +353,15 @@
         NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
         [KOExtensions showErrorWithMessage: msg];
     }
-    
-    if (note) {
-        // The notification is on an async thread, so block while the UI updates
-        [self.managedObjectContext performBlock:^{
-            [self loadData];
-        }];
-    }
+
+    [self loadData];
+
+//    if (note) {
+//        // The notification is on an async thread, so block while the UI updates
+//        [self.managedObjectContext performBlock:^{
+//            [self loadData];
+//        }];
+//    }
 }
 
 //----------------------------------------------------------------------------------------------------------
