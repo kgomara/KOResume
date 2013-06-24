@@ -20,7 +20,7 @@
     UIView              *_activeFld;
 }
 
-- (void)loadData;
+- (void)updateDataFields;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UIView *)textField;
 - (void)resetView;
@@ -47,7 +47,7 @@
     
     _activeFld = nil;
     
-    [self loadData];
+    [self updateDataFields];
     
     // Register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver: self
@@ -63,13 +63,13 @@
     backBtn     = self.navigationItem.leftBarButtonItem;    
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
-                                                                action: @selector(editAction)];
+                                                                action: @selector(editButtonTapped)];
     saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                 target: self
-                                                                action: @selector(saveAction)];
+                                                                action: @selector(saveButtonTapped)];
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                 target: self
-                                                                action: @selector(cancelAction)];
+                                                                action: @selector(cancelButtonTapped)];
     
     [self configureDefaultNavBar];
 
@@ -143,7 +143,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)loadData
+- (void)updateDataFields
 {
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
@@ -165,7 +165,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     
@@ -177,14 +177,14 @@
     [self.accomplishmentName    setEnabled: YES];
     [self.accomplishmentSummary setEditable: YES];
     
-    // Start an undo group...it will either be commited in saveAction or 
-    //    undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or 
+    //    undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();    
     // Save the changes
@@ -208,7 +208,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made
@@ -224,7 +224,7 @@
     // ...and reset the UI defaults
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
-    [self loadData];
+    [self updateDataFields];
     [self configureDefaultNavBar];
     [self resetView];
 }
@@ -354,12 +354,12 @@
         [KOExtensions showErrorWithMessage: msg];
     }
 
-    [self loadData];
+    [self updateDataFields];
 
 //    if (note) {
 //        // The notification is on an async thread, so block while the UI updates
 //        [self.managedObjectContext performBlock:^{
-//            [self loadData];
+//            [self updateDataFields];
 //        }];
 //    }
 }

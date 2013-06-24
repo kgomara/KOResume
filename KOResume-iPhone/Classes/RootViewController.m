@@ -143,7 +143,7 @@
     // Initialize the buttons
     UIBarButtonItem *editButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                                  target: self 
-                                                                                 action: @selector(editAction)] autorelease];
+                                                                                 action: @selector(editButtonTapped)] autorelease];
     UIBarButtonItem *addButton  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
                                                                                  target: self 
                                                                                  action: @selector(promptForPackageName)] autorelease];
@@ -157,7 +157,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     [self.tblView setEditing:YES];
@@ -165,21 +165,21 @@
     // Set up the navigation item and save button
     UIBarButtonItem *saveBtn   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                                 target: self
-                                                                                action: @selector(saveAction)] autorelease];
+                                                                                action: @selector(saveButtonTapped)] autorelease];
     UIBarButtonItem *cancelBtn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                                 target: self
-                                                                                action: @selector(cancelAction)] autorelease];
+                                                                                action: @selector(cancelButtonTapped)] autorelease];
     self.navigationItem.leftBarButtonItem  = cancelBtn;
     self.navigationItem.rightBarButtonItem = saveBtn;
     
-    // Start an undo group...it will either be commited in saveAction or 
-    //    undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or 
+    //    undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();
 
@@ -201,7 +201,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made
@@ -364,7 +364,7 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self editAction];
+        [self editButtonTapped];
         // Delete the managed object at the given index path.
         NSManagedObject *packageToDelete = [self.fetchedResultsController objectAtIndexPath: indexPath];
         [self.managedObjectContext deleteObject: packageToDelete];
@@ -398,7 +398,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
     
     [packages release];
-    [self saveAction];
+    [self saveButtonTapped];
 }
 
 

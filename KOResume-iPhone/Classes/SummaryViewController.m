@@ -27,7 +27,7 @@
 
 @property (nonatomic, strong)	NSString    *phoneNumber;
 
-- (void)loadData;
+- (void)updateDataFields;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
@@ -61,7 +61,7 @@
 {
     [super viewDidLoad];
     
-    [self loadData];
+    [self updateDataFields];
 
     _activeFld = nil;
     
@@ -82,13 +82,13 @@
     backBtn     = self.navigationItem.leftBarButtonItem;    
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
-                                                                action: @selector(editAction)];
+                                                                action: @selector(editButtonTapped)];
     saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                 target: self
-                                                                action: @selector(saveAction)];
+                                                                action: @selector(saveButtonTapped)];
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                 target: self
-                                                                action: @selector(cancelAction)];
+                                                                action: @selector(cancelButtonTapped)];
     
     [self configureDefaultNavBar];
     
@@ -177,7 +177,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)loadData
+- (void)updateDataFields
 {
     self.nameFld.text        = self.selectedResume.name;
     self.street1Fld.text     = self.selectedResume.street1;
@@ -213,7 +213,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     
@@ -232,14 +232,14 @@
     [self.emailFld          setEnabled: YES];
     [self.summaryFld        setEditable: YES];
     
-    // Start an undo group...it will either be commited in saveAction or 
-    //    undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or 
+    //    undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();    
     // Save the changes
@@ -270,7 +270,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made
@@ -285,14 +285,14 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
-    [self loadData];
+    [self updateDataFields];
     [self configureDefaultNavBar];
     [self resetView];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (IBAction)phoneTapped:(id)sender
+- (IBAction)phoneButtonTapped:(id)sender
 {
     DLog();
 	if ([sender tag] == kHomePhoneTag) {
@@ -333,7 +333,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (IBAction)emailTapped:(id)sender
+- (IBAction)emailButtonTapped:(id)sender
 {
     DLog();
     // Ask the system to send an email
@@ -464,12 +464,12 @@
         [KOExtensions showErrorWithMessage: msg];
     }
 
-    [self loadData];
+    [self updateDataFields];
 
 //    if (note) {
 //        // The notification is on an async thread, so block while the UI updates
 //        [self.managedObjectContext performBlock: ^{
-//            [self loadData];
+//            [self updateDataFields];
 //        }];
 //    }
 }

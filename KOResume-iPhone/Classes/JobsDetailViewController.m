@@ -23,7 +23,7 @@
 
     UIBarButtonItem     *backBtn;
     UIBarButtonItem     *doneBtn;
-    UIBarButtonItem     *clearBtn;
+    UIBarButtonItem     *undoBtn;
     UIBarButtonItem     *editBtn;
     UIBarButtonItem     *saveBtn;
     UIBarButtonItem     *cancelBtn;
@@ -37,7 +37,7 @@
 @property (nonatomic, strong) NSMutableArray    *jobAccomplishmentsArray;
 @property (nonatomic, strong) NSString          *accomplishmentName;
 
-- (void)loadData;
+- (void)updateDataFields;
 - (void)sortTables;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
@@ -89,7 +89,7 @@
     activeDateFld                   = 0;
     [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     
-    [self loadData];
+    [self updateDataFields];
 
     _activeFld = nil;
 
@@ -115,19 +115,19 @@
     backBtn     = self.navigationItem.leftBarButtonItem;    
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
-                                                                action: @selector(editAction)];
+                                                                action: @selector(editButtonTapped)];
     saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                 target: self
-                                                                action: @selector(saveAction)];
+                                                                action: @selector(saveButtonTapped)];
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                 target: self
-                                                                action: @selector(cancelAction)];
+                                                                action: @selector(cancelButtonTapped)];
     doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                 target: self
-                                                                action: @selector(doneAction)];
-    clearBtn    = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemUndo
+                                                                action: @selector(doneButtonTapped)];
+    undoBtn    = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemUndo
                                                                 target: self
-                                                                action: @selector(clearAction)];
+                                                                action: @selector(clearButtonTapped)];
     
     [self configureDefaultNavBar];
     
@@ -140,7 +140,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)loadData
+- (void)updateDataFields
 {
     // Get the data and stuff it into the fields
     self.jobCompany.text                = self.selectedJob.name;
@@ -289,7 +289,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     
@@ -313,13 +313,13 @@
     [self.jobResponsibilities   setEditable: YES];
     [self.datePicker            setHidden: NO];
     
-    // Start an undo group...it will either be commited in saveAction or undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();    
     // Reset the sequence_number of the Accomplishments items in case they were re-ordered during the edit
@@ -370,7 +370,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made
@@ -385,7 +385,7 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
-    [self loadData];
+    [self updateDataFields];
     [self configureDefaultNavBar];
     [self resetView];
     [self sortTables];
@@ -394,7 +394,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)doneAction
+- (void)doneButtonTapped
 {
     DLog();
     CGRect screenRect   = [[UIScreen mainScreen] applicationFrame];    
@@ -418,7 +418,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)clearAction
+- (void)clearButtonTapped
 {
     DLog();
 
@@ -433,7 +433,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (IBAction)companyTapped:(id)sender
+- (IBAction)companyButtonTapped:(id)sender
 {
 	if (self.selectedJob.uri == NULL ||
        [self.selectedJob.uri rangeOfString: @"://"].location == NSNotFound) {
@@ -604,8 +604,8 @@
                      }];
     // add the "Done" button to the nav bar
     self.navigationItem.rightBarButtonItem = doneBtn;
-    // ...and clear the cancel button
-    self.navigationItem.leftBarButtonItem = clearBtn;
+    // ...and the undo button
+    self.navigationItem.leftBarButtonItem = undoBtn;
 }
 
 
@@ -907,7 +907,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //    if (note) {
 //        // The notification is on an async thread, so block while the UI updates
 //        [self.managedObjectContext performBlock: ^{
-//            [self loadData];
+//            [self updateDataFields];
 //            [self.tblView reloadData];
 //        }];
 //    }

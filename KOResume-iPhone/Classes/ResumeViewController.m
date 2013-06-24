@@ -75,13 +75,13 @@
     backBtn     = self.navigationItem.leftBarButtonItem;    // keep track of where "back" is
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
-                                                                action: @selector(editAction)];
+                                                                action: @selector(editButtonTapped)];
     saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                 target: self
-                                                                action: @selector(saveAction)];
+                                                                action: @selector(saveButtonTapped)];
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                 target: self
-                                                                action: @selector(cancelAction)];
+                                                                action: @selector(cancelButtonTapped)];
     addJobBtn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
     [addJobBtn setBackgroundImage: [UIImage imageNamed:@"addButton.png"] 
                          forState: UIControlStateNormal];
@@ -210,7 +210,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     // Enable table editing
@@ -224,13 +224,13 @@
     [addJobBtn          setHidden: NO];
     [addEducationBtn    setHidden: NO];
     
-    // Start an undo group...it will either be commited in saveAction or undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();
     // Reset the sequence_number of the Job and Education items in case they were re-ordered during the edit
@@ -254,7 +254,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made

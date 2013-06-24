@@ -38,6 +38,6 @@
 @property (nonatomic, strong) IBOutlet  UIDatePicker        *datePicker;
 @property (nonatomic, strong) IBOutlet  UITableView         *tblView;
 
-- (IBAction)companyTapped:(id)sender;
+- (IBAction)companyButtonTapped:(id)sender;
 
 @end

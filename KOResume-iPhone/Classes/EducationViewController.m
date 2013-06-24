@@ -22,7 +22,7 @@
     NSDateFormatter     *dateFormatter;
 }
 
-- (void)loadData;
+- (void)updateDataFields;
 - (void)configureDefaultNavBar;
 - (void)scrollToViewTextField:(UITextField *)textField;
 - (void)resetView;
@@ -56,22 +56,22 @@
     [self.datePicker setHidden: YES];
     [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     
-    [self loadData];
+    [self updateDataFields];
     
     // Set up btn items
     backBtn     = self.navigationItem.leftBarButtonItem;    
     editBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                 target: self 
-                                                                action: @selector(editAction)];
+                                                                action: @selector(editButtonTapped)];
     saveBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                 target: self
-                                                                action: @selector(saveAction)];
+                                                                action: @selector(saveButtonTapped)];
     cancelBtn   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
                                                                 target: self
-                                                                action: @selector(cancelAction)];
+                                                                action: @selector(cancelButtonTapped)];
     doneBtn     = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                 target: self
-                                                                action: @selector(doneAction)];
+                                                                action: @selector(doneButtonTapped)];
 
     [self configureDefaultNavBar];
 
@@ -147,20 +147,6 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)loadData
-{
-    self.nameFld.text               = self.selectedEducation.name;
-    dateFormatter                   = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle: NSDateFormatterNoStyle];	//Not shown
-	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
-    self.cityFld.text               = self.selectedEducation.city;
-    self.stateFld.text              = self.selectedEducation.state;
-    self.titleFld.text              = self.selectedEducation.title;
-}
-
-
-//----------------------------------------------------------------------------------------------------------
 - (void)configureDefaultNavBar
 {
     DLog();
@@ -178,7 +164,7 @@
 #pragma mark - UI handlers
 
 //----------------------------------------------------------------------------------------------------------
-- (void)editAction
+- (void)editButtonTapped
 {
     DLog();
     
@@ -193,14 +179,14 @@
     [self.stateFld      setEnabled: YES];
     [self.titleFld      setEnabled: YES];
 
-    // Start an undo group...it will either be commited in saveAction or 
-    //    undone in cancelAction
+    // Start an undo group...it will either be commited in saveButtonTapped or 
+    //    undone in cancelButtonTapped
     [[self.managedObjectContext undoManager] beginUndoGrouping]; 
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)saveAction
+- (void)saveButtonTapped
 {
     DLog();    
     // Save the changes
@@ -227,7 +213,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)cancelAction
+- (void)cancelButtonTapped
 {
     DLog();
     // Undo any changes the user has made
@@ -241,14 +227,14 @@
     // Cleanup the undoManager
     [[self.managedObjectContext undoManager] removeAllActionsWithTarget: self];
     // ...and reset the UI defaults
-    [self loadData];
+    [self updateDataFields];
     [self configureDefaultNavBar];
     [self resetView];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)doneAction
+- (void)doneButtonTapped
 {
     DLog();
     CGRect screenRect = [[UIScreen mainScreen] applicationFrame];    
@@ -279,6 +265,21 @@
     // ...and the textField
 	self.degreeDateFld.text             = [dateFormatter stringFromDate: self.selectedEducation.earned_date];
 }
+
+
+//----------------------------------------------------------------------------------------------------------
+- (void)updateDataFields
+{
+    self.nameFld.text               = self.selectedEducation.name;
+    dateFormatter                   = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle: NSDateFormatterNoStyle];	//Not shown
+	self.degreeDateFld.text         = [dateFormatter stringFromDate:self.selectedEducation.earned_date];
+    self.cityFld.text               = self.selectedEducation.city;
+    self.stateFld.text              = self.selectedEducation.state;
+    self.titleFld.text              = self.selectedEducation.title;
+}
+
 
 #pragma mark - UITextFieldDelegate methods
 
@@ -398,12 +399,12 @@
         [KOExtensions showErrorWithMessage: msg];
     }
 
-    [self loadData];
+    [self updateDataFields];
 
 //    if (note) {
 //        // The notification is on an async thread, so block while the UI updates
 //        [self.managedObjectContext performBlock:^{
-//            [self loadData];
+//            [self updateDataFields];
 //        }];
 //    }
 }

@@ -34,7 +34,7 @@
 @property (nonatomic, strong) IBOutlet UITextField                  *emailFld;
 @property (nonatomic, strong) IBOutlet UITextView                   *summaryFld;
 
-- (IBAction)phoneTapped:(id)sender;
-- (IBAction)emailTapped:(id)sender;
+- (IBAction)phoneButtonTapped:(id)sender;
+- (IBAction)emailButtonTapped:(id)sender;
 
 @end
