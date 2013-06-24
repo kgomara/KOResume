@@ -109,7 +109,7 @@
                             forState: UIControlStateNormal];
     [addAccompBtn setFrame: CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addAccompBtn addTarget: self 
-                     action: @selector(getAccomplishmentName) 
+                     action: @selector(promptForAccomplishmentName) 
            forControlEvents: UIControlEventTouchUpInside];
 
     backBtn     = self.navigationItem.leftBarButtonItem;    
@@ -446,7 +446,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (IBAction)getEndDate:(id)sender
+- (IBAction)datePickerDidUpdate:(id)sender
 {
     if (activeDateFld == k_startDateTextFld) {
         // Update the database
@@ -652,7 +652,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)getAccomplishmentName
+- (void)promptForAccomplishmentName
 {
     UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
                                                                   message: nil

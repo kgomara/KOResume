@@ -24,7 +24,7 @@
     NSManagedObjectContext      *managedObjectContext__;
 }
 
-- (void)getPackageName;
+- (void)promptForPackageName;
 - (void)addPackage;
 - (void)configureCell:(UITableViewCell *)cell
           atIndexPath:(NSIndexPath *)indexPath;
@@ -67,16 +67,11 @@
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
    
-    // observe the app delegate telling us when it's finished asynchronously setting up the persistent store
-    // TODO - doubling doesn't seem right
+    // Observe the app delegate telling us when it's finished asynchronously setting up the persistent store
     [[NSNotificationCenter defaultCenter] addObserver: self 
                                              selector: @selector(reloadFetchedResults:) 
                                                  name: KOApplicationDidLoadPersistentStoreCoordinatorNotification
                                                object: [[UIApplication sharedApplication] delegate]];
-//    [[NSNotificationCenter defaultCenter] addObserver: self
-//                                             selector: @selector(reloadFetchedResults:) 
-//                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
-//                                               object: [NSUbiquitousKeyValueStore defaultStore]];
 }
 
 
@@ -151,7 +146,7 @@
                                                                                  action: @selector(editAction)] autorelease];
     UIBarButtonItem *addButton  = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
                                                                                  target: self 
-                                                                                 action: @selector(getPackageName)] autorelease];
+                                                                                 action: @selector(promptForPackageName)] autorelease];
     
     self.navigationItem.rightBarButtonItem = addButton;
     self.navigationItem.leftBarButtonItem  = editButton;
@@ -255,7 +250,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)getPackageName
+- (void)promptForPackageName
 {
     UIAlertView *packageNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Package Name", @"Enter Package Name")
                                                                 message: nil

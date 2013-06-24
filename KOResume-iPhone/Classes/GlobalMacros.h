@@ -23,6 +23,9 @@
 // ALog always displays output regardless of the DEBUG setting
 #define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
+// ELog always displays output regardless of the DEBUG setting.
+// Elog accepts an NSError object logs the detailed information (this may seem redundant
+//      for many system errors, but the macro will display the Class, method name, and line number.
 #define ELog(_error, _fmt, ...)                                                     \
 do                                                                                  \
 {                                                                                   \
@@ -50,8 +53,5 @@ colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0   \
 green:((float)((rgbValue & 0xFF00) >> 8))/255.0             \
 blue:((float)(rgbValue & 0xFF))/255.0 alpha:a]
 
-
-#define kLabelWidth			280
-#define kLabelHeight		21
 
 

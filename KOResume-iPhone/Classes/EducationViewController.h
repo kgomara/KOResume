@@ -30,6 +30,6 @@
 
 @property (nonatomic, strong) IBOutlet      UIDatePicker                *datePicker;
 
-- (IBAction)getEarnedDate:(id)sender;
+- (IBAction)datePickerDidUpdate:(id)sender;
 
 @end

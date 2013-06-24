@@ -272,7 +272,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (IBAction)getEarnedDate:(id)sender
+- (IBAction)datePickerDidUpdate:(id)sender
 {
     // Update the database
     self.selectedEducation.earned_date  = [self.datePicker date];

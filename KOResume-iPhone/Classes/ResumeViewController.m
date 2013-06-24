@@ -87,7 +87,7 @@
                          forState: UIControlStateNormal];
     [addJobBtn setFrame:CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addJobBtn addTarget: self 
-                  action: @selector(getJobName) 
+                  action: @selector(promptForJobName) 
         forControlEvents: UIControlEventTouchUpInside];
     
     addEducationBtn = [[UIButton buttonWithType: UIButtonTypeCustom] retain];
@@ -95,7 +95,7 @@
                                forState: UIControlStateNormal];
     [addEducationBtn setFrame: CGRectMake(280, 0, KOAddButtonWidth, KOAddButtonHeight)];
     [addEducationBtn addTarget: self 
-                        action: @selector(getEducationName) 
+                        action: @selector(promptForEducationName)
               forControlEvents: UIControlEventTouchUpInside];
     
     // ...and the NavBar
@@ -108,7 +108,7 @@
     // Set an observer for iCloud changes
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                                 name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: [self.managedObjectContext persistentStoreCoordinator]];
 }
 
@@ -330,7 +330,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)getJobName
+- (void)promptForJobName
 {
     UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
                                                             message: nil
@@ -376,7 +376,7 @@
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)getEducationName
+- (void)promptForEducationName
 {
     UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name")
                                                                   message: nil
@@ -736,11 +736,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     
     [self sortTables];
     [self.tblView reloadData];
-
-//    if (note) {
-//        [self sortTables];
-//        [self.tblView reloadData];
-//    }
 }
 
 //----------------------------------------------------------------------------------------------------------
