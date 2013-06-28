@@ -51,6 +51,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
     
     [self.datePicker setHidden: YES];
@@ -86,6 +88,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
@@ -102,6 +106,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     [_nameFld release];
     [_degreeDateFld release];
     [_cityFld release];
@@ -131,9 +137,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // Save any changes
     DLog();
 
+    // Save any changes
     [self saveMoc: self.managedObjectContext];
 }
 
@@ -150,6 +156,7 @@
 - (void)configureDefaultNavBar
 {
     DLog();
+    
     // Set the buttons.    
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
@@ -188,7 +195,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)saveButtonTapped
 {
-    DLog();    
+    DLog();
+    
     // Save the changes
     self.selectedEducation.name         = self.nameFld.text;
     self.selectedEducation.earned_date  = [dateFormatter dateFromString: self.degreeDateFld.text];
@@ -216,6 +224,7 @@
 - (void)cancelButtonTapped
 {
     DLog();
+    
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -237,6 +246,7 @@
 - (void)doneButtonTapped
 {
     DLog();
+    
     CGRect screenRect = [[UIScreen mainScreen] applicationFrame];    
     CGRect endFrame = self.datePicker.frame;
     
@@ -260,6 +270,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (IBAction)datePickerDidUpdate:(id)sender
 {
+    DLog();
+
     // Update the database
     self.selectedEducation.earned_date  = [self.datePicker date];
     // ...and the textField
@@ -270,6 +282,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)updateDataFields
 {
+    DLog();
+
     self.nameFld.text               = self.selectedEducation.name;
     dateFormatter                   = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
@@ -286,6 +300,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    DLog();
+
     if (textField.tag == k_degreeDateFldTag) {
         // we are in the date field, dismiss the keyboard and show the data picker
         [textField resignFirstResponder];
@@ -309,6 +325,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    DLog();
+
 	[self scrollToViewTextField: textField];
 }
 
@@ -316,6 +334,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    DLog();
+
 	// Validate fields - nothing to do in this version
 	
 	return YES;
@@ -325,6 +345,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    DLog();
+
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
@@ -343,6 +365,7 @@
 - (void)animateDatePickerOn
 {
     DLog();
+    
     [self.datePicker setHidden: NO];
     [self.view bringSubviewToFront: self.datePicker];
     
@@ -372,6 +395,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)scrollToViewTextField:(UITextField *)textField
 {
+    DLog();
+
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated: YES];
@@ -382,6 +407,7 @@
 - (void)resetView
 {
     DLog();
+    
     [self.scrollView setContentOffset: CGPointZero
                              animated: YES];
 }
@@ -391,6 +417,7 @@
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -412,15 +439,21 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

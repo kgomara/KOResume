@@ -10,6 +10,7 @@
 #import "KOExtensions.h"
 #import "Accomplishments.h"
 #import "AccomplishmentViewController.h"
+#import "SVWebViewController.h"
 
 #define k_startDateTextFld  6
 #define k_endDateTextFld    7
@@ -79,6 +80,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
 	
 	self.view.backgroundColor		= [UIColor colorWithPatternImage: [UIImage imageNamed: @"background.png"]];
@@ -142,6 +145,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)updateDataFields
 {
+    DLog();
+
     // Get the data and stuff it into the fields
     self.jobCompany.text                = self.selectedJob.name;
 	self.jobCompanyUrl.text             = self.selectedJob.uri;
@@ -167,6 +172,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     [super viewDidUnload];
 
@@ -189,6 +196,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
@@ -227,6 +236,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
+    DLog();
+
     self.fetchedResultsController.delegate = self;
     [self.tblView reloadData];
 }
@@ -253,7 +264,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)sortTables
 {
-    // Sort accomplishments in the order they should appear in the table  
+    DLog();
+
+    // Sort accomplishments in the order they should appear in the table
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: KOSequenceNumberAttributeName
                                                                     ascending: YES] autorelease];
     NSArray *sortDescriptors        = [NSArray arrayWithObject: sortDescriptor];
@@ -265,6 +278,7 @@
 - (void)configureDefaultNavBar
 {
     DLog();
+    
     // Set the buttons.    
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
@@ -321,7 +335,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)saveButtonTapped
 {
-    DLog();    
+    DLog();
+    
     // Reset the sequence_number of the Accomplishments items in case they were re-ordered during the edit
     [self resequenceTables];
     
@@ -357,6 +372,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)resequenceTables
 {
+    DLog();
+
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
     for (int i = 0; i < [self.jobAccomplishmentsArray count]; i++) {
@@ -373,6 +390,7 @@
 - (void)cancelButtonTapped
 {
     DLog();
+    
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName: KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -397,6 +415,7 @@
 - (void)doneButtonTapped
 {
     DLog();
+    
     CGRect screenRect   = [[UIScreen mainScreen] applicationFrame];    
     CGRect endFrame     = self.datePicker.frame;
     
@@ -435,19 +454,26 @@
 //----------------------------------------------------------------------------------------------------------
 - (IBAction)companyButtonTapped:(id)sender
 {
+    DLog();
+
 	if (self.selectedJob.uri == NULL ||
-       [self.selectedJob.uri rangeOfString: @"://"].location == NSNotFound) {
+       [self.selectedJob.uri rangeOfString: @"://"].location == NSNotFound)
+    {
 		return;
 	}
     
-	// Open the Url in Safari
-	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: self.selectedJob.uri]];
+    // Open the Url in an application webView
+    SVWebViewController *webViewController = [[[SVWebViewController alloc] initWithAddress:self.selectedJob.uri] autorelease];
+    [self.navigationController pushViewController: webViewController
+                                         animated: YES];
 }
 
 
 //----------------------------------------------------------------------------------------------------------
 - (IBAction)datePickerDidUpdate:(id)sender
 {
+    DLog();
+
     if (activeDateFld == k_startDateTextFld) {
         // Update the database
         self.selectedJob.start_date = [self.datePicker date];
@@ -466,6 +492,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
+    DLog();
+
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
@@ -495,6 +523,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = textView;
     
     return YES;
@@ -504,6 +534,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = nil;
     
     DLog();;
@@ -514,6 +546,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    DLog();
+
     _activeFld = textField;
     if (textField.tag == k_startDateTextFld) {
         // we are in the start date field, dismiss the keyboard and show the data picker
@@ -548,6 +582,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    DLog();
+
 	[self scrollToViewTextField:textField];
 }
 
@@ -565,6 +601,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    DLog();
+
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
@@ -583,6 +621,7 @@
 - (void)animateDatePickerOn
 {
     DLog();
+    
     [self.datePicker setHidden: NO];
     [self.view bringSubviewToFront: self.datePicker];
     
@@ -612,6 +651,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)scrollToViewTextField:(UITextField *)textField
 {
+    DLog();
+
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.tblView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                           animated: YES];
@@ -623,6 +664,7 @@
 - (void)addAccomplishment
 {
     DLog();
+    
     Accomplishments *accomp = (Accomplishments *)[NSEntityDescription insertNewObjectForEntityForName: KOAccomplishmentsEntity
                                                                                inManagedObjectContext: self.managedObjectContext];
     accomp.name         = self.accomplishmentName;
@@ -654,6 +696,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)promptForAccomplishmentName
 {
+    DLog();
+
     UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
                                                                   message: nil
                                                                  delegate: self 
@@ -668,6 +712,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    DLog();
+
     if (buttonIndex == 1) {
         // OK
         self.accomplishmentName = [[alertView textFieldAtIndex: 0] text];
@@ -691,7 +737,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section 
-{	
+{
+    DLog(@"section=%d", section);
+
     return [self.jobAccomplishmentsArray count];
 }
 
@@ -700,6 +748,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DLog();
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
@@ -718,6 +768,8 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
+    DLog();
+
     if ([[self.jobAccomplishmentsArray objectAtIndex: indexPath.row] name]) {
         cell.textLabel.text = [[self.jobAccomplishmentsArray objectAtIndex: indexPath.row] name];
     } else {
@@ -735,6 +787,7 @@
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
+    
 	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, KOAddButtonHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
                                           size: 18.0]];
@@ -762,6 +815,8 @@ viewForHeaderInSection:(NSInteger)section
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DLog();
+
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the managed object at the given index path.
         NSManagedObject *accompToDelete = [self.jobAccomplishmentsArray objectAtIndex: indexPath.row];
@@ -780,6 +835,8 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
        toIndexPath:(NSIndexPath *)toIndexPath
 {
+    DLog();
+
     // Get the from and to Rows of the table
     NSUInteger fromRow  = [fromIndexPath row];
     NSUInteger toRow    = [toIndexPath row];
@@ -799,6 +856,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     DLog();
+    
     AccomplishmentViewController *accomplishmentVC = [[AccomplishmentViewController alloc] initWithNibName: KOAccomplishmentsViewController
                                                                                                     bundle: nil];
     accomplishmentVC.selectedAccomplishment     = [self.jobAccomplishmentsArray objectAtIndex: indexPath.row];
@@ -819,6 +877,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    DLog();
+
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tblView beginUpdates];
 }
@@ -831,7 +891,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
      forChangeType:(NSFetchedResultsChangeType)type 
       newIndexPath:(NSIndexPath *)newIndexPath 
 {
-    
+    DLog();
+
     UITableView *tableView = self.tblView;
     
     switch(type) {
@@ -867,7 +928,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
            atIndex:(NSUInteger)sectionIndex 
      forChangeType:(NSFetchedResultsChangeType)type 
 {
-    
+    DLog();
+
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
@@ -885,6 +947,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    DLog();
+
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
 }
@@ -894,6 +958,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -916,15 +981,21 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");
@@ -938,6 +1009,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
+    DLog();
+
 	return self.jobView;
 }
 
@@ -946,6 +1019,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)resetView
 {
     DLog();
+    
     [self.tblView setContentOffset: CGPointZero
                           animated: YES];
     [KOExtensions dismissKeyboard];

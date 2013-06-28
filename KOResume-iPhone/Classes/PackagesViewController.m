@@ -35,6 +35,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
 	
 	self.navigationItem.title = self.selectedPackage.name;
@@ -51,6 +53,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
 	self.tblView = nil;
@@ -60,6 +64,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     // Apple recommends calling release on the ivar...
 	[_tblView release];
     [_selectedPackage release];
@@ -73,6 +79,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
+    DLog();
+
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
@@ -101,7 +109,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+{
+    DLog();
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
@@ -132,9 +142,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // Save any changes
     DLog();
 
+    // Save any changes
     [self saveMoc: self.managedObjectContext];
 }
 
@@ -144,7 +154,9 @@
 //----------------------------------------------------------------------------------------------------------
 -  (UIView *)tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section 
-{	
+{
+    DLog();
+
 	UILabel *sectionLabel = [[[UILabel alloc] init] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
                                           size: 18.0]];
@@ -167,6 +179,8 @@ viewForHeaderInSection:(NSInteger)section
 //----------------------------------------------------------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
+    DLog();
+
     // There is only 1 section, so ignore it.
     switch (indexPath.row) {
 		case kSummaryTableCell: {
@@ -205,6 +219,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
 
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -226,15 +241,21 @@ viewForHeaderInSection:(NSInteger)section
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

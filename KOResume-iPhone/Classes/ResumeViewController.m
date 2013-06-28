@@ -116,6 +116,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];
@@ -129,14 +130,14 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
 	[_tblView release];
     [_selectedResume release];
     [__managedObjectContext release];
     [__fetchedResultsController release];
     [_jobArray release];
     [_educationArray release];
-    [addJobBtn release];
-    [addEducationBtn release];
+    [_jobName release];
 	
     [super dealloc];
 }
@@ -156,6 +157,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
+    DLog();
     self.fetchedResultsController.delegate = self;
     [self.tblView reloadData];
 }
@@ -181,7 +183,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)sortTables
 {
-    // Sort jobs in the order they should appear in the table  
+    DLog();
+    // Sort jobs in the order they should appear in the table
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey: KOSequenceNumberAttributeName
                                                                     ascending: YES] autorelease];
     NSArray *sortDescriptors = [NSArray arrayWithObject: sortDescriptor];
@@ -278,6 +281,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)resequenceTables
 {
+    DLog();
     // The job array is in the order (including deletes) the user wants
     // ...loop through the array by index resetting the job's sequence_number attribute
     for (int i = 0; i < [self.jobArray count]; i++) {
@@ -332,7 +336,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)promptForJobName
 {
-    UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
+    DLog();
+   UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
                                                             message: nil
                                                            delegate: self 
                                                   cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
@@ -378,6 +383,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)promptForEducationName
 {
+    DLog();
     UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name")
                                                                   message: nil
                                                                  delegate: self 
@@ -393,6 +399,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    DLog();
     if (buttonIndex == 1) {
         // OK button was tapped
         self.jobName = [[alertView textFieldAtIndex: 0] text];
@@ -421,6 +428,7 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
+    DLog(@"section=%d", section);
     NSInteger rowsInSection;
     
 	switch (section) {
@@ -447,6 +455,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    
+    DLog();
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (!cell) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
@@ -465,6 +474,7 @@
 - (UITableViewCell *)configureCell:(UITableViewCell *)cell
                        atIndexPath:(NSIndexPath *) indexPath
 {
+    DLog();
     switch (indexPath.section) {
 		case k_SummarySection:
 			cell.textLabel.text = self.selectedResume.name;          // There is only 1 row in this section
@@ -493,6 +503,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    DLog();
 	UILabel *sectionLabel = [[[UILabel alloc] initWithFrame: CGRectMake(0, 0, 260.0f, KOAddButtonHeight)] autorelease];
 	[sectionLabel setFont:[UIFont fontWithName: @"Helvetica-Bold" 
                                           size: 18.0]];
@@ -537,6 +548,7 @@
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DLog();
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the managed object at the given index path.
         if (indexPath.section == k_JobsSection) {
@@ -562,6 +574,7 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
        toIndexPath:(NSIndexPath *)toIndexPath
 {
+    DLog();
     if (fromIndexPath.section != toIndexPath.section) {
         // Cannot move between sections
         [KOExtensions showAlertWithMessageAndType: NSLocalizedString(@"Sorry, move not allowed", @"Sorry, move not allowed")
@@ -599,6 +612,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DLog();
     switch (indexPath.section) {
 		case k_SummarySection: {
             // There is only 1 row in this section, so ignore row.
@@ -655,6 +669,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    DLog();
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tblView beginUpdates];
 }
@@ -667,6 +682,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
      forChangeType:(NSFetchedResultsChangeType)type 
       newIndexPath:(NSIndexPath *)newIndexPath 
 {
+    DLog();
     UITableView *tableView = self.tblView;
     
     switch(type) {
@@ -702,6 +718,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
            atIndex:(NSUInteger)sectionIndex 
      forChangeType:(NSFetchedResultsChangeType)type 
 {
+    DLog();
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] 
@@ -719,6 +736,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    DLog();
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tblView endUpdates];
 }
@@ -741,15 +759,20 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

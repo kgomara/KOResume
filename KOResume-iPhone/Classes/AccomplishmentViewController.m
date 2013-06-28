@@ -43,6 +43,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
     
     _activeFld = nil;
@@ -84,6 +86,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
@@ -97,6 +101,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
@@ -127,9 +133,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // Save any changes
     DLog();
 
+    // Save any changes
     [self saveMoc: self.managedObjectContext];
 }
 
@@ -145,6 +151,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)updateDataFields
 {
+    DLog();
+
     self.accomplishmentName.text    = self.selectedAccomplishment.name;
     self.accomplishmentSummary.text = self.selectedAccomplishment.summary;
 }
@@ -154,6 +162,7 @@
 - (void)configureDefaultNavBar
 {
     DLog();
+    
     // Set the buttons.    
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
@@ -186,7 +195,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)saveButtonTapped
 {
-    DLog();    
+    DLog();
+    
     // Save the changes
     self.selectedAccomplishment.name    = self.accomplishmentName.text;
     self.selectedAccomplishment.summary = self.accomplishmentSummary.text;
@@ -211,6 +221,7 @@
 - (void)cancelButtonTapped
 {
     DLog();
+    
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -234,6 +245,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
+    DLog();
+
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
@@ -263,6 +276,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = textView;
     [self scrollToViewTextField: textView];
     
@@ -273,9 +288,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = nil;
-    
-    DLog();;
 }
 
 #pragma mark -
@@ -284,6 +299,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    DLog();
+
     _activeFld = textField;
     
     return YES;
@@ -293,6 +310,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    DLog();
+
 	[self scrollToViewTextField: textField];
 }
 
@@ -300,6 +319,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    DLog();
+
     _activeFld = nil;
 	// Validate fields - nothing to do in this version
 	
@@ -310,6 +331,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    DLog();
+
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
@@ -327,6 +350,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)scrollToViewTextField:(UIView *)textField
 {
+    DLog();
+
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated: YES];
@@ -337,6 +362,7 @@
 - (void)resetView
 {
     DLog();
+    
     [self.scrollView setContentOffset: CGPointZero
                              animated: YES];
 }
@@ -346,6 +372,7 @@
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -367,15 +394,21 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

@@ -67,10 +67,10 @@
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
    
-    // Observe the app delegate telling us when it's finished asynchronously setting up the persistent store
+    // Observe the app delegate telling us when it's finished asynchronously updating the database
     [[NSNotificationCenter defaultCenter] addObserver: self 
                                              selector: @selector(reloadFetchedResults:) 
-                                                 name: KOApplicationDidLoadPersistentStoreCoordinatorNotification
+                                                 name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: [[UIApplication sharedApplication] delegate]];
 }
 
@@ -78,6 +78,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
     [super viewDidUnload];
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
 	self.tblView        = nil;    
@@ -89,8 +90,10 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
     // Apple recommends calling release on the ivar...
 	[_tblView release];
+    [_packageName release];
     
     [__managedObjectContext release];
     [__fetchedResultsController release];
@@ -113,6 +116,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
+    DLog();
     self.fetchedResultsController.delegate = self;
 }
 
@@ -252,6 +256,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)promptForPackageName
 {
+    DLog();
     UIAlertView *packageNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Package Name", @"Enter Package Name")
                                                                 message: nil
                                                                delegate: self 
@@ -266,6 +271,7 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    DLog();
     if (buttonIndex == 1) {
         // OK
         self.packageName = [[alertView textFieldAtIndex: 0] text];            
@@ -289,6 +295,8 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section 
 {	
+    DLog(@"section=%d", section);
+    
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex: section];
     return [sectionInfo numberOfObjects];
 }
@@ -298,6 +306,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
+    DLog();
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: KOCellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault 
@@ -317,6 +327,7 @@
           atIndexPath:(NSIndexPath *)indexPath
 {
     DLog();
+    
     Packages *thePackage = (Packages *) [self.fetchedResultsController objectAtIndexPath: indexPath];
     
     cell.textLabel.text = [thePackage name];
@@ -331,6 +342,7 @@
 viewForHeaderInSection:(NSInteger)section 
 {
     DLog();
+    
     // TODO - this won't rotate well...
     UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0.0f, 0.0f, self.tblView.bounds.size.width, k_tblHdrHeight)] autorelease];
     [sectionView setBackgroundColor: [UIColor clearColor]];
@@ -362,6 +374,8 @@ viewForHeaderInSection:(NSInteger)section
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DLog();
+
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
         [self editButtonTapped];
@@ -378,7 +392,9 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 -  (void)tableView:(UITableView *)tableView
 moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
        toIndexPath:(NSIndexPath *)toIndexPath
-{    
+{
+    DLog();
+
     NSMutableArray *packages = [[self.fetchedResultsController fetchedObjects] mutableCopy];
     
     // Grab the item we're moving.
@@ -405,6 +421,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
+    DLog();
+
     PackagesViewController *packagesViewController = [[[PackagesViewController alloc] initWithNibName: KOPackagesViewController
                                                                                                bundle: nil] autorelease];
     // Pass the selected object to the new view controller.
@@ -426,6 +444,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (NSFetchedResultsController *)fetchedResultsController
 {
     DLog();
+    
     if (__fetchedResultsController != nil) {
         return __fetchedResultsController;
     }
@@ -471,10 +490,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 //----------------------------------------------------------------------------------------------------------
 - (void)reloadFetchedResults:(NSNotification*)note
 {
+    DLog();
+
     // because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
     // we will see the NSManagedObjectContext set up before any persistent stores are registered
     // we will need to fetch again after the persistent store is loaded
-    DLog();
+
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -499,6 +520,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();
+    
     [self.tblView beginUpdates];
 }
 
@@ -510,6 +532,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
      forChangeType:(NSFetchedResultsChangeType)type
 {
     DLog();
+    
     switch (type) {
         case NSFetchedResultsChangeInsert:
             [self.tblView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex]
@@ -565,21 +588,28 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     DLog();
+    
     [self.tblView endUpdates];
 }
 
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

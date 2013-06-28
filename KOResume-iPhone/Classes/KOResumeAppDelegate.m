@@ -39,6 +39,10 @@
     RootViewController *rootViewController     = (RootViewController *) self.navigationController.topViewController;
     rootViewController.managedObjectContext    = moc;
     
+    // Set the rootViewController
+    // TODO - this leaves us with no navbar -- fix in version 3
+//    [self.window setRootViewController: rootViewController];
+    
     // Add the navigation controller's view to the window and display.
     [self.window addSubview: self.navigationController.view];
     [self.window makeKeyAndVisible];
@@ -168,6 +172,7 @@
 - (void)saveContext
 {
     DLog();
+    
     NSError *error = nil;
     NSManagedObjectContext *moc = self.managedObjectContext;
     
@@ -176,7 +181,11 @@
             if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 abort();
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");
@@ -192,6 +201,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectContext *)managedObjectContext
 {
+    DLog();
+    
     if (__managedObjectContext != nil) {
         return __managedObjectContext;
     }
@@ -203,7 +214,7 @@
         [moc performBlockAndWait: ^{
             [moc setPersistentStoreCoordinator: psc];
             [[NSNotificationCenter defaultCenter] addObserver: self 
-                                                     selector: @selector( mergeChangesFrom_iCloud:) 
+                                                     selector: @selector( mergeChangesFrom_iCloud:)
                                                          name: NSPersistentStoreDidImportUbiquitousContentChangesNotification 
                                                        object: psc];
         }];
@@ -215,7 +226,8 @@
         [undoManager release];
     }
     
-    [__managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+    [__managedObjectContext setMergePolicy: NSMergeByPropertyStoreTrumpMergePolicy];
+//    [__managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
 
     return __managedObjectContext;
 }
@@ -228,6 +240,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectModel *)managedObjectModel
 {
+    DLog();
+    
     if (__managedObjectModel != nil) {
         return __managedObjectModel;
     }
@@ -243,6 +257,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
+    DLog();
+    
     if (__persistentStoreCoordinator != nil) {
         return __persistentStoreCoordinator;
     }
@@ -257,7 +273,7 @@
         // database does not exist, copy in default
         NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource: KODatabaseName
                                                                         ofType: KODatabaseType];
-        DLog(@"defaultDatabasePath %@", defaultDatabasePath);
+        DLog(@"defaultDatabasePath = %@", defaultDatabasePath);
         if (defaultDatabasePath) {
             [fileManager copyItemAtPath: defaultDatabasePath
                                  toPath: dbPath
@@ -331,8 +347,12 @@
 - (void)merge_iCloudChanges:(NSNotification *)note
                 forContext:(NSManagedObjectContext *)moc 
 {
-    [moc mergeChangesFromContextDidSaveNotification: note]; 
+    DLog();
     
+    [moc mergeChangesFromContextDidSaveNotification: note]; 
+    DLog(@"completed merging changes from iCloud, posting notification");
+    
+    // Create a notification for change observers, passing along the userInfo from iCloud
     NSNotification *refreshNotification = [NSNotification notificationWithName: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                                         object: self  
                                                                       userInfo: [note userInfo]];
@@ -344,6 +364,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)mergeChangesFrom_iCloud:(NSNotification *)notification
 {
+    DLog();
+    
     // NSNotifications are posted synchronously on the caller's thread
     // make sure to vector this back to the thread we want, in this case
     // the main thread for our views & controller
@@ -353,7 +375,7 @@
     // otherwise use a dispatch_async back to the main thread yourself
     [moc performBlock:^{
         [self merge_iCloudChanges: notification 
-                      forContext: moc];
+                       forContext: moc];
     }];
 }
 
@@ -367,6 +389,8 @@
 // the main thread for our views & controller
 - (NSURL *)applicationDocumentsDirectory
 {
+    DLog();
+    
     return [[[NSFileManager defaultManager] URLsForDirectory: NSDocumentDirectory
                                                    inDomains: NSUserDomainMask] lastObject];
 }

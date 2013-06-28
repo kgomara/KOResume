@@ -59,6 +59,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
     
     [self updateDataFields];
@@ -103,6 +105,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
@@ -124,6 +128,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
@@ -161,9 +167,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // Save any changes
     DLog();
-    
+
+    // Save any changes
     [self saveMoc: self.managedObjectContext];
 }
 
@@ -179,6 +185,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)updateDataFields
 {
+    DLog();
+
     self.nameFld.text        = self.selectedResume.name;
     self.street1Fld.text     = self.selectedResume.street1;
     self.cityFld.text        = self.selectedResume.city;
@@ -195,6 +203,7 @@
 - (void)configureDefaultNavBar
 {
     DLog();
+    
     // Set the buttons.    
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
@@ -241,7 +250,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)saveButtonTapped
 {
-    DLog();    
+    DLog();
+    
     // Save the changes
     self.selectedResume.name            = self.nameFld.text;
     self.selectedResume.street1         = self.street1Fld.text;
@@ -273,6 +283,7 @@
 - (void)cancelButtonTapped
 {
     DLog();
+    
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName: KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -295,6 +306,7 @@
 - (IBAction)phoneButtonTapped:(id)sender
 {
     DLog();
+    
 	if ([sender tag] == kHomePhoneTag) {
         self.phoneNumber = self.selectedResume.home_phone;
     } else {
@@ -314,6 +326,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    DLog();
+
     if (buttonIndex != alertView.cancelButtonIndex) {
         DLog(@"Calling %@", self.phoneNumber);
         // Loop through the phoneNumber and remove non-numeric characters
@@ -336,6 +350,7 @@
 - (IBAction)emailButtonTapped:(id)sender
 {
     DLog();
+    
     // Ask the system to send an email
     NSURL *emailURL = [NSURL URLWithString: [NSString stringWithFormat: @"mailto:%@", self.selectedResume.email]];
     [[UIApplication sharedApplication] openURL: emailURL];
@@ -346,6 +361,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
+    DLog();
+
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
@@ -375,6 +392,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = textView;
     
     return YES;
@@ -384,9 +403,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    DLog();
+
     _activeFld = nil;
-    
-    DLog();;
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -394,6 +413,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    DLog();
+
     _activeFld = textField;
     
     return YES;
@@ -403,6 +424,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    DLog();
+
 	[self scrollToViewTextField:textField];
 }
 
@@ -410,6 +433,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    DLog();
+
     _activeFld = nil;
 	// Validate fields - nothing to do in this version
 	
@@ -420,6 +445,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    DLog();
+
 	int nextTag = [textField tag] + 1;
 	UIResponder *nextResponder = [textField.superview viewWithTag: nextTag];
 	
@@ -437,6 +464,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)scrollToViewTextField:(UITextField *)textField
 {
+    DLog();
+
 	float textFieldOriginY = textField.frame.origin.y;
 	[self.scrollView setContentOffset: CGPointMake(0.0f, textFieldOriginY - 20.0f) 
                              animated: YES];
@@ -447,6 +476,7 @@
 - (void)resetView
 {
     DLog();
+    
     [self.scrollView setContentOffset: CGPointZero
                              animated: YES];
 }
@@ -456,6 +486,7 @@
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -477,15 +508,21 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");

@@ -41,6 +41,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
+    DLog();
+
     [super viewDidLoad];
 	
 	self.contentPaneBackground.image    = [[UIImage imageNamed:@"contentpane_details.png"] stretchableImageWithLeftCapWidth: 44 
@@ -82,6 +84,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewDidUnload
 {
+    DLog();
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     [super viewDidUnload];
     
@@ -94,6 +98,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)dealloc
 {
+    DLog();
+
     // Remove the keyboard observer
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -124,9 +130,9 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // Save any changes
     DLog();
 
+    // Save any changes
     [self saveMoc: self.managedObjectContext];
 }
 
@@ -142,6 +148,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)updateDataFields
 {
+    DLog();
+
     // get the cover letter into the view
 	self.coverLtrFld.text	= self.selectedPackage.cover_ltr;
 }
@@ -151,6 +159,7 @@
 - (void)configureDefaultNavBar
 {
     DLog();
+    
     // Set the buttons.    
     self.navigationItem.rightBarButtonItem = editBtn;
     self.navigationItem.leftBarButtonItem  = backBtn;
@@ -181,7 +190,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)saveButtonTapped
 {
-    DLog();    
+    DLog();
+
     // Save the changes
     self.selectedPackage.cover_ltr    = self.coverLtrFld.text;
     
@@ -205,6 +215,7 @@
 - (void)cancelButtonTapped
 {
     DLog();
+    
     // Undo any changes the user has made
     [[self.managedObjectContext undoManager] setActionName:KOUndoActionName];
     [[self.managedObjectContext undoManager] endUndoGrouping];
@@ -228,6 +239,8 @@
 //----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
+    DLog();
+
     // Get the size of the keyboard
     NSDictionary *info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey: UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
@@ -251,7 +264,9 @@
 
 //----------------------------------------------------------------------------------------------------------
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{    
+{
+    DLog();
+
     UIEdgeInsets contentInsets = UIEdgeInsetsZero;
     
     self.coverLtrFld.contentInset = contentInsets;    
@@ -262,7 +277,9 @@
 
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
-{    
+{
+    DLog();
+
     return YES;
 }
 
@@ -278,6 +295,7 @@
 - (void)resetView
 {
     DLog();
+    
     [self.scrollView setContentOffset: CGPointZero
                              animated: YES];
 }
@@ -287,6 +305,7 @@
 - (void)reloadFetchedResults:(NSNotification*)note
 {
     DLog();
+    
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
@@ -308,15 +327,21 @@
 //----------------------------------------------------------------------------------------------------------
 - (BOOL)saveMoc:(NSManagedObjectContext *)moc
 {
+    DLog();
+
     BOOL result = YES;
     NSError *error = nil;
     
     if (moc) {
         if ([moc hasChanges]) {
-            if (![moc save:&error]) {
+            if (![moc save: &error]) {
                 ELog(error, @"Failed to save");
                 result = NO;
+            } else {
+                DLog(@"Save successful");
             }
+        } else {
+            DLog(@"No changes to save");
         }
     } else {
         ALog(@"managedObjectContext is null");
