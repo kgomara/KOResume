@@ -138,7 +138,7 @@
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
-                                               object: [self.managedObjectContext persistentStoreCoordinator]];
+                                               object: nil];
 }
 
 
@@ -967,15 +967,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [KOExtensions showErrorWithMessage: msg];
     }
     
-    [self.tblView reloadData];
-    
-//    if (note) {
-//        // The notification is on an async thread, so block while the UI updates
-//        [self.managedObjectContext performBlock: ^{
-//            [self updateDataFields];
-//            [self.tblView reloadData];
-//        }];
-//    }
+    if (note) {
+        [self updateDataFields];
+        [self.tblView reloadData];
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ FOUNDATION_EXPORT NSString *const KOUbiquityID;
 
 
 // Notifications
-FOUNDATION_EXPORT NSString *const KOApplicationDidLoadPersistentStoreCoordinatorNotification;
+FOUNDATION_EXPORT NSString *const KOApplicationDidAddPersistentStoreCoordinatorNotification;
 FOUNDATION_EXPORT NSString *const KOApplicationDidMergeChangesFrom_iCloudNotification;
 
 // Database Attribute names

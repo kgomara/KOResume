@@ -197,6 +197,7 @@
 /**
  Returns the managed object context for the application.
  If the context doesn't already exist, it is created and bound to the persistent store coordinator for the app.
+ http://goddess-gate.com/dc2/index.php/post/452
  */
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectContext *)managedObjectContext
@@ -207,16 +208,16 @@
         return __managedObjectContext;
     }
     
-    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
-    if (psc != nil) {
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
         NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSMainQueueConcurrencyType];
         
         [moc performBlockAndWait: ^{
-            [moc setPersistentStoreCoordinator: psc];
+            [moc setPersistentStoreCoordinator: coordinator];
             [[NSNotificationCenter defaultCenter] addObserver: self 
                                                      selector: @selector( mergeChangesFrom_iCloud:)
                                                          name: NSPersistentStoreDidImportUbiquitousContentChangesNotification 
-                                                       object: psc];
+                                                       object: coordinator];
         }];
         __managedObjectContext = moc;
 
@@ -269,7 +270,7 @@
     NSString *dbPath            = [docDir stringByAppendingPathComponent: dbFileName];
     NSFileManager *fileManager  = [NSFileManager defaultManager];
     
-    if (![fileManager fileExistsAtPath: dbPath]) {
+    if ( ![fileManager fileExistsAtPath: dbPath]) {
         // database does not exist, copy in default
         NSString *defaultDatabasePath = [[NSBundle mainBundle] pathForResource: KODatabaseName
                                                                         ofType: KODatabaseType];
@@ -288,7 +289,7 @@
     
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
 
-    NSPersistentStoreCoordinator *psc = __persistentStoreCoordinator;
+    NSPersistentStoreCoordinator *coordinator = __persistentStoreCoordinator;
 
     dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Migrate datamodel
@@ -315,12 +316,12 @@
         }
         
         NSError *error = nil;
-        [psc lock];
-        if (![psc addPersistentStoreWithType: NSSQLiteStoreType 
-                               configuration: nil 
-                                         URL: storeURL 
-                                     options: options 
-                                       error: &error])
+        [coordinator lock];
+        if ( ![coordinator addPersistentStoreWithType: NSSQLiteStoreType 
+                                        configuration: nil 
+                                                  URL: storeURL 
+                                              options: options 
+                                                error: &error])
         {
             ELog(error, @"Could not add PersistentStore");
             // TODO - PFUbiguity sometimes returns "error" if it cannot find log data on the device
@@ -328,11 +329,11 @@
             //        Research is needed to see if the error return could be parsed and handled better.
 //            abort();
         }
-        [psc unlock];
+        [coordinator unlock];
         
         dispatch_async( dispatch_get_main_queue(), ^{
             DLog(@"asynchronously added persistent store!");
-            [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidLoadPersistentStoreCoordinatorNotification
+            [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidAddPersistentStoreCoordinatorNotification
                                                                 object: self 
                                                               userInfo: nil];
         });
@@ -373,6 +374,7 @@
     
     // this only works if you used NSMainQueueConcurrencyType
     // otherwise use a dispatch_async back to the main thread yourself
+    // TODO - possible problem?
     [moc performBlock:^{
         [self merge_iCloudChanges: notification 
                        forContext: moc];

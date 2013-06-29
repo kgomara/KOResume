@@ -17,7 +17,7 @@ NSString *const KOUbiquityID                                                = @"
 
 
 // Notifications
-NSString *const KOApplicationDidLoadPersistentStoreCoordinatorNotification  = @"RefetchAllDatabaseData";
+NSString *const KOApplicationDidAddPersistentStoreCoordinatorNotification  = @"RefetchAllDatabaseData";
 NSString *const KOApplicationDidMergeChangesFrom_iCloudNotification         = @"RefreshAllViews";
 
 // Database Attribute names

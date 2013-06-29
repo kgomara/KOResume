@@ -67,11 +67,17 @@
     // Set up the defaults in the Navigation Bar
     [self configureDefaultNavBar];
    
-    // Observe the app delegate telling us when it's finished asynchronously updating the database
+    // Observe the app delegate telling us when it's finished asynchronously adding the store coordinator
     [[NSNotificationCenter defaultCenter] addObserver: self 
                                              selector: @selector(reloadFetchedResults:) 
+                                                 name: KOApplicationDidAddPersistentStoreCoordinatorNotification
+                                               object: nil];
+    
+    // ...and add an observer for asynchronous iCloud merges
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:)
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
-                                               object: [[UIApplication sharedApplication] delegate]];
+                                               object: nil];
 }
 
 
@@ -477,7 +483,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [sortDescriptors release];
      
     NSError *error = nil;
-    if (![self.fetchedResultsController performFetch: &error]) {
+    if ( ![self.fetchedResultsController performFetch: &error]) {
         ELog(error, @"Fetch failed!");
         NSString* msg = NSLocalizedString(@"Failed to fetch data.", @"Failed to fetch data.");
         [KOExtensions showErrorWithMessage: msg];
@@ -506,12 +512,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     
     [self.tblView reloadData];
     
-//    if (note) {
-//        // The notification is on an async thread, so block while the UI updates
-//        [self.managedObjectContext performBlock:^{
-//            [self.tblView reloadData];
-//        }];
-//    }
+    if (note) {
+        [self.tblView reloadData];
+    }
 }
 
 #pragma mark - Fetched results controller delegate

@@ -109,7 +109,7 @@
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
-                                               object: [self.managedObjectContext persistentStoreCoordinator]];
+                                               object: nil];
 }
 
 

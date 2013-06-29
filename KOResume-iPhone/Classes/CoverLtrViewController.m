@@ -77,7 +77,7 @@
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
-                                               object: [NSUbiquitousKeyValueStore defaultStore]];
+                                               object: nil];
 }
 
 
