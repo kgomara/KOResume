@@ -49,6 +49,8 @@
     
     _activeFld = nil;
     
+    [_selectedAccomplishment logAllFields];
+    
     [self updateDataFields];
     
     // Register for keyboard notifications

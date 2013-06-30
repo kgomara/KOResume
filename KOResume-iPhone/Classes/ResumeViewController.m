@@ -67,6 +67,8 @@
     [super viewDidLoad];
 	
     DLog(@"job count %d", [self.selectedResume.job count]);
+    
+    [_selectedResume logAllFields];
 
 	self.navigationItem.title = NSLocalizedString(@"Resume", @"Resume");	
 	self.view.backgroundColor = [UIColor colorWithPatternImage: [UIImage imageNamed:@"background.png"]];

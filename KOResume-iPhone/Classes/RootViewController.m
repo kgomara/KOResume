@@ -124,6 +124,15 @@
 {
     DLog();
     self.fetchedResultsController.delegate = self;
+    
+    for (Packages *pkg in [self.fetchedResultsController fetchedObjects]) {
+        [pkg logAllFields];
+    }
+    
+//    for (int i = 0; i < [[self.fetchedResultsController sections] count]; i++) {
+//        Packages *pkg = [self.fetchedResultsController objectAtIndexPath: i];
+//        [pkg logAllFields];
+//    }
 }
 
 

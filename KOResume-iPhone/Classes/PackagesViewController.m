@@ -39,6 +39,8 @@
 
     [super viewDidLoad];
 	
+    
+    [_selectedPackage logAllFields];
 	self.navigationItem.title = self.selectedPackage.name;
 	self.view.backgroundColor = [UIColor clearColor];
 

@@ -83,6 +83,8 @@
     DLog();
 
     [super viewDidLoad];
+    
+    [_selectedJob logAllFields];
 	
 	self.view.backgroundColor		= [UIColor colorWithPatternImage: [UIImage imageNamed: @"background.png"]];
 	self.jobView.image              = [[UIImage imageNamed: @"contentpane_details.png"] stretchableImageWithLeftCapWidth: 20 

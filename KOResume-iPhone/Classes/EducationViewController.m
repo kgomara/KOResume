@@ -55,6 +55,8 @@
 
     [super viewDidLoad];
     
+    [_selectedEducation logAllFields];
+    
     [self.datePicker setHidden: YES];
     [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     

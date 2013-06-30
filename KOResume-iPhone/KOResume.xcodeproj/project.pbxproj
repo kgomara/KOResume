@@ -40,6 +40,7 @@
 		D699B4CF14818DB300B96BDD /* companyBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D699B4CD14818DB300B96BDD /* companyBtn@2x.png */; };
 		D69F8FF4148C766E00F2D483 /* AccomplishmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */; };
 		D69F8FF5148C766E00F2D483 /* AccomplishmentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */; };
+		D6A64FEF1780B0A800B94587 /* CoreDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A64FEE1780B0A800B94587 /* CoreDataController.m */; };
 		D6A85F981494684300793E84 /* KOResume.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = D6A85F971494684300793E84 /* KOResume.sqlite */; };
 		D6A8E7A5145E02CC001B9895 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D6A8E7A4145E02CC001B9895 /* addButton.png */; };
 		D6B3829217682863003CE393 /* GlobalConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B3829117682863003CE393 /* GlobalConstants.m */; };
@@ -125,6 +126,8 @@
 		D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccomplishmentViewController.h; sourceTree = "<group>"; };
 		D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AccomplishmentViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccomplishmentViewController.xib; path = Classes/AccomplishmentViewController.xib; sourceTree = "<group>"; };
+		D6A64FED1780B0A800B94587 /* CoreDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataController.h; sourceTree = "<group>"; };
+		D6A64FEE1780B0A800B94587 /* CoreDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataController.m; sourceTree = "<group>"; };
 		D6A85F971494684300793E84 /* KOResume.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = KOResume.sqlite; sourceTree = "<group>"; };
 		D6A8E7A4145E02CC001B9895 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
 		D6AAD23B149D367A004839A1 /* KOResume.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = KOResume.entitlements; sourceTree = "<group>"; };
@@ -241,6 +244,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D6B34C691780AE54001F0039 /* CoreDataController */,
 				D6B81443177D6EFB00D48A37 /* SVWebViewController */,
 				28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */,
 				D6509939145C63830031B2CB /* GlobalMacros.h */,
@@ -340,6 +344,15 @@
 				D674489B1329D3AF00527C9E /* background@2x.png */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		D6B34C691780AE54001F0039 /* CoreDataController */ = {
+			isa = PBXGroup;
+			children = (
+				D6A64FED1780B0A800B94587 /* CoreDataController.h */,
+				D6A64FEE1780B0A800B94587 /* CoreDataController.m */,
+			);
+			name = CoreDataController;
 			sourceTree = "<group>";
 		};
 		D6B81443177D6EFB00D48A37 /* SVWebViewController */ = {
@@ -482,6 +495,7 @@
 				D6B3829217682863003CE393 /* GlobalConstants.m in Sources */,
 				D6B81452177D6EFB00D48A37 /* SVModalWebViewController.m in Sources */,
 				D6B81454177D6EFB00D48A37 /* SVWebViewController.m in Sources */,
+				D6A64FEF1780B0A800B94587 /* CoreDataController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

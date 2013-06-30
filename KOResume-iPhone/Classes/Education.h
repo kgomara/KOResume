@@ -4,4 +4,7 @@
 
 FOUNDATION_EXPORT NSString *const KOEducationEntity;
 
+// TODO - consider make this a Description
+- (void)logAllFields;
+
 @end

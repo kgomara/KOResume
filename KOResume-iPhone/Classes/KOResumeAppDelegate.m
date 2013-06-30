@@ -227,8 +227,8 @@
         [undoManager release];
     }
     
-    [__managedObjectContext setMergePolicy: NSMergeByPropertyStoreTrumpMergePolicy];
-//    [__managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+//    [__managedObjectContext setMergePolicy: NSMergeByPropertyStoreTrumpMergePolicy];
+//    [__managedObjectContext setMergePolicy: NSRollbackMergePolicy];
 
     return __managedObjectContext;
 }
@@ -276,6 +276,7 @@
                                                                         ofType: KODatabaseType];
         DLog(@"defaultDatabasePath = %@", defaultDatabasePath);
         if (defaultDatabasePath) {
+// TODO             migratePersistentStore:toURL:options:withType:error:?
             [fileManager copyItemAtPath: defaultDatabasePath
                                  toPath: dbPath
                                   error: NULL];
@@ -291,7 +292,7 @@
 
     NSPersistentStoreCoordinator *coordinator = __persistentStoreCoordinator;
 
-    dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         // Migrate datamodel
         NSDictionary *options = nil;
         
