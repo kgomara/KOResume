@@ -163,8 +163,8 @@
 		D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = JobsDetailViewController.xib; path = Resources/JobsDetailViewController.xib; sourceTree = "<group>"; };
 		D6CDBA17132D437200A1E4BA /* contentpane_details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = contentpane_details.png; path = Resources/Images/contentpane_details.png; sourceTree = "<group>"; };
 		D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "contentpane_details@2x.png"; path = "Resources/Images/contentpane_details@2x.png"; sourceTree = "<group>"; };
-		D6CDBC35132DC31200A1E4BA /* KOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KOExtensions.h; sourceTree = "<group>"; };
-		D6CDBC36132DC31200A1E4BA /* KOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KOExtensions.m; sourceTree = "<group>"; };
+		D6CDBC35132DC31200A1E4BA /* KOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KOExtensions.h; path = Classes/KOExtensions.h; sourceTree = "<group>"; };
+		D6CDBC36132DC31200A1E4BA /* KOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KOExtensions.m; path = Classes/KOExtensions.m; sourceTree = "<group>"; };
 		D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SummaryViewController.h; sourceTree = "<group>"; };
 		D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SummaryViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SummaryViewController.xib; path = Resources/SummaryViewController.xib; sourceTree = "<group>"; };
@@ -190,26 +190,24 @@
 			isa = PBXGroup;
 			children = (
 				D68F37DB139AA32C00B7DDD2 /* DataModel */,
+				D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */,
+				D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */,
+				D64C0155132FE302001DAFEC /* CoverLtrViewController.h */,
+				D64C0156132FE302001DAFEC /* CoverLtrViewController.m */,
+				D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */,
+				D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */,
+				D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */,
+				D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */,
+				1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */,
+				1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */,
+				D68F37FC139C062F00B7DDD2 /* PackagesViewController.h */,
+				D68F37FD139C063000B7DDD2 /* PackagesViewController.m */,
 				D64C011C132FB13D001DAFEC /* ResumeViewController.h */,
 				D64C011D132FB13D001DAFEC /* ResumeViewController.m */,
 				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
-				1D3623240D0F684500981E51 /* KOResumeAppDelegate.h */,
-				1D3623250D0F684500981E51 /* KOResumeAppDelegate.m */,
-				D6CDB9F9132D35ED00A1E4BA /* JobsDetailViewController.h */,
-				D6CDB9FA132D35ED00A1E4BA /* JobsDetailViewController.m */,
-				D6CDBC35132DC31200A1E4BA /* KOExtensions.h */,
-				D6CDBC36132DC31200A1E4BA /* KOExtensions.m */,
 				D6CDBCA8132DCC5400A1E4BA /* SummaryViewController.h */,
 				D6CDBCA9132DCC5400A1E4BA /* SummaryViewController.m */,
-				D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */,
-				D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */,
-				D64C0155132FE302001DAFEC /* CoverLtrViewController.h */,
-				D64C0156132FE302001DAFEC /* CoverLtrViewController.m */,
-				D68F37FC139C062F00B7DDD2 /* PackagesViewController.h */,
-				D68F37FD139C063000B7DDD2 /* PackagesViewController.m */,
-				D69F8FF1148C766E00F2D483 /* AccomplishmentViewController.h */,
-				D69F8FF2148C766E00F2D483 /* AccomplishmentViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -239,13 +237,15 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				D6B34C691780AE54001F0039 /* CoreDataController */,
-				D6B81443177D6EFB00D48A37 /* SVWebViewController */,
-				28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */,
-				D6509939145C63830031B2CB /* GlobalMacros.h */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
 				D6B3829017682863003CE393 /* GlobalConstants.h */,
 				D6B3829117682863003CE393 /* GlobalConstants.m */,
+				D6509939145C63830031B2CB /* GlobalMacros.h */,
+				D6B34C691780AE54001F0039 /* CoreDataController */,
+				D6CDBC35132DC31200A1E4BA /* KOExtensions.h */,
+				D6CDBC36132DC31200A1E4BA /* KOExtensions.m */,
+				28A0AAE50D9B0CCF005BE974 /* KOResume_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				D6B81443177D6EFB00D48A37 /* SVWebViewController */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -253,14 +253,14 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D6A85F971494684300793E84 /* KOResume.sqlite */,
-				D68F37DD139AC3B400B7DDD2 /* Icons */,
-				D68F37DE139AC3D200B7DDD2 /* Images */,
 				D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */,
 				D64C0157132FE302001DAFEC /* CoverLtrViewController.xib */,
 				D6C2FCFE132F489D00D7AA8F /* EducationViewController.xib */,
+				D68F37DD139AC3B400B7DDD2 /* Icons */,
+				D68F37DE139AC3D200B7DDD2 /* Images */,
 				D6CDB9FB132D35ED00A1E4BA /* JobsDetailViewController.xib */,
 				8D1107310486CEB800E47090 /* KOResume-Info.plist */,
+				D6A85F971494684300793E84 /* KOResume.sqlite */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				D68F37FE139C063000B7DDD2 /* PackagesViewController.xib */,
 				D64C0123132FB150001DAFEC /* ResumeViewController.xib */,
@@ -329,17 +329,17 @@
 		D68F37DE139AC3D200B7DDD2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				D6A8E7A4145E02CC001B9895 /* addButton.png */,
 				D6B596F9148DFF2700B6D7FC /* arrow.png */,
 				D6B596FA148DFF2700B6D7FC /* arrow@2x.png */,
-				D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */,
-				D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */,
-				D699B4CC14818DB300B96BDD /* companyBtn.png */,
-				D699B4CD14818DB300B96BDD /* companyBtn@2x.png */,
-				D6A8E7A4145E02CC001B9895 /* addButton.png */,
-				D6CDBA17132D437200A1E4BA /* contentpane_details.png */,
-				D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */,
 				D674489A1329D3AF00527C9E /* background.png */,
 				D674489B1329D3AF00527C9E /* background@2x.png */,
+				D699B4CC14818DB300B96BDD /* companyBtn.png */,
+				D699B4CD14818DB300B96BDD /* companyBtn@2x.png */,
+				D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */,
+				D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */,
+				D6CDBA17132D437200A1E4BA /* contentpane_details.png */,
+				D6CDBA18132D437200A1E4BA /* contentpane_details@2x.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
