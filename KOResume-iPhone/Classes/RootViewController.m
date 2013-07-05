@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "KOResumeAppDelegate.h"
 #import "PackagesViewController.h"
 #import "Packages.h"
 #import "Resumes.h"
@@ -73,10 +74,15 @@
                                                  name: KOApplicationDidAddPersistentStoreCoordinatorNotification
                                                object: nil];
     
-    // ...and add an observer for asynchronous iCloud merges
+    // ...add an observer for asynchronous iCloud merges
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:)
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
+                                               object: nil];
+    // ...and an observer for when the registered iCloud user changes
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(reloadFetchedResults:)
+                                                 name: NSPersistentStoreCoordinatorStoresDidChangeNotification
                                                object: nil];
 }
 
@@ -207,7 +213,7 @@
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
         ALog(@"Failed to save data");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -252,7 +258,7 @@
     //  Add a Resume for the package
     Resumes *resume  = (Resumes *)[NSEntityDescription insertNewObjectForEntityForName: KOResumesEntity
                                                                 inManagedObjectContext: self.managedObjectContext];
-    resume.name                 = NSLocalizedString(@"Resume", @"Resume");
+    resume.name                 = NSLocalizedString(@"Resume", nil);
     resume.created_date         = [NSDate date];
     resume.sequence_numberValue = 1;
     package.resume              = resume;
@@ -260,7 +266,7 @@
     NSError *error = nil;
     if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
 
@@ -272,11 +278,11 @@
 - (void)promptForPackageName
 {
     DLog();
-    UIAlertView *packageNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Package Name", @"Enter Package Name")
+    UIAlertView *packageNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Package Name", nil)
                                                                 message: nil
                                                                delegate: self 
-                                                      cancelButtonTitle: NSLocalizedString(@"Cancel",@"Cancel") 
-                                                      otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+                                                      cancelButtonTitle: NSLocalizedString(@"Cancel", nil)
+                                                      otherButtonTitles: NSLocalizedString(@"OK", nil), nil] autorelease];
     packageNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     
     [packageNameAlert show];
@@ -369,7 +375,7 @@ viewForHeaderInSection:(NSInteger)section
 	[sectionLabel setTextColor: [UIColor whiteColor]];
 	[sectionLabel setBackgroundColor: [UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Packages Available:", @"Packages Available:");
+	sectionLabel.text = NSLocalizedString(@"Packages Available:", nil);
     // Add label to sectionView
     [sectionView addSubview: sectionLabel];
 
@@ -494,7 +500,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSError *error = nil;
     if ( ![self.fetchedResultsController performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to fetch data.", @"Failed to fetch data.");
+        NSString* msg = NSLocalizedString(@"Failed to fetch data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -508,14 +514,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     DLog();
 
     // because the app delegate now loads the NSPersistentStore into the NSPersistentStoreCoordinator asynchronously
-    // we will see the NSManagedObjectContext set up before any persistent stores are registered
-    // we will need to fetch again after the persistent store is loaded
+    // the NSManagedObjectContext is set up before any persistent stores are registered
+    // we need to fetch again after the persistent store is loaded
 
     NSError *error = nil;
     
     if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        NSString* msg = NSLocalizedString( @"Failed to reload data after syncing with iCloud.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     

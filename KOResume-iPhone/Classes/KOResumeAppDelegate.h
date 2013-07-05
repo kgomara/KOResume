@@ -7,12 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
+//#import <CoreData/CoreData.h>
+#import "CoreDataController.h"
+
+#define kAppDelegate        [[UIApplication sharedApplication] delegate]
 
 @interface KOResumeAppDelegate : NSObject <UIApplicationDelegate> 
 {
 
 }
+
+//@property (nonatomic, strong, readonly) CoreDataController *coreDataController;
 
 @property (nonatomic, strong) IBOutlet UIWindow                         *window;
 @property (nonatomic, strong) IBOutlet UINavigationController           *navigationController;

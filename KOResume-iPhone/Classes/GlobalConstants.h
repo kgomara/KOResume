@@ -39,5 +39,4 @@ extern CGFloat const KOAddButtonHeight;
 FOUNDATION_EXPORT NSString *const KOUndoActionName;
 FOUNDATION_EXPORT NSString *const KOCellID;
 
-
 @end

@@ -11,6 +11,7 @@
 #import "Accomplishments.h"
 #import "AccomplishmentViewController.h"
 #import "SVWebViewController.h"
+#import "KOResumeAppDelegate.h"
 
 #define k_startDateTextFld  6
 #define k_endDateTextFld    7
@@ -135,7 +136,6 @@
                                                                 action: @selector(clearButtonTapped)];
     
     [self configureDefaultNavBar];
-    
     // Set an observer for iCloud changes
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:) 
@@ -358,7 +358,7 @@
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
         // Serious Error!
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -677,7 +677,7 @@
     NSError *error = nil;
     if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -700,11 +700,11 @@
 {
     DLog();
 
-    UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Accomplishment", @"Enter Accomplishment")
+    UIAlertView *accompSummaryAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Accomplishment", nil)
                                                                   message: nil
                                                                  delegate: self 
-                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
-                                                        otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", nil)
+                                                        otherButtonTitles: NSLocalizedString(@"OK", nil), nil] autorelease];
     accompSummaryAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     
     [accompSummaryAlert show];
@@ -796,7 +796,7 @@ viewForHeaderInSection:(NSInteger)section
 	[sectionLabel setTextColor: [UIColor whiteColor]];
 	[sectionLabel setBackgroundColor: [UIColor clearColor]];
     
-    sectionLabel.text = NSLocalizedString(@"Accomplishments", @"Accomplishments");
+    sectionLabel.text = NSLocalizedString(@"Accomplishments", nil);
     UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
     [sectionView addSubview: sectionLabel];
     [sectionView addSubview: addAccompBtn];
@@ -965,7 +965,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     
     if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     

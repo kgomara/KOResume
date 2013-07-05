@@ -124,11 +124,11 @@
 	switch (indexPath.row) {
         // There is only 1 section, so ignore it.
 		case kSummaryTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Cover Letter", @"Cover Letter");
+			cell.textLabel.text = NSLocalizedString(@"Cover Letter", nil);
             cell.accessoryType  = UITableViewCellAccessoryDetailDisclosureButton;
 			break;
 		case kResumeTableCell:
-			cell.textLabel.text = NSLocalizedString(@"Resume", @"Resume");
+			cell.textLabel.text = NSLocalizedString(@"Resume", nil);
             cell.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 		default:
@@ -165,7 +165,7 @@ viewForHeaderInSection:(NSInteger)section
 	[sectionLabel setTextColor: [UIColor whiteColor]];
 	[sectionLabel setBackgroundColor: [UIColor clearColor]];
 	
-	sectionLabel.text = NSLocalizedString(@"Package Contents:", @"Package Contents:");
+	sectionLabel.text = NSLocalizedString(@"Package Contents:", nil);
     
 	return sectionLabel;
 }
@@ -188,7 +188,7 @@ viewForHeaderInSection:(NSInteger)section
 		case kSummaryTableCell: {
 			CoverLtrViewController *coverLtrViewController = [[CoverLtrViewController alloc] initWithNibName: KOCoverLtrViewController
                                                                                                       bundle: nil];
-			coverLtrViewController.title                    = NSLocalizedString(@"Cover Letter", @"Cover Letter");
+			coverLtrViewController.title                    = NSLocalizedString(@"Cover Letter", nil);
             coverLtrViewController.selectedPackage          = self.selectedPackage;
             coverLtrViewController.managedObjectContext     = self.managedObjectContext;
             coverLtrViewController.fetchedResultsController = self.fetchedResultsController;
@@ -201,7 +201,7 @@ viewForHeaderInSection:(NSInteger)section
 		case kResumeTableCell: {
 			ResumeViewController* resumeViewController = [[ResumeViewController alloc] initWithNibName: KOResumeViewController
                                                                                                 bundle: nil];
-			resumeViewController.title                      = NSLocalizedString(@"Resume", @"Resume");
+			resumeViewController.title                      = NSLocalizedString(@"Resume", nil);
             resumeViewController.selectedResume             = self.selectedPackage.resume;
             resumeViewController.managedObjectContext       = self.managedObjectContext;
             resumeViewController.fetchedResultsController   = self.fetchedResultsController;
@@ -226,7 +226,7 @@ viewForHeaderInSection:(NSInteger)section
 
     if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     

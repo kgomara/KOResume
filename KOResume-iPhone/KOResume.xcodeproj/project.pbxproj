@@ -43,6 +43,7 @@
 		D6A64FEF1780B0A800B94587 /* CoreDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6A64FEE1780B0A800B94587 /* CoreDataController.m */; };
 		D6A85F981494684300793E84 /* KOResume.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = D6A85F971494684300793E84 /* KOResume.sqlite */; };
 		D6A8E7A5145E02CC001B9895 /* addButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D6A8E7A4145E02CC001B9895 /* addButton.png */; };
+		D6ACA26117863EF900A7C0B0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D6ACA26317863EF900A7C0B0 /* Localizable.strings */; };
 		D6B3829217682863003CE393 /* GlobalConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = D6B3829117682863003CE393 /* GlobalConstants.m */; };
 		D6B596F6148DFD8D00B6D7FC /* contentpane_button_call.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */; };
 		D6B596F7148DFD8D00B6D7FC /* contentpane_button_call@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */; };
@@ -131,24 +132,20 @@
 		D6A85F971494684300793E84 /* KOResume.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = KOResume.sqlite; sourceTree = "<group>"; };
 		D6A8E7A4145E02CC001B9895 /* addButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addButton.png; sourceTree = "<group>"; };
 		D6AAD23B149D367A004839A1 /* KOResume.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = KOResume.entitlements; sourceTree = "<group>"; };
+		D6ACA26217863EF900A7C0B0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D6ACA2651786479A00A7C0B0 /* es */ = {isa = PBXFileReference; lastKnownFileType = file; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D6B3829017682863003CE393 /* GlobalConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = GlobalConstants.h; path = Classes/GlobalConstants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D6B3829117682863003CE393 /* GlobalConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = GlobalConstants.m; path = Classes/GlobalConstants.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D6B596F4148DFD8D00B6D7FC /* contentpane_button_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contentpane_button_call.png; sourceTree = "<group>"; };
 		D6B596F5148DFD8D00B6D7FC /* contentpane_button_call@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contentpane_button_call@2x.png"; sourceTree = "<group>"; };
 		D6B596F9148DFF2700B6D7FC /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		D6B596FA148DFF2700B6D7FC /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
-		D6B81445177D6EFB00D48A37 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SVWebViewController.strings; sourceTree = "<group>"; };
 		D6B81446177D6EFB00D48A37 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SVWebViewController.strings; sourceTree = "<group>"; };
-		D6B81447177D6EFB00D48A37 /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
-		D6B81448177D6EFB00D48A37 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SVWebViewController.strings; sourceTree = "<group>"; };
-		D6B81449177D6EFB00D48A37 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SVWebViewController.strings; sourceTree = "<group>"; };
 		D6B8144A177D6EFB00D48A37 /* SVModalWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVModalWebViewController.h; sourceTree = "<group>"; };
 		D6B8144B177D6EFB00D48A37 /* SVModalWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVModalWebViewController.m; sourceTree = "<group>"; };
 		D6B8144C177D6EFB00D48A37 /* SVWebViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVWebViewController.bundle; sourceTree = "<group>"; };
 		D6B8144D177D6EFB00D48A37 /* SVWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVWebViewController.h; sourceTree = "<group>"; };
 		D6B8144E177D6EFB00D48A37 /* SVWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewController.m; sourceTree = "<group>"; };
-		D6B8144F177D6EFB00D48A37 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
-		D6B81450177D6EFB00D48A37 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
 		D6B81455177D6FD100D48A37 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D6C2FCFC132F489D00D7AA8F /* EducationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EducationViewController.h; sourceTree = "<group>"; };
 		D6C2FCFD132F489D00D7AA8F /* EducationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EducationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -271,6 +268,7 @@
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				D6CDBCAA132DCC5400A1E4BA /* SummaryViewController.xib */,
 				D69F8FF3148C766E00F2D483 /* AccomplishmentViewController.xib */,
+				D6ACA26317863EF900A7C0B0 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -460,6 +458,7 @@
 				D6CB79BC160AAA3600820ED6 /* Default-568h@2x.png in Resources */,
 				D6B81451177D6EFB00D48A37 /* SVWebViewController.strings in Resources */,
 				D6B81453177D6EFB00D48A37 /* SVWebViewController.bundle in Resources */,
+				D6ACA26117863EF900A7C0B0 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,16 +501,19 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		D6ACA26317863EF900A7C0B0 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D6ACA26217863EF900A7C0B0 /* en */,
+				D6ACA2651786479A00A7C0B0 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		D6B81444177D6EFB00D48A37 /* SVWebViewController.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				D6B81445177D6EFB00D48A37 /* da */,
 				D6B81446177D6EFB00D48A37 /* en */,
-				D6B81447177D6EFB00D48A37 /* es-ES */,
-				D6B81448177D6EFB00D48A37 /* es */,
-				D6B81449177D6EFB00D48A37 /* fr */,
-				D6B8144F177D6EFB00D48A37 /* zh-Hans */,
-				D6B81450177D6EFB00D48A37 /* zh-Hant */,
 			);
 			name = SVWebViewController.strings;
 			sourceTree = "<group>";

@@ -207,7 +207,7 @@
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
         ALog(@"Failed to save data");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -379,7 +379,7 @@
     
     if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
 

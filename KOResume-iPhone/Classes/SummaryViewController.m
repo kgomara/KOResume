@@ -267,7 +267,7 @@
     
     if (![self saveMoc: [self.fetchedResultsController managedObjectContext]]) {
         // Serious Error!
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -313,12 +313,12 @@
         self.phoneNumber = self.selectedResume.mobile_phone;
     }
     
-    NSString *fmtString = NSLocalizedString(@"Call %@?", @"Call %@?");
-    UIAlertView *alert  = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Phone", @"Phone")
+    NSString *fmtString = NSLocalizedString(@"Call %@?", @"Prompt to show user what phone number will be called");
+    UIAlertView *alert  = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Place a call", nil)
                                                       message: [NSString stringWithFormat:fmtString, self.phoneNumber]
                                                      delegate: self 
-                                            cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
-                                            otherButtonTitles: NSLocalizedString(@"Call", @"Call"), nil] autorelease];
+                                            cancelButtonTitle: NSLocalizedString(@"Cancel", nil)
+                                            otherButtonTitles: NSLocalizedString(@"Call", nil), nil] autorelease];
     [alert show];
 }
 
@@ -491,7 +491,7 @@
     
     if (![[self fetchedResultsController] performFetch: &error]) {
         ELog(error, @"Fetch failed!");
-        NSString* msg = NSLocalizedString(@"Failed to reload data.", @"Failed to reload data.");
+        NSString* msg = NSLocalizedString(@"Failed to reload data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
 

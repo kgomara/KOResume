@@ -38,5 +38,4 @@ CGFloat const KOAddButtonHeight                                             = 29
 NSString *const KOUndoActionName                                            = @"Packages_Editing";
 NSString *const KOCellID                                                    = @"Cell";
 
-
 @end

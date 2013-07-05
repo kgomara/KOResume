@@ -317,7 +317,7 @@
     NSError *error = nil;
     if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -339,11 +339,11 @@
 - (void)promptForJobName
 {
     DLog();
-   UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", @"Enter Job Name")
+   UIAlertView *jobNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Job Name", nil)
                                                             message: nil
                                                            delegate: self 
-                                                  cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
-                                                  otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+                                                  cancelButtonTitle: NSLocalizedString(@"Cancel", nil)
+                                                  otherButtonTitles: NSLocalizedString(@"OK", nil), nil] autorelease];
     jobNameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
     jobNameAlert.tag            = k_JobsSection;
     
@@ -364,7 +364,7 @@
     NSError *error = nil;
     if (![self.managedObjectContext save: &error]) {
         ELog(error, @"Failed to save");
-        NSString* msg = NSLocalizedString(@"Failed to save data.", @"Failed to save data.");
+        NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
         [KOExtensions showErrorWithMessage: msg];
     }
     
@@ -386,11 +386,11 @@
 - (void)promptForEducationName
 {
     DLog();
-    UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Institution Name", @"Enter Institution Name")
+    UIAlertView *educationNameAlert = [[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"Enter Institution Name", @"A University or Certificate issuing organizaion")
                                                                   message: nil
                                                                  delegate: self 
-                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", @"Cancel") 
-                                                        otherButtonTitles: NSLocalizedString(@"OK", @"OK"), nil] autorelease];
+                                                        cancelButtonTitle: NSLocalizedString(@"Cancel", nil)
+                                                        otherButtonTitles: NSLocalizedString(@"OK", nil), nil] autorelease];
     educationNameAlert.alertViewStyle   = UIAlertViewStylePlainTextInput;
     educationNameAlert.tag              = k_EducationSection;
     
@@ -514,18 +514,18 @@
 
 	switch (section) {
 		case k_SummarySection: {
-			sectionLabel.text = NSLocalizedString(@"Summary", @"Summary");
+			sectionLabel.text = NSLocalizedString(@"Summary", nil);
 			return sectionLabel;
 		}
 		case k_JobsSection: {
-			sectionLabel.text = NSLocalizedString(@"Professional History", @"Professional History");
+			sectionLabel.text = NSLocalizedString(@"Professional History", nil);
             UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
             [sectionView addSubview: sectionLabel];
             [sectionView addSubview: addJobBtn];
 			return sectionView;
 		}
 		case k_EducationSection: {
-			sectionLabel.text = NSLocalizedString(@"Education & Certifications", @"Education & Certifications");
+			sectionLabel.text = NSLocalizedString(@"Education & Certifications", nil);
             UIView *sectionView = [[[UIView alloc] initWithFrame: CGRectMake(0, 0, 280.0f, KOAddButtonHeight)] autorelease];
             [sectionView addSubview: sectionLabel];
             [sectionView addSubview: addEducationBtn];
@@ -579,7 +579,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     DLog();
     if (fromIndexPath.section != toIndexPath.section) {
         // Cannot move between sections
-        [KOExtensions showAlertWithMessageAndType: NSLocalizedString(@"Sorry, move not allowed", @"Sorry, move not allowed")
+        [KOExtensions showAlertWithMessageAndType: NSLocalizedString(@"Sorry, move not allowed.", nil)
                                         alertType: UIAlertViewStyleDefault];
         [self.tblView reloadData];
         return;
@@ -623,7 +623,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             summaryVC.selectedResume            = self.selectedResume;
             summaryVC.managedObjectContext      = self.managedObjectContext;
             summaryVC.fetchedResultsController  = self.fetchedResultsController;
-			summaryVC.title                     = NSLocalizedString(@"Summary", @"Summary");
+			summaryVC.title                     = NSLocalizedString(@"Summary", nil);
 			
 			[self.navigationController pushViewController: summaryVC 
                                                  animated: YES];
@@ -634,7 +634,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 			JobsDetailViewController *detailVC = [[JobsDetailViewController alloc] initWithNibName: KOJobsDetailViewController
                                                                                             bundle: nil];
 			// Pass the selected object to the new view controller.
-			detailVC.title                      = NSLocalizedString(@"Jobs", @"Jobs");
+			detailVC.title                      = NSLocalizedString(@"Jobs", nil);
 			detailVC.selectedJob                = [self.jobArray objectAtIndex: indexPath.row];
             detailVC.managedObjectContext       = self.managedObjectContext;
             detailVC.fetchedResultsController   = self.fetchedResultsController;
@@ -651,7 +651,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             educationVC.selectedEducation           = [self.educationArray objectAtIndex: indexPath.row];
             educationVC.managedObjectContext        = self.managedObjectContext;
             educationVC.fetchedResultsController    = self.fetchedResultsController;
-			educationVC.title                       = NSLocalizedString(@"Education", @"Education");
+			educationVC.title                       = NSLocalizedString(@"Education", nil);
 			
 			[self.navigationController pushViewController: educationVC 
                                                  animated: YES];
