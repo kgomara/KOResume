@@ -90,8 +90,6 @@
 	self.view.backgroundColor		= [UIColor colorWithPatternImage: [UIImage imageNamed: @"background.png"]];
 	self.jobView.image              = [[UIImage imageNamed: @"contentpane_details.png"] stretchableImageWithLeftCapWidth: 20 
                                                                                                             topCapHeight: 20];
-    self.fetchedResultsController.delegate = self;
-    
     activeDateFld                   = 0;
     [self.datePicker setDatePickerMode: UIDatePickerModeDate];
     

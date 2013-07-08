@@ -31,6 +31,7 @@ NSString *const KOPackagesViewController                                    = @"
 NSString *const KOAccomplishmentsViewController                             = @"AccomplishmentViewController";
 NSString *const KOCoverLtrViewController                                    = @"CoverLtrViewController";
 NSString *const KOResumeViewController                                      = @"ResumeViewController";
+NSString *const KOInfoViewController                                        = @"InfoViewController";
 
 // Miscellaneous constants
 CGFloat const KOAddButtonWidth                                              = 29.0f;

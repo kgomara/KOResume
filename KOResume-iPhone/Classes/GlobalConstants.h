@@ -31,6 +31,7 @@ FOUNDATION_EXPORT NSString *const KOPackagesViewController;
 FOUNDATION_EXPORT NSString *const KOAccomplishmentsViewController;
 FOUNDATION_EXPORT NSString *const KOCoverLtrViewController;
 FOUNDATION_EXPORT NSString *const KOResumeViewController;
+FOUNDATION_EXPORT NSString *const KOInfoViewController;
 
 // Miscellaneous constants
 extern CGFloat const KOAddButtonWidth;

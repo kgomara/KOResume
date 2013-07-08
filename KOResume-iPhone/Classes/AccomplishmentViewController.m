@@ -90,6 +90,7 @@
 {
     DLog();
 
+    // Remove observers
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
     [super viewDidUnload];
@@ -105,9 +106,6 @@
 {
     DLog();
 
-    // Remove the keyboard observer
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
     // Apple recommends calling release on the ivar...
     [_accomplishmentName release];
     [_accomplishmentSummary release];

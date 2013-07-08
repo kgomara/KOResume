@@ -94,14 +94,14 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
-    [super viewDidUnload];
-    
     self.nameFld        = nil;
     self.degreeDateFld  = nil;
     self.cityFld        = nil;
     self.stateFld       = nil;
     self.titleFld       = nil;
     self.scrollView     = nil;
+    
+    [super viewDidUnload];
 }
 
 

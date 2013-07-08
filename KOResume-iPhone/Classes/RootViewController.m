@@ -13,6 +13,7 @@
 #import "Resumes.h"
 #import <CoreData/CoreData.h>
 #import "KOExtensions.h"
+#import "InfoViewController.h"
 
 #define k_tblHdrHeight      50.0f
 
@@ -80,10 +81,20 @@
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: nil];
     // ...and an observer for when the registered iCloud user changes
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(reloadFetchedResults:)
-                                                 name: NSPersistentStoreCoordinatorStoresDidChangeNotification
-                                               object: nil];
+//    [[NSNotificationCenter defaultCenter] addObserver: self
+//                                             selector: @selector(reloadFetchedResults:)
+//                                                 name: NSPersistentStoreCoordinatorStoresDidChangeNotification
+//                                               object: nil];
+    // Push the InfoViewController onto the stack so the user knows we're waiting for the persistentStoreCoordinator
+    // to load the database. (The user will be able to dismiss it once the coordinator posts an NSNotification
+    // indicating we're ready.
+    InfoViewController *infoViewController = [[[InfoViewController alloc] initWithNibName: KOInfoViewController
+                                                                                   bundle: nil] autorelease];
+    [infoViewController setTitle: NSLocalizedString(@"Loading Database", nil)];
+    [infoViewController.navigationItem setHidesBackButton: YES];
+    [self.navigationController pushViewController: infoViewController
+                                         animated: YES];
+    
 }
 
 
@@ -129,16 +140,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     DLog();
+    [self.navigationItem setHidesBackButton: NO];
     self.fetchedResultsController.delegate = self;
     
     for (Packages *pkg in [self.fetchedResultsController fetchedObjects]) {
         [pkg logAllFields];
     }
-    
-//    for (int i = 0; i < [[self.fetchedResultsController sections] count]; i++) {
-//        Packages *pkg = [self.fetchedResultsController objectAtIndexPath: i];
-//        [pkg logAllFields];
-//    }
 }
 
 
@@ -440,7 +447,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 
 //----------------------------------------------------------------------------------------------------------
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+-       (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DLog();
 

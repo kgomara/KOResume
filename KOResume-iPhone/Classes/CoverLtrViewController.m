@@ -86,12 +86,14 @@
 {
     DLog();
 
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    [super viewDidUnload];
+    // Remove all observers
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     self.contentPaneBackground  = nil;
     self.scrollView             = nil;
     self.coverLtrFld            = nil;
+    
+    [super viewDidUnload];
 }
 
 
@@ -100,9 +102,6 @@
 {
     DLog();
 
-    // Remove the keyboard observer
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
     // Apple recommends calling release on the ivar...
     [_contentPaneBackground release];
     [_scrollView release];

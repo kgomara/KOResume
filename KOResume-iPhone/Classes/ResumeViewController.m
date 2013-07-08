@@ -103,8 +103,6 @@
     // ...and the NavBar
     [self configureDefaultNavBar];
     
-    self.fetchedResultsController.delegate = self;
-	
     [self sortTables];
     
     // Set an observer for iCloud changes
