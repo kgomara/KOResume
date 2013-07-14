@@ -22,12 +22,12 @@
 
 - (NSDictionary *)createStoreOptions;
 
-- (BOOL)seedStoreFromURL: (NSURL *)seedURL
-                   toURL: (NSURL *)storeURL
-                 options: (NSDictionary *)options;
+//- (BOOL)seedStoreFromURL: (NSURL *)seedURL
+//                   toURL: (NSURL *)storeURL
+//                 options: (NSDictionary *)options;
 
-- (BOOL)loadStore: (NSURL *)storeURL
-          options: (NSDictionary *)options;
+- (BOOL)addStore: (NSURL *)storeURL
+         options: (NSDictionary *)options;
 
 @end
 
@@ -37,30 +37,16 @@
 @synthesize managedObjectContext        = __managedObjectContext;
 @synthesize persistentStoreCoordinator  = __persistentStoreCoordinator;
 
-//----------------------------------------------------------------------------------------------------------
-- (id)init
-{
-    DLog();
-
-    self = [super init];
-    if (self) {
-//        NSManagedObjectModel *model     = [NSManagedObjectModel mergedModelFromBundles: nil];
-//        __persistentStoreCoordinator    = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
-//        __managedObjectContext          = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSMainQueueConcurrencyType];
-//        [__managedObjectContext setPersistentStoreCoordinator: __persistentStoreCoordinator];
-    }
-
-    return self;
-}
-
 
 #pragma mark - Core Data Stack
 
 /**
  Returns the managed object context for the application.
  If the context doesn't already exist, it is created and bound to the persistent store coordinator for the app.
+ See:
  http://goddess-gate.com/dc2/index.php/post/452 and 
  http://www.raywenderlich.com/12170/core-data-tutorial-how-to-preloadimport-existing-data-updated
+ for excellent tutorials on this setting up core data/iCloud
  */
 //----------------------------------------------------------------------------------------------------------
 - (NSManagedObjectContext *)managedObjectContext
@@ -130,7 +116,7 @@
 
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
     
-    // TODO - moving the database to ubiquity container, so check from version 2.0 in Documents and move...
+    // TODO - move the database to ubiquity container, so check from version 2.0 in Documents and move...
     
     if (__persistentStoreCoordinator) {
         // Set up the path to the location of the database
@@ -146,76 +132,46 @@
         dispatch_queue_t queue;
         queue = dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0);        // User is waiting - dispatch at high priority
         
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        if ([fileManager fileExistsAtPath: dbPath]) {
-            // A database already exists in the user's documents, just add it to the persistent store coordinator
-            dispatch_async(queue, ^{
-                // ...first, get options appropriate for iCloud available or not
-                __block NSDictionary *options = [self createStoreOptions];
-                if (options) {
-                    // ...load the store to the persistentStoreCoordinator
-                    if ([self loadStore: storeURL
-                                options: options])
-                    {
-                        dispatch_async( dispatch_get_main_queue(), ^{
-                            DLog(@"Added persistent store already in existance!");
-                            [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidAddPersistentStoreCoordinatorNotification
-                                                                                object: self
-                                                                              userInfo: nil];
-                            
-                        });
-                    } else {
-                        ALog(@"Failed to load store");
-                    }
-                } else {
-                    ALog(@"Failed to create options");
-                }
-            });
-        } else {
-            // database does not exist, need to migrate the seed database in from the app bundle
-            dispatch_async(queue, ^{
-                // First copy file from bundle
-                __block NSURL *bundleSeedURL = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource: KODatabaseName
-                                                                                                       ofType: KODatabaseType]];
-                __block NSURL *seedURL       = [[self applicationDocumentsDirectory] URLByAppendingPathComponent: @"temp.sqlite"];
+        dispatch_async(queue, ^{
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if ( ![fileManager fileExistsAtPath: dbPath]) {
+                // database does not exist, need to copy the seed database in from the app bundle
+                NSURL *bundleSeedURL = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource: KODatabaseName
+                                                                                               ofType: KODatabaseType]];
                 NSError *error;
                 if ([fileManager copyItemAtURL: bundleSeedURL
-                                         toURL: seedURL
+                                         toURL: storeURL
                                          error: &error])
                 {
-                    // ...get options appropriate for iCloud available or not
-                    __block NSDictionary *options = [self createStoreOptions];
-                    if (options) {
-                        // ...migrate the seed store from the bundle to the user's space
-                        if ([self seedStoreFromURL: bundleSeedURL /* seedURL */
-                                             toURL: storeURL
-                                           options: options])
-                        {
-                            DLog(@"Successfully added persistent store migrated from bundle!");
-                            dispatch_async( dispatch_get_main_queue(), ^{
-                                [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidAddPersistentStoreCoordinatorNotification
-                                                                                    object: self
-                                                                                  userInfo: nil];
-                                
-                            });
-                        } else {
-                            ALog(@"Could not seed database");
-                        }
-                        if ([fileManager removeItemAtURL: seedURL
-                                                   error: &error])
-                        {
-                            DLog(@"Removed temporary database successful!");
-                        } else {
-                            ALog(@"Failed to remove temporary database!");
-                        }
-                    } else {
-                        ALog(@"Failed to create options");
-                    }
+                    DLog(@"Copied store from bundle successfully!");
                 } else {
                     ELog(error, @"Copy seed Error");
+                    return;
                 }
-            });
-        }
+            }
+            
+            // A database already exists in the user's documents, just add it to the persistent store coordinator
+            // ...first, get options appropriate for iCloud available or not
+            NSDictionary *options = [self createStoreOptions];
+            if (options) {
+                // ...load the store to the persistentStoreCoordinator
+                if ([self addStore: storeURL
+                           options: options])
+                {
+                    dispatch_async( dispatch_get_main_queue(), ^{
+                        DLog(@"Existing store added successfully!");
+                        [[NSNotificationCenter defaultCenter] postNotificationName: KOApplicationDidAddPersistentStoreCoordinatorNotification
+                                                                            object: self
+                                                                          userInfo: nil];
+                        
+                    });
+                } else {
+                    ALog(@"Failed to add store to coordinator");
+                }
+            } else {
+                ALog(@"Failed to create options");
+            }
+        });
     } else {
         ALog(@"Could not inititialize NSPersistentStoreCoordinator");
     }
@@ -230,82 +186,86 @@
     
     NSDictionary *options;
     
-    NSURL *cloudURL                 = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier: KOUbiquityID];
-    NSString *coreDataCloudContent  = [[cloudURL path] stringByAppendingPathComponent: @"data"];
+    /*
+     *  iCloud has some fundamentals flaws making it (IMO), too brittle at this time
+     *  ...will try again in iOS7
+     */
     
-    if ([coreDataCloudContent length] != 0) {
-        // iCloud is available
-        cloudURL = [NSURL fileURLWithPath: coreDataCloudContent];
-        
-        NSString *storeName = [NSString stringWithFormat: @"%@.%@", KODatabaseName, @"store"];
-        options = [NSDictionary dictionaryWithObjectsAndKeys:
-                   //                   [NSNumber numberWithBool: NO],  NSReadOnlyPersistentStoreOption,
-                   [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
-                   [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
-                   storeName,                      NSPersistentStoreUbiquitousContentNameKey,
-                   cloudURL,                       NSPersistentStoreUbiquitousContentURLKey,
-                   nil];
-    } else {
+//    NSURL *cloudURL                 = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier: KOUbiquityID];
+//    NSString *coreDataCloudContent  = [[cloudURL path] stringByAppendingPathComponent: @"data"];
+    
+//    if ([coreDataCloudContent length] != 0) {
+//        // iCloud is available
+//        cloudURL = [NSURL fileURLWithPath: coreDataCloudContent];
+//        
+//        NSString *storeName = [NSString stringWithFormat: @"%@.%@", KODatabaseName, @"store"];
+//        options = [NSDictionary dictionaryWithObjectsAndKeys:
+//                   [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
+//                   [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
+//                   storeName,                      NSPersistentStoreUbiquitousContentNameKey,
+//                   cloudURL,                       NSPersistentStoreUbiquitousContentURLKey,
+//                   nil];
+//    } else {
         // iCloud is not available
         options = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithBool: NO],  NSReadOnlyPersistentStoreOption,
                    [NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
                    [NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
                    nil];
-    }
+//    }
     
     return options;
 }
 
 //----------------------------------------------------------------------------------------------------------
-- (BOOL)seedStoreFromURL: (NSURL *)seedURL
-                   toURL: (NSURL *)storeURL
-                 options: (NSDictionary *)options
-{
-    DLog(/* @"seedURL=%@, storeURL=%@", seedURL, storeURL */);
-    
-    BOOL success = NO;
-    NSDictionary *localOnlyOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      (id)kCFBooleanTrue, NSMigratePersistentStoresAutomaticallyOption,
-                                      (id)kCFBooleanTrue, NSInferMappingModelAutomaticallyOption,
-                                      nil];
-
-    NSError *error = nil;
-    NSPersistentStore *oldStore = [__persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
-                                                                             configuration: nil
-                                                                                       URL: seedURL
-                                                                                   options: localOnlyOptions
-                                                                                     error: &error];
-    if (oldStore && !error) {
-        NSPersistentStore *newStore = [__persistentStoreCoordinator migratePersistentStore: oldStore
-                                                                                     toURL: storeURL
-                                                                                   options: options
-                                                                                  withType: NSSQLiteStoreType
-                                                                                     error: &error];
-        if (newStore && !error) {
-            success = YES;
-        } else {
-            if (error) {
-                ELog(error, @"Failed to migrate seed store from bundle");
-
-            } else {
-                ALog(@"Failed to migrate seed store from bundle, no error returned");
-            }
-        }
-    }
-    
-    return success;
-}
+//- (BOOL)seedStoreFromURL: (NSURL *)seedURL
+//                   toURL: (NSURL *)storeURL
+//                 options: (NSDictionary *)options
+//{
+//    DLog(/* @"seedURL=%@, storeURL=%@", seedURL, storeURL */);
+//    
+//    BOOL success = NO;
+//    NSDictionary *localOnlyOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                      (id)kCFBooleanTrue, NSMigratePersistentStoresAutomaticallyOption,
+//                                      (id)kCFBooleanTrue, NSInferMappingModelAutomaticallyOption,
+//                                      nil];
+//
+//    NSError *error = nil;
+//    NSPersistentStore *oldStore = [__persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
+//                                                                             configuration: nil
+//                                                                                       URL: seedURL
+//                                                                                   options: localOnlyOptions
+//                                                                                     error: &error];
+//    DLog(@"added oldStore to psc");
+//    if (oldStore && !error) {
+//        NSPersistentStore *newStore = [__persistentStoreCoordinator migratePersistentStore: oldStore
+//                                                                                     toURL: storeURL
+//                                                                                   options: options
+//                                                                                  withType: NSSQLiteStoreType
+//                                                                                     error: &error];
+//        if (newStore && !error) {
+//            success = YES;
+//        } else {
+//            if (error) {
+//                ELog(error, @"Failed to migrate seed store from bundle");
+//            } else {
+//                ALog(@"Failed to migrate seed store from bundle, no error returned");
+//            }
+//        }
+//    }
+//    
+//    return success;
+//}
 
 //----------------------------------------------------------------------------------------------------------
-- (BOOL)loadStore: (NSURL *)storeURL
-          options: (NSDictionary *)options
+- (BOOL)addStore: (NSURL *)storeURL
+         options: (NSDictionary *)options
 {
     DLog();
     
     BOOL success = NO;
     
     NSError *error = nil;
+    
     [__persistentStoreCoordinator lock];
     if ( [__persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
                                                     configuration: nil
@@ -314,12 +274,9 @@
                                                             error: &error])
     {
         success = YES;
+        DLog(@"Success!");
     } else {
         ELog(error, @"Could not add PersistentStore");
-        // TODO - PFUbiguity sometimes returns "error" if it cannot find log data on the device
-        //        commenting out the abort seems to work - but it does not feel right.
-        //        Research is needed to see if the error return could be parsed and handled better.
-        //            abort();
     }
     [__persistentStoreCoordinator unlock];
     

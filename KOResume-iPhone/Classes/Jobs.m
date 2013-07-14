@@ -14,7 +14,12 @@ NSString *const KOJobsEntity         = @"Jobs";
     [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
     [dateFormatter setTimeStyle: NSDateFormatterNoStyle];
 
-    NSString *first30   = [self.summary substringWithRange:NSMakeRange(0, 29)];
+    NSString *first30;
+    if ([self.summary length] > 30) {
+        first30 = [self.summary substringWithRange: NSMakeRange(0, 29)];
+    } else {
+        first30 = self.summary;
+    }
 
     NSLog(@"======================= Jobs =======================");
     NSLog(@"   name              = %@", self.name);

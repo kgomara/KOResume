@@ -11,8 +11,14 @@ NSString *const KOPackagesEntity         = @"Packages";
     NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
     [dateFormatter setTimeStyle: NSDateFormatterNoStyle];
-    NSString *first30   = [self.cover_ltr substringWithRange:NSMakeRange(0, 29)];
-    
+
+    NSString *first30;
+    if ([self.cover_ltr length] > 30) {
+        first30 = [self.cover_ltr substringWithRange: NSMakeRange(0, 29)];
+    } else {
+        first30 = self.cover_ltr;
+    }
+
     NSLog(@"======================= Package =======================");
     NSLog(@"   name              = %@", self.name);
     NSLog(@"   created_date      = %@", [dateFormatter stringFromDate: self.created_date]);

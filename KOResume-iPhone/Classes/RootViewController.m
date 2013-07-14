@@ -57,13 +57,13 @@
 	
     // Set the App name as the Title in the Navigation bar
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleName"];
-#ifdef DEBUG
-    // Include the version in the title for debug builds
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleVersion"];
-    self.navigationItem.title = [appName stringByAppendingString: version];
-#else
+//#ifdef DEBUG
+//    // Include the version in the title for debug builds
+//    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleVersion"];
+//    self.navigationItem.title = [appName stringByAppendingString: version];
+//#else
     self.navigationItem.title = appName;
-#endif
+//#endif
 	self.view.backgroundColor = [UIColor clearColor];
     
     // Set up the defaults in the Navigation Bar
@@ -75,18 +75,14 @@
                                                  name: KOApplicationDidAddPersistentStoreCoordinatorNotification
                                                object: nil];
     
-    // ...add an observer for asynchronous iCloud merges
+    // ...add an observer for asynchronous iCloud merges - not used in this version
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(reloadFetchedResults:)
                                                  name: KOApplicationDidMergeChangesFrom_iCloudNotification
                                                object: nil];
-    // ...and an observer for when the registered iCloud user changes
-//    [[NSNotificationCenter defaultCenter] addObserver: self
-//                                             selector: @selector(reloadFetchedResults:)
-//                                                 name: NSPersistentStoreCoordinatorStoresDidChangeNotification
-//                                               object: nil];
+
     // Push the InfoViewController onto the stack so the user knows we're waiting for the persistentStoreCoordinator
-    // to load the database. (The user will be able to dismiss it once the coordinator posts an NSNotification
+    // to load the database. The user will be able to dismiss it once the coordinator posts an NSNotification
     // indicating we're ready.
     InfoViewController *infoViewController = [[[InfoViewController alloc] initWithNibName: KOInfoViewController
                                                                                    bundle: nil] autorelease];
@@ -534,10 +530,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     }
     
     [self.tblView reloadData];
-    
-    if (note) {
-        [self.tblView reloadData];
-    }
 }
 
 #pragma mark - Fetched results controller delegate

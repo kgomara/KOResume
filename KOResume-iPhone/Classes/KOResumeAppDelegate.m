@@ -51,25 +51,10 @@
     // Pass the managed object context to the view controller.
     RootViewController *rootViewController     = (RootViewController *) self.navigationController.topViewController;
     rootViewController.managedObjectContext    = self.managedObjectContext;
-
-//    [_coreDataController loadPersistentStores];
-    
-    // Set the rootViewController
-    // TODO - this leaves us with no navbar -- fix in version 3
-//    [self.window setRootViewController: rootViewController];
     
     // Add the navigation controller's view to the window and display.
     [self.window addSubview: self.navigationController.view];
     [self.window makeKeyAndVisible];
-    
-    // Log availability of iCloud (user may not have it configured)
-    // ...we only have one container, passing nil returns the first (and only) one
-    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier: nil];
-    if (ubiq) {
-        DLog(@"iCloud access at %@", ubiq);
-    } else {
-        DLog(@"No iCloud access");
-    }
     
     return YES;
 }
@@ -136,22 +121,7 @@
      */
     DLog();
     
-    // Save changes to application's managed object context before application terminates
-    [__managedObjectContext performBlock:^{
-        if ([__managedObjectContext hasChanges]) {
-            NSError *error = nil;
-            if (![__managedObjectContext save:&error]) {
-                NSLog(@"Error saving: %@", error);
-                NSString* msg = NSLocalizedString(@"Failed to save data.", nil);
-                [KOExtensions showErrorWithMessage: msg];
-            } else {
-                DLog(@"Save successful");
-            }
-        } else {
-            DLog(@"No changes to save");
-
-        }
-    }];
+    [self saveContext];
 }
 
 
@@ -174,24 +144,21 @@
 {
     DLog();
     
-    NSError *error = nil;
-    NSManagedObjectContext *moc = self.managedObjectContext;
-    
-    if (moc) {
-        if ([moc hasChanges]) {
-            if (![moc save: &error]) {
-                ELog(error, @"Failed to save");
-                NSString *msg = NSLocalizedString(@"Failed to save data.", nil);
-                [KOExtensions showErrorWithMessage: msg];
-            } else {
+    // Save changes to application's managed object context
+    [__managedObjectContext performBlock:^{
+        if ([__managedObjectContext hasChanges]) {
+            NSError *error = nil;
+            if ([__managedObjectContext save: &error]) {
                 DLog(@"Save successful");
+            } else {
+                ELog(error, @"Failed to save data");
+                NSString* msg = NSLocalizedString( @"Failed to save data.", nil);
+                [KOExtensions showErrorWithMessage: msg];
             }
         } else {
             DLog(@"No changes to save");
         }
-    } else {
-        ALog(@"managedObjectContext is null");
-    }
+    }];
 }
 
 
